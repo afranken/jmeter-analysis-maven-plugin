@@ -1,17 +1,19 @@
 JMeter Result Analysis Plugin
 ======================
 
-A Maven plugin that parses JMeter result XML files and generates detailed reports with charts
+A Maven plugin that parses [JMeter][2] result XML files and generates detailed reports with charts
+
+Can be used in combination with the [JMeter Maven Plugin][1] that is developed by the same authors
 
 Features
 --------
 * Text and HTML output of certain statistics (minimum, maximum, average, standard deviation, quantiles) for response duration and response size
-* Output is rendered with Freemarker and can be customized
+* Output is rendered with [Freemarker][4] and can be customized
 * Chart containing request duration and average of all requests
 * CSV file containing durations of all response (by URL)
 * CSV file containing sizes of all responses (by URL)
 * Statistics and charts can be generated per request group. Request groups are defined by URL patterns.
-* Download of resources from remote systems for the JMeter execution interval
+* Download of resources from remote systems for the [JMeter][2] execution interval
 
 Usage Example
 -------------
@@ -125,3 +127,12 @@ An analysis summary text output looks like this:
     response status codes
       200:               36049 (100%)
 
+Credits
+--------------
+
+Part of the development of this plugin is sponsored by [CoreMedia][3]
+
+[1]:    http://jmeter.lazerycode.com                                "JMeter Maven Plugin"
+[2]:    http://jakarta.apache.org/jmeter/                           "JMeter"
+[3]:    http://www.coremedia.com                                    "CoreMedia AG"
+[4]:    http://freemarker.sourceforge.net/                          "Freemarker"
