@@ -1,7 +1,7 @@
-JMeter Result Analyzer
+JMeter Result Analysis Plugin
 ======================
 
-A Maven plugin that can parse JMeter result files and generate detailed reports with charts
+A Maven plugin that parses JMeter result XML files and generates detailed reports with charts
 
 Features
 --------
@@ -26,23 +26,23 @@ Usage Example
           </goals>
           <configuration>
             <!--
-            source file that contains jmeter result data. Needs to be XML format or a GZIPed XML format
+            source file that contains jmeter result data. Must be XML format or a GZIPed XML format
             -->
             <source>path/to/jmeter.jtl</source>
 
             <!--
-            directory where to store analysis result files. At least a file "summary.txt" will be stored here.
+            directory where to store analysis result files. At least the files "summary.txt" and "summary.html" will be stored here.
             -->
             <target>${project.build.directory}/results</target>
 
             <!--
             Defines groups of requests by URL patterns,
-            e.g. URIs starting with /mock/page are associated with group "pages". All analysis results are
+            e.g. URIs starting with /page are associated with group "pages". All analysis results are
             If there is no such mapping then the threadgroups from the jmeter.xml are used.
             -->
             <requestGroups>
-              <pages>/mock/page/**</pages>
-              <binaries>/mock/binary/**</binaries>
+              <pages>/page/**</pages>
+              <binaries>/binary/**</binaries>
             </requestGroups>
 
             <!--
