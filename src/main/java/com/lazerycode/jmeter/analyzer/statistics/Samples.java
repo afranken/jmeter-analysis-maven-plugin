@@ -84,11 +84,16 @@ public class Samples {
 
   /**
    * Adds an "error" sample. An error sample isn't used for statistics values such as average, ...
+   *
+   * @param timestamp The timestamp of the sample. It's assumed that a timestamp is greater or equal than the previous one
    */
-  public void addError() {
+  public void addError(long timestamp) {
 
     assertNotFinished();
     errors++;
+
+    setTimestamp(timestamp);
+
   }
 
   /**
@@ -96,7 +101,8 @@ public class Samples {
    *
    * @param timestamp The timestamp of the sample. It's assumed that a timestamp is greater or equal than the previous one
    * @param value The sample value, e.g. the response duration or response bytes
-   * @see #addError()
+   *
+   * @see #addError(long)
    */
   public void addSample(long timestamp, long value) {
 
@@ -117,12 +123,7 @@ public class Samples {
     }
 
     //set min / max timestamp
-    if( timestamp < minTimestamp ) {
-      minTimestamp = timestamp;
-    }
-    if( timestamp > maxTimestamp ) {
-      maxTimestamp = timestamp;
-    }
+    setTimestamp(timestamp);
 
     //collect the value
     if( histogram != null ) {
@@ -317,6 +318,21 @@ public class Samples {
     if( !finished ) {
       throw new IllegalStateException("Not finished");
     }
+  }
+
+  /**
+   * set min / max timestamp
+   * @param timestamp the timestamp
+   */
+  private void setTimestamp(long timestamp) {
+
+    if( timestamp < minTimestamp ) {
+      minTimestamp = timestamp;
+    }
+    if( timestamp > maxTimestamp ) {
+      maxTimestamp = timestamp;
+    }
+
   }
 
 

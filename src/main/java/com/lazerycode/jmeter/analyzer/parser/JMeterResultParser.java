@@ -215,9 +215,9 @@ public class JMeterResultParser {
         // httpSample is not okay
         // 4xx (client error) or 5xx (server error)
         Samples requestResult = resultContainer.getDuration();
-        requestResult.addError();
+        requestResult.addError(timestamp);
         Samples bytesResult = resultContainer.getSize();
-        bytesResult.addError();
+        bytesResult.addError(timestamp);
       }
       else {
 

@@ -214,7 +214,7 @@ public class AnalyzeCommandTest extends TestCase {
     String expected =
             "warmup" +CRLF+
             "  time: " + toLocal(start) + " - " + toLocal(end) + CRLF+
-            "  total duration:       0" + CRLF+
+            "  total duration:       30" + CRLF+
             "  requests:             0" +CRLF+
             "  requests per second:  0" +CRLF+
             "  errors:               100%" +CRLF;
@@ -246,7 +246,9 @@ public class AnalyzeCommandTest extends TestCase {
   }
 
   /**
-   * Tests that certain result files are available
+   * Tests that all result files are available
+   *
+   * Text, HTML, CSVs and Images
    */
   public void testAllFiles() throws Exception {
 
@@ -277,6 +279,8 @@ public class AnalyzeCommandTest extends TestCase {
 
   /**
    * Tests that certain result files are available
+   *
+   * No CSVs nor images here
    */
   public void testSomeFiles() throws Exception {
 
