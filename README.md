@@ -28,9 +28,10 @@ Usage Example
           </goals>
           <configuration>
             <!--
-            source file that contains jmeter result data. Must be XML format or a GZIPed XML format
+            An AntPath-Style pattern matching a JMeter XML result file to analyze. Must be a fully qualified path.
+            File may be GZiped, must end in .gz then.
             -->
-            <source>path/to/jmeter.jtl</source>
+            <source>${project.build.directory}/**/*.jtl</source>
 
             <!--
             directory where to store analysis result files. At least the files "summary.txt" and "summary.html" will be stored here.
@@ -38,9 +39,11 @@ Usage Example
             <target>${project.build.directory}/results</target>
 
             <!--
-            Defines groups of requests by URL patterns,
-            e.g. URIs starting with /page are associated with group "pages". All analysis results are
-            If there is no such mapping then the threadgroups from the jmeter.xml are used.
+            Request groups as a mapping from "group name" to "ant pattern".
+            A request uri that matches an ant pattern will be associated with the group name.
+            Request details, charts and CSV files are generated per requestGroup.
+
+            If not set, the threadgroup name of the request will be used.
             -->
             <requestGroups>
               <pages>/page/**</pages>

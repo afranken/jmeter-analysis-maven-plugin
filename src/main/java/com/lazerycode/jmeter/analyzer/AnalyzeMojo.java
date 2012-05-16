@@ -4,6 +4,8 @@ import com.lazerycode.jmeter.analyzer.config.Environment;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -27,13 +29,13 @@ import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
 public class AnalyzeMojo extends AbstractMojo {
   
   /**
-   * The JMeter XML result file to analyze.
-   * May be GZiped, must end in .gz then.
+   * An AntPath-Style pattern matching a JMeter XML result file to analyze. Must be a fully qualified path.
+   * File may be GZiped, must end in .gz then.
    *
    * @parameter expression="${source}"
    * @required
    */
-  private File source;
+  private String source;
 
   /**
    * Directory to store result files in
@@ -122,12 +124,25 @@ public class AnalyzeMojo extends AbstractMojo {
 
     try {
 
+      PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+
+      Resource[] resources = resolver.getResources("file:"+source);
+
+      if(resources.length == 0) {
+        //no JMeter result file found, makes no sense to go on
+        throw new IllegalArgumentException("Property source not set correctly, no JMeter Result XML file found matching "+source);
+      }
+
+      //get first file for now.
+      //TODO: what to do if there are more files matching the pattern?
+      File resource = resources[0].getFile();
+
       Reader data;
-      if(source.getName().endsWith(".gz")) {
-        data = new InputStreamReader(new GZIPInputStream(new FileInputStream(source)));
+      if(resource.getName().endsWith(".gz")) {
+        data = new InputStreamReader(new GZIPInputStream(new FileInputStream(resource)));
       }
       else {
-        data = new FileReader(source);
+        data = new FileReader(resource);
       }
 
       try {
@@ -166,8 +181,8 @@ public class AnalyzeMojo extends AbstractMojo {
   private void assertRequestGroupsInitialization() throws MojoFailureException {
 
     if( requestGroups != null && requestGroupsString != null ) {
-          throw new MojoFailureException("'requestGroups' and 'requestGroupsString' must not be defined at the same time.");
-        }
+      throw new MojoFailureException("'requestGroups' and 'requestGroupsString' must not be defined at the same time.");
+    }
 
     if( requestGroups == null && requestGroupsString != null ) {
 
