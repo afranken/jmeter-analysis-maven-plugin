@@ -41,7 +41,7 @@ public enum Environment {
   private ResultRenderHelper resultRenderHelper;
   private Properties remoteResources;
   private LinkedHashMap<String,String> requestGroups;
-  private int maxSamples;
+  private int maxSamples = DEFAULT_MAXSAMPLES;
   private Configuration configuration;
   private File targetDirectory;
 
