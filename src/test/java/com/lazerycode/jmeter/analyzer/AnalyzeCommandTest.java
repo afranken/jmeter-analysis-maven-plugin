@@ -296,7 +296,11 @@ public class AnalyzeCommandTest extends TestCase {
     data.close();
 
     List<String> expectedFiles = Arrays.asList("summary.html", "summary.txt");
-    assertEquals("files", expectedFiles, Arrays.asList(workDir.list()));
+    List<String> actualFiles = Arrays.asList(workDir.list());
+    Collections.sort(expectedFiles);
+    Collections.sort(actualFiles);
+
+    assertEquals("files", expectedFiles, actualFiles);
   }
 
   public void testCustomTemplates() throws Exception {
