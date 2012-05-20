@@ -52,14 +52,14 @@ public class AnalyzeCommand {
 
   private File targetDirectory;
   private Properties remoteResources;
-  private boolean charts;
-  private boolean details;
+  private boolean generateCharts;
+  private boolean generateCSVs;
 
   public AnalyzeCommand() {
 
     this.resultRenderHelper = ENVIRONMENT.getResultRenderHelper();
-    this.charts = ENVIRONMENT.isCharts();
-    this.details = ENVIRONMENT.isDetails();
+    this.generateCharts = ENVIRONMENT.isGenerateCharts();
+    this.generateCSVs = ENVIRONMENT.isGenerateCSVs();
     this.remoteResources = ENVIRONMENT.getRemoteResources();
     this.targetDirectory = ENVIRONMENT.getTargetDirectory();
   }
@@ -86,14 +86,14 @@ public class AnalyzeCommand {
 
       renderHTML(testResults);
 
-      if(details || charts) {
+      if(generateCSVs || generateCharts) {
         // Process every AggregatedResponse
         for (Map.Entry<String, AggregatedResponses> entry : testResults.entrySet()) {
 
           String name = entry.getKey();
           AggregatedResponses aggregatedResponses = entry.getValue();
 
-          if (details) {
+          if (generateCSVs) {
 
             // write durations by uri
             String durationsFilename = urlEncode(name) + DURATIONS_CSV_SUFFIX;
@@ -104,7 +104,7 @@ public class AnalyzeCommand {
             writeCSVs(sizeFilename, aggregatedResponses.getSizeByUri());
           }
 
-          if (charts) {
+          if (generateCharts) {
             writeChart(name, aggregatedResponses);
           }
 

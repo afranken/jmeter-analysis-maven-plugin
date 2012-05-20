@@ -54,12 +54,12 @@ Usage Example
             If set to true, additional files "<category>-sizes.csv" and "<category>-durations.csv" will be stored.
             These files contain detailed information for response size and response durations for every URI.
             -->
-            <details>true</details>
+            <generateCSVs>true</generateCSVs>
 
             <!--
             If set to true, additional chart files "<category>-durations.png" will be created.
             -->
-            <charts>true</charts>
+            <generateCharts>true</generateCharts>
 
             <!--
             Template directory where custom freemarker templates are stored.

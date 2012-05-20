@@ -51,8 +51,8 @@ public class ResultRenderHelper {
 
   private Configuration configuration;
   private File templateDirectory;
-  private boolean charts;
-  private boolean details;
+  private boolean generateCharts;
+  private boolean generateCSVs;
 
   /**
    * Constructor.
@@ -61,8 +61,8 @@ public class ResultRenderHelper {
   public ResultRenderHelper() {
 
     this.templateDirectory = ENVIRONMENT.getTemplateDirectory();
-    this.charts = ENVIRONMENT.isCharts();
-    this.details = ENVIRONMENT.isDetails();
+    this.generateCharts = ENVIRONMENT.isGenerateCharts();
+    this.generateCSVs = ENVIRONMENT.isGenerateCSVs();
     this.configuration = ENVIRONMENT.getConfiguration();
   }
 
@@ -190,8 +190,8 @@ public class ResultRenderHelper {
     rootMap.put("K_99_PERCENT", K_99_PERCENT);
     rootMap.put("K_99_PONT_9_PERCENT", K_99_PONT_9_PERCENT);
     rootMap.put("PERCENT_100", PERCENT_100);
-    rootMap.put("DETAILS",details);
-    rootMap.put("CHARTS",charts);
+    rootMap.put("DETAILS", generateCSVs);
+    rootMap.put("CHARTS", generateCharts);
 
     return rootMap;
 

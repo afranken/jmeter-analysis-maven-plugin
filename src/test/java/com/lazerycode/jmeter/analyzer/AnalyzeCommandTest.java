@@ -52,10 +52,10 @@ public class AnalyzeCommandTest extends TestCase {
     }
   }
 
-  private void setUpEnvironment(boolean details, boolean charts, LinkedHashMap<String, String> patterns, File templateDirectory) {
+  private void setUpEnvironment(boolean generateCSVs, boolean generateCharts, LinkedHashMap<String, String> patterns, File templateDirectory) {
     ENVIRONMENT.clear();
-    ENVIRONMENT.setDetails(details);
-    ENVIRONMENT.setCharts(charts);
+    ENVIRONMENT.setGenerateCSVs(generateCSVs);
+    ENVIRONMENT.setGenerateCharts(generateCharts);
     ENVIRONMENT.setMaxSamples(1000);
     ENVIRONMENT.setTargetDirectory(workDir);
     ENVIRONMENT.setRequestGroups(patterns);

@@ -27,12 +27,12 @@ public enum Environment {
   /**
    * true, if charts should be generated
    */
-  private boolean charts;
+  private boolean generateCharts;
 
   /**
    * true, if response sizes and response durations should be provided for each uri
    */
-  private boolean details;
+  private boolean generateCSVs;
 
   /**
    * Template directory where custom freemarker templates are stored.
@@ -63,20 +63,20 @@ public enum Environment {
     this.targetDirectory = targetDirectory;
   }
 
-  public boolean isCharts() {
-    return charts;
+  public boolean isGenerateCharts() {
+    return generateCharts;
   }
 
-  public void setCharts(boolean charts) {
-    this.charts = charts;
+  public void setGenerateCharts(boolean generateCharts) {
+    this.generateCharts = generateCharts;
   }
 
-  public boolean isDetails() {
-    return details;
+  public boolean isGenerateCSVs() {
+    return generateCSVs;
   }
 
-  public void setDetails(boolean details) {
-    this.details = details;
+  public void setGenerateCSVs(boolean generateCSVs) {
+    this.generateCSVs = generateCSVs;
   }
 
   public File getTemplateDirectory() {

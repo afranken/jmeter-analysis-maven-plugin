@@ -13,7 +13,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.LinkedHashMap;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.zip.GZIPInputStream;
 
 import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
@@ -55,16 +54,16 @@ public class AnalyzeMojo extends AbstractMojo {
   /**
    * True, if CSV files with detailed information for each request should be generated
    *
-   * @parameter expression="${details}" default-value="true"
+   * @parameter expression="${generateCSVs}" default-value="true"
    */
-  private boolean details;
+  private boolean generateCSVs;
 
   /**
    * True, if charts should be generated
    *
-   * @parameter expression="${charts}" default-value="true"
+   * @parameter expression="${generateCharts}" default-value="true"
    */
-  private boolean charts;
+  private boolean generateCharts;
 
   /**
    * Request groups as a mapping from "group name" to "ant pattern".
@@ -77,14 +76,6 @@ public class AnalyzeMojo extends AbstractMojo {
    */
   @SuppressWarnings("all") // avoid "Loose coupling" violation. LinkedHashMap is used to keep order
   private LinkedHashMap<String,String> requestGroups;
-
-  /**
-   * Like 'requestGroups' but formatted as a string "name1=pattern1,name2=pattern2,..."
-   * requestGroups and requestGroupsString are mutually exclusive.
-   *
-   * @parameter expression="${requestGroups}"
-   */
-  private String requestGroupsString;
 
   /**
    * URLs of resources to be downloaded and to be stored in target directory.
@@ -117,8 +108,6 @@ public class AnalyzeMojo extends AbstractMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-
-    assertRequestGroupsInitialization();
 
     initializeEnvironment();
 
@@ -162,8 +151,8 @@ public class AnalyzeMojo extends AbstractMojo {
   //====================================================================================================================
 
   private void initializeEnvironment() {
-    ENVIRONMENT.setCharts(charts);
-    ENVIRONMENT.setDetails(details);
+    ENVIRONMENT.setGenerateCharts(generateCharts);
+    ENVIRONMENT.setGenerateCSVs(generateCSVs);
     ENVIRONMENT.setMaxSamples(maxSamples);
     ENVIRONMENT.setRemoteResources(remoteResources);
     ENVIRONMENT.setRequestGroups(requestGroups);
@@ -172,40 +161,5 @@ public class AnalyzeMojo extends AbstractMojo {
     ENVIRONMENT.initializeFreemarkerConfiguration();
     ENVIRONMENT.setResultRenderHelper(new ResultRenderHelper());
   }
-
-  /**
-   * Make sure that #requestGroups is filled properly
-   *
-   * @throws MojoFailureException
-   */
-  private void assertRequestGroupsInitialization() throws MojoFailureException {
-
-    if( requestGroups != null && requestGroupsString != null ) {
-      throw new MojoFailureException("'requestGroups' and 'requestGroupsString' must not be defined at the same time.");
-    }
-
-    if( requestGroups == null && requestGroupsString != null ) {
-
-      // parse requestGroupsString into requestGroups
-      requestGroups = new LinkedHashMap<String, String>();
-      StringTokenizer tok = new StringTokenizer(requestGroupsString, ",");
-      while( tok.hasMoreElements() ) {
-
-        String entry = tok.nextToken().trim();
-        int commaIndex = entry.indexOf('=');
-        if( commaIndex == -1 ) {
-          throw new MojoFailureException("Invalid format for 'requestGroupsString'. Expecting 'name=pattern,name=pattern,...' but got "+requestGroupsString);
-        }
-
-        String key = entry.substring(0, commaIndex).trim();
-        String value = entry.substring(commaIndex+1).trim();
-        requestGroups.put(key, value);
-      }
-
-      getLog().debug("Parsed "+requestGroupsString+" into "+requestGroups);
-    }
-
-  }
-
 
 }

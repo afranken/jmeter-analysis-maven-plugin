@@ -96,8 +96,8 @@ public class JMeterResultParser {
     public Parser() {
       this(ENVIRONMENT.getMaxSamples(),
            ENVIRONMENT.getRequestGroups(),
-           ENVIRONMENT.isDetails(),
-           ENVIRONMENT.isDetails());
+           ENVIRONMENT.isGenerateCSVs(),
+           ENVIRONMENT.isGenerateCSVs());
     }
 
     /**
