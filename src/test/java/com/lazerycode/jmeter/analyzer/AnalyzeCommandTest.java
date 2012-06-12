@@ -128,7 +128,7 @@ public class AnalyzeCommandTest extends TestCase {
     for(String fileName : fileNames) {
       File expected = new File(getClass().getResource(PACKAGE_PATH+localPackagePath+fileName).getFile());
       File actual = new File(workDir, fileName);
-      assertTrue("file"+actual+" doesn't have the right content.", FileUtils.contentEqualsIgnoreEOL(expected, actual, "UTF-8"));
+      assertTrue("file"+actual+" doesn't have the right content.", FileUtils.contentEqualsIgnoreEOL(expected, actual, null));
     }
 
   }
@@ -229,12 +229,12 @@ public class AnalyzeCommandTest extends TestCase {
     File actualTXT = new File(workDir+"/summary.txt");
     File expectedTXT = new File(getClass().getResource(localPackagePath+"summary.txt").getFile());
 
-    assertTrue("TXT file contents do not match",FileUtils.contentEqualsIgnoreEOL(actualTXT,expectedTXT,"UTF-8"));
+    assertTrue("TXT file contents do not match",FileUtils.contentEqualsIgnoreEOL(actualTXT,expectedTXT,null));
 
     File actualHTML = new File(workDir+"/summary.html");
     File expectedHTML = new File(getClass().getResource(localPackagePath+"summary.html").getFile());
 
-    assertTrue("HTML file contents do not match",FileUtils.contentEqualsIgnoreEOL(actualHTML,expectedHTML,"UTF-8"));
+    assertTrue("HTML file contents do not match",FileUtils.contentEqualsIgnoreEOL(actualHTML,expectedHTML,null));
   }
 
   private void cleanDir(File dir) {
