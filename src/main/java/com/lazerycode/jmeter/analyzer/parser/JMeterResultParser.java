@@ -15,8 +15,10 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
 import static com.lazerycode.jmeter.analyzer.parser.StatusCodes.HTTPCODE_CONNECTIONERROR;
@@ -74,8 +76,12 @@ public class JMeterResultParser {
     /**
      * Example from JMeter results file:
      * <httpSample t="1" lt="1" ts="1305278457847" s="false" lb="/sample/url/path.html" rc="404" rm="Not Found" tn="homepage 4-1" dt="" by="0"/>
+     *
+     * According to the documentation, the two possible node names are {@link #HTTPSAMPLE_ELEMENT} and {@link #SAMPLE_ELEMENT}:
+     * http://jmeter.apache.org/usermanual/listeners.html
      */
     private static final String HTTPSAMPLE_ELEMENT = "httpSample";
+    private static final String SAMPLE_ELEMENT = "sample";
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final AntPathMatcher matcher = new AntPathMatcher();
@@ -88,6 +94,7 @@ public class JMeterResultParser {
     private long parsedCount = 0;
 
     private Map<String, AggregatedResponses> results = new LinkedHashMap<String, AggregatedResponses>();
+    private Set<String> nodeNames = new HashSet<String>();
 
     /**
      * Constructor.
@@ -114,6 +121,10 @@ public class JMeterResultParser {
       this.pathPatterns = pathPatterns;
       this.sizeByUris = sizeByUris;
       this.durationByUris = durationByUris;
+
+      //add node names to set
+      nodeNames.add(HTTPSAMPLE_ELEMENT);
+      nodeNames.add(SAMPLE_ELEMENT);
     }
 
     /**
@@ -126,7 +137,7 @@ public class JMeterResultParser {
     @Override
     public void startElement(String u, String localName, String qName, Attributes atts) throws SAXException {
 
-      if( HTTPSAMPLE_ELEMENT.equals(localName) || HTTPSAMPLE_ELEMENT.equals(qName) ) {
+      if( nodeNames.contains(localName) || nodeNames.contains(qName) ) {
 
         String uri = atts.getValue("lb");
         String timestampString = atts.getValue("ts");
