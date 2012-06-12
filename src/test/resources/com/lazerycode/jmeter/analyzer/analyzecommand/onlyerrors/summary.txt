@@ -1,0 +1,6 @@
+warmup
+  time: 20111216T145509+0100 - 20111216T145539+0100
+  total duration:       30
+  requests:             0
+  requests per second:  0
+  errors:               100%

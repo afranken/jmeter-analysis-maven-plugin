@@ -3,6 +3,8 @@ package com.lazerycode.jmeter.analyzer;
 import com.lazerycode.jmeter.analyzer.parser.AggregatedResponses;
 import freemarker.template.TemplateException;
 import junit.framework.TestCase;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.output.NullWriter;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,12 +13,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -34,6 +34,7 @@ public class AnalyzeCommandTest extends TestCase {
   private File workDir;
   private final boolean cleanup = true; // set this to false if you want to test the results manually
   private static final SimpleDateFormat LOCAL_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HHmmssZ", Locale.getDefault());
+  private static final String PACKAGE_PATH = "/com/lazerycode/jmeter/analyzer/analyzecommand/";
   
   @Override
   protected void setUp() throws Exception {
@@ -52,6 +53,145 @@ public class AnalyzeCommandTest extends TestCase {
     }
   }
 
+  //--------------------------------------------------------------------------------------------------------------------
+
+  /**
+   * Tests the text output with only successful samples
+   */
+  public void testTextOutputSuccess() throws Exception {
+
+    String localPackagePath = "/success/";
+
+    setUpEnvironment(false, false, null, null);
+
+    testOutput(localPackagePath);
+  }
+
+  /**
+   * Tests the text output with a few unsuccessful samples
+   */
+  public void testTextOutputSomeErrors() throws Exception {
+
+    String localPackagePath = "/someerrors/";
+
+    setUpEnvironment(false,false, null, null);
+
+    testOutput(localPackagePath);
+  }
+
+  /**
+   * Tests the text output with only unsuccessful samples
+   */
+  public void testTextOnlyErrors() throws Exception {
+
+    String localPackagePath = "/onlyerrors/";
+
+    setUpEnvironment(false, false, null, null);
+
+    testOutput(localPackagePath);
+  }
+
+  /**
+   * Tests the text output with an empty results file
+   */
+  public void testTextEmptyOutput() throws Exception {
+
+    String localPackagePath = "/empty/";
+
+    setUpEnvironment(false,false, null, null);
+
+    testOutput(localPackagePath);
+  }
+
+  /**
+   * Tests that all result files are available
+   *
+   * Text, HTML, CSVs and Images
+   */
+  public void testAllFiles() throws Exception {
+
+    String localPackagePath = "/allfiles/";
+
+    LinkedHashMap<String, String> patterns = new LinkedHashMap<java.lang.String, java.lang.String>();
+    patterns.put("page", "/main");
+    patterns.put("blob", "/main/**");
+
+    setUpEnvironment(true, true, patterns, null);
+
+    testOutput(localPackagePath);
+
+    List<String> fileNames = Arrays.asList(
+            "blob-durations.csv", "blob-durations.png", "blob-sizes.csv",
+            "page-durations.csv", "page-durations.png", "page-sizes.csv",
+            "summary.html", "summary.txt");
+
+    for(String fileName : fileNames) {
+      File expected = new File(getClass().getResource(PACKAGE_PATH+localPackagePath+fileName).getFile());
+      File actual = new File(workDir, fileName);
+      assertTrue("file"+actual+" doesn't have the right content.", FileUtils.contentEquals(expected, actual));
+    }
+
+  }
+
+  /**
+   * Test output with custom template
+   */
+  public void testCustomTemplates() throws Exception {
+
+    String localPackagePath = "/testtemplates/";
+
+    //copy template to file system
+    File templateDir = new File(workDir,"text");
+    templateDir.mkdir();
+    File template = initializeFile(templateDir,"main.ftl");
+
+    InputStream is = getClass().getResourceAsStream(PACKAGE_PATH+"testtemplates/text/main.ftl");
+    OutputStream os = new FileOutputStream(template);
+    while (is.available() > 0) {
+        os.write(is.read());
+    }
+    os.close();
+    is.close();
+
+
+    setUpEnvironment(false, false, null, workDir);
+
+    testOutput(localPackagePath);
+  }
+
+
+  /**
+   * tests that file is downloaded and has the right content
+   */
+  public void testDownload() throws Exception {
+    String localPackagePath = "/download/";
+
+    final String start = "20111216T145509+0100";
+    final String end = "20111216T145539+0100";
+    
+    // create a file to be downloaded
+    // contains urlencoded timestamps which are formatted as if retrieved from jmeter.xml
+    File downloadableFile = initializeFile(workDir, String.format("%s.%s.tmp", toLocal(start), toLocal(end)));
+    FileUtils.write(downloadableFile,"contents");
+
+    File downloadablePatternFile = new File(workDir, "_FROM_._TO_.tmp");
+
+    Properties remoteResources = new Properties();
+    remoteResources.setProperty(downloadablePatternFile.toURI().toString(), "download.txt");
+
+    setUpEnvironment(false,false, null, null);
+    ENVIRONMENT.setRemoteResources(remoteResources);
+
+    testOutput(localPackagePath);
+
+    File downloadedFile = new File(workDir, "download.txt");
+
+    assertTrue("file was not successfully downloaded.", downloadedFile.exists());
+    assertTrue("file doesn't have the right content.", FileUtils.contentEquals(downloadableFile, downloadedFile));
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+
   private void setUpEnvironment(boolean generateCSVs, boolean generateCharts, LinkedHashMap<String, String> patterns, File templateDirectory) {
     ENVIRONMENT.clear();
     ENVIRONMENT.setGenerateCSVs(generateCSVs);
@@ -65,229 +205,20 @@ public class AnalyzeCommandTest extends TestCase {
   }
 
   /**
-   * Tests the text output
-   */
-  public void testTextOutput() throws Exception {
-
-    Reader data = new InputStreamReader(getClass().getResourceAsStream("AnalyzeCommandTest-jmeter.xml"));
-    Writer writer = new StringWriter();
-
-    setUpEnvironment(false,false, null, null);
-
-    new LocalAnalyzeCommand(writer).analyze(data);
-
-    writer.flush();
-    writer.close();
-    data.close();
-
-    String CRLF = System.getProperty("line.separator");
-    
-    
-    // the output will be in local time zone of the test, so we'll parse it first, then convert back to string
-    Date start = parseDate("20111216T145509+0100");
-    Date end = parseDate("20111216T145539+0100");
-
-    String textOutput = writer.toString();
-    String expected = 
-            "warmup" +CRLF+
-            "  time: " + toLocal(start) + " - " + toLocal(end) + CRLF+
-            "  total duration:       30" + CRLF+
-            "  requests:             36049" +CRLF+
-            "  requests per second:  1201" +CRLF+
-            "  response duration (ms)" +CRLF+
-            "    min:                0" + CRLF+
-            "    average:            0" + CRLF+
-            "    max:                1352" +CRLF+
-            "    standard deviation: 7" +CRLF+
-            "    quantiles (ms)" +CRLF+
-            "         10%        0" +CRLF+
-            "         20%        0" +CRLF+
-            "         30%        0" +CRLF+
-            "         40%        0" +CRLF+
-            "         50%        1" +CRLF+
-            "         60%        1" +CRLF+
-            "         70%        1" +CRLF+
-            "         80%        1" +CRLF+
-            "         90%        1" +CRLF+
-            "         99%        6" +CRLF+
-            "       99.9%       19" +CRLF+
-            "      100.0%     1352 (max. value)" +CRLF+
-            "  response size (bytes)" +CRLF+
-            "    total:              750210890" +CRLF+
-            "    min:                20480" +CRLF+
-            "    average:            20810" +CRLF+
-            "    max:                53890" +CRLF+
-            "    standard deviation: 3308" +CRLF+
-            "  response status codes" +CRLF+
-            "    200:               36049 (100%)"+CRLF;
-    
-    assertEquals("text", expected, textOutput);
-  }
-
-  /**
-   * Tests the text output with a few unsuccessful samples
-   */
-  public void testTextOutputSomeErrors() throws Exception {
-
-    Reader data = new InputStreamReader(getClass().getResourceAsStream("AnalyzeCommandTest-someErrors.xml"));
-    Writer writer = new StringWriter();
-
-    setUpEnvironment(false,false, null, null);
-
-    new LocalAnalyzeCommand(writer).analyze(data);
-
-    writer.flush();
-    writer.close();
-    data.close();
-
-    String CRLF = System.getProperty("line.separator");
-
-
-    // the output will be in local time zone of the test, so we'll parse it first, then convert back to string
-    Date start = parseDate("20111216T145509+0100");
-    Date end = parseDate("20111216T145539+0100");
-
-    String textOutput = writer.toString();
-    String expected =
-            "warmup" +CRLF+
-            "  time: " + toLocal(start) + " - " + toLocal(end) + CRLF+
-            "  total duration:       30" + CRLF+
-            "  requests:             36034" +CRLF+
-            "  requests per second:  1201" +CRLF+
-            "  response duration (ms)" +CRLF+
-            "    min:                0" + CRLF+
-            "    average:            0" + CRLF+
-            "    max:                1352" +CRLF+
-            "    standard deviation: 7" +CRLF+
-            "    quantiles (ms)" +CRLF+
-            "         10%        0" +CRLF+
-            "         20%        0" +CRLF+
-            "         30%        0" +CRLF+
-            "         40%        0" +CRLF+
-            "         50%        1" +CRLF+
-            "         60%        1" +CRLF+
-            "         70%        1" +CRLF+
-            "         80%        1" +CRLF+
-            "         90%        1" +CRLF+
-            "         99%        6" +CRLF+
-            "       99.9%       19" +CRLF+
-            "      100.0%     1352 (max. value)" +CRLF+
-            "  response size (bytes)" +CRLF+
-            "    total:              749903690" +CRLF+
-            "    min:                20480" +CRLF+
-            "    average:            20811" +CRLF+
-            "    max:                53890" +CRLF+
-            "    standard deviation: 3308" +CRLF+
-            "  response status codes" +CRLF+
-            "    200:               36034 (99.96%)"+CRLF+
-            "    403:                   9 (0.02%)"+CRLF+
-            "    404:                   6 (0.02%)"+CRLF;
-
-    assertEquals("text", expected, textOutput);
-  }
-
-  /**
-   * Tests the text output with only unsuccessful samples
-   */
-  public void testTextOnlyErrors() throws Exception {
-
-    Reader data = new InputStreamReader(getClass().getResourceAsStream("AnalyzeCommandTest-onlyErrors.xml"));
-    Writer writer = new StringWriter();
-
-    setUpEnvironment(false,false, null, null);
-
-    new LocalAnalyzeCommand(writer).analyze(data);
-
-    writer.flush();
-    writer.close();
-    data.close();
-
-    String CRLF = System.getProperty("line.separator");
-
-
-    // the output will be in local time zone of the test, so we'll parse it first, then convert back to string
-    Date start = parseDate("20111216T145509+0100");
-    Date end = parseDate("20111216T145539+0100");
-
-    String textOutput = writer.toString();
-
-    String expected =
-            "warmup" +CRLF+
-            "  time: " + toLocal(start) + " - " + toLocal(end) + CRLF+
-            "  total duration:       30" + CRLF+
-            "  requests:             0" +CRLF+
-            "  requests per second:  0" +CRLF+
-            "  errors:               100%" +CRLF;
-
-    assertEquals("text", expected, textOutput);
-  }
-
-  /**
-   * Tests the text output with an empty resultsfile
-   */
-  public void testTextEmptyOutput() throws Exception {
-
-    Reader data = new InputStreamReader(getClass().getResourceAsStream("AnalyzeCommandTest-empty.xml"));
-    Writer writer = new StringWriter();
-
-    setUpEnvironment(false,false, null, null);
-
-    new LocalAnalyzeCommand(writer).analyze(data);
-
-    writer.flush();
-    writer.close();
-    data.close();
-
-
-    String textOutput = writer.toString();
-    String expected = "";
-
-    assertEquals("text", expected, textOutput);
-  }
-
-  /**
-   * Tests that all result files are available
+   * Output test code that is used by most test methods.
+   * {@link com.lazerycode.jmeter.analyzer.config.Environment#ENVIRONMENT} must be reset/initialized before calling this method.
    *
-   * Text, HTML, CSVs and Images
+   * @param packagePath path relative to {@link #PACKAGE_PATH}
+   * @throws Exception
    */
-  public void testAllFiles() throws Exception {
+  private void testOutput(String packagePath) throws Exception {
 
-    Reader data = new InputStreamReader(getClass().getResourceAsStream("AnalyzeCommandTest-success.xml"));
-    LinkedHashMap<String, String> patterns = new LinkedHashMap<java.lang.String, java.lang.String>();
-    patterns.put("page", "/main");
-    patterns.put("blob", "/main/**");
-    Writer writer = new StringWriter();
+    String localPackagePath = PACKAGE_PATH + packagePath;
 
-    setUpEnvironment(true,true, patterns, null);
+    Reader data = new InputStreamReader(getClass().getResourceAsStream(localPackagePath+"jmeter-result.jtl"));
 
-    new LocalAnalyzeCommand(writer).analyze(data);
-
-    writer.flush();
-    writer.close();
-    data.close();
-
-
-    List<String> expectedFiles = Arrays.asList(
-            "blob-durations.csv", "blob-durations.png", "blob-sizes.csv",
-            "page-durations.csv", "page-durations.png", "page-sizes.csv",
-            "summary.html", "summary.txt");
-    List<String> actualFiles = Arrays.asList(workDir.list());
-    Collections.sort(expectedFiles);
-    Collections.sort(actualFiles);
-    assertEquals("files", expectedFiles, actualFiles );
-  }
-
-  /**
-   * Tests that certain result files are available
-   *
-   * No CSVs nor images here
-   */
-  public void testSomeFiles() throws Exception {
-
-    Reader data = new InputStreamReader(getClass().getResourceAsStream("AnalyzeCommandTest-success.xml"));
-    Writer writer = new StringWriter();
-
-    setUpEnvironment(false,false, null, null);
+    //commandline output does not matter during tests and is routed to a NullWriter
+    Writer writer = new NullWriter();
 
     new LocalAnalyzeCommand(writer).analyze(data);
 
@@ -295,73 +226,16 @@ public class AnalyzeCommandTest extends TestCase {
     writer.close();
     data.close();
 
-    List<String> expectedFiles = Arrays.asList("summary.html", "summary.txt");
-    List<String> actualFiles = Arrays.asList(workDir.list());
-    Collections.sort(expectedFiles);
-    Collections.sort(actualFiles);
+    File actualTXT = new File(workDir+"/summary.txt");
+    File expectedTXT = new File(getClass().getResource(localPackagePath+"summary.txt").getFile());
 
-    assertEquals("files", expectedFiles, actualFiles);
+    assertTrue("TXT file contents do not match",FileUtils.contentEqualsIgnoreEOL(actualTXT,expectedTXT,"UTF-8"));
+
+    File actualHTML = new File(workDir+"/summary.html");
+    File expectedHTML = new File(getClass().getResource(localPackagePath+"summary.html").getFile());
+
+    assertTrue("HTML file contents do not match",FileUtils.contentEqualsIgnoreEOL(actualHTML,expectedHTML,"UTF-8"));
   }
-
-  public void testCustomTemplates() throws Exception {
-
-    //copy template to file system
-    File templateDir = new File(workDir,"text");
-    templateDir.mkdir();
-    File template = initializeFile(templateDir,"main.ftl");
-
-    InputStream is = getClass().getResourceAsStream("/com/lazerycode/jmeter/analyzer/testtemplates/text/main.ftl");
-    OutputStream os = new FileOutputStream(template);
-    while (is.available() > 0) {
-        os.write(is.read());
-    }
-    os.close();
-    is.close();
-
-    //run plugin
-    Reader data = new InputStreamReader(getClass().getResourceAsStream("AnalyzeCommandTest-jmeter.xml"));
-    Writer writer = new StringWriter();
-
-    setUpEnvironment(false, false, null, workDir);
-
-    new LocalAnalyzeCommand(writer).analyze(data);
-
-    writer.flush();
-    writer.close();
-    data.close();
-
-    String textOutput = writer.toString();
-    String expected = "this is a custom template";
-
-    assertEquals("text", expected, textOutput);
-  }
-
-
-  public void testDownload() throws Exception {
-    final String start = "20111216T145509+0100";
-    final String end = "20111216T145539+0100";
-    
-    // create a file to be downloaded
-    // contains urlencoded timestamps which are retrieved from jmeter.xml
-    File downloadableFile = new File(workDir, String.format("%s.%s.tmp", toLocal(start), toLocal(end)));
-    downloadableFile.createNewFile();
-
-    File downloadablePatternFile = new File(workDir, "_FROM_._TO_.tmp");
-
-    Properties remoteResources = new Properties();
-    remoteResources.setProperty(downloadablePatternFile.toURI().toString(), "download.txt");
-
-    Reader data = new InputStreamReader(getClass().getResourceAsStream("AnalyzeCommandTest-jmeter.xml"));
-    Writer writer = new StringWriter();
-
-    setUpEnvironment(false,false, null, null);
-
-    new LocalAnalyzeCommand(writer).analyze(data);
-
-
-  }
-
-  //--------------------------------------------------------------------------------------------------------------------
 
   private void cleanDir(File dir) {
 

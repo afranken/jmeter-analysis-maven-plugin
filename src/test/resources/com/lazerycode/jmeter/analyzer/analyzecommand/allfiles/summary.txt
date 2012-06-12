@@ -1,0 +1,62 @@
+page
+  time: 20111216T145509+0100 - 20111216T145509+0100
+  total duration:       0
+  requests:             1
+  requests per second:  0
+  response duration (ms)
+    min:                1352
+    average:            1352
+    max:                1352
+    standard deviation: 0
+    quantiles (ms)
+         10%        0
+         20%        0
+         30%        0
+         40%        0
+         50%        0
+         60%        0
+         70%        0
+         80%        0
+         90%        0
+         99%        0
+       99.9%        0
+      100.0%     1352 (max. value)
+  response size (bytes)
+    total:              53890
+    min:                53890
+    average:            53890
+    max:                53890
+    standard deviation: 0
+  response status codes
+    200:                   1 (100%)
+blob
+  time: 20111216T145511+0100 - 20111216T145539+0100
+  total duration:       29
+  requests:             9
+  requests per second:  0
+  response duration (ms)
+    min:                0
+    average:            2
+    max:                13
+    standard deviation: 3
+    quantiles (ms)
+         10%        0
+         20%        0
+         30%        0
+         40%        0
+         50%        1
+         60%        1
+         70%        1
+         80%        3
+         90%        4
+         99%        4
+       99.9%        4
+      100.0%       13 (max. value)
+  response size (bytes)
+    total:              184320
+    min:                20480
+    average:            20480
+    max:                20480
+    standard deviation: 0
+  response status codes
+    200:                   9 (100%)

@@ -1,0 +1,33 @@
+warmup
+  time: 20111216T145509+0100 - 20111216T145539+0100
+  total duration:       30
+  requests:             36034
+  requests per second:  1201
+  response duration (ms)
+    min:                0
+    average:            0
+    max:                1352
+    standard deviation: 7
+    quantiles (ms)
+         10%        0
+         20%        0
+         30%        0
+         40%        0
+         50%        1
+         60%        1
+         70%        1
+         80%        1
+         90%        1
+         99%        6
+       99.9%       19
+      100.0%     1352 (max. value)
+  response size (bytes)
+    total:              749903690
+    min:                20480
+    average:            20811
+    max:                53890
+    standard deviation: 3308
+  response status codes
+    200:               36034 (99.96%)
+    403:                   9 (0.02%)
+    404:                   6 (0.02%)

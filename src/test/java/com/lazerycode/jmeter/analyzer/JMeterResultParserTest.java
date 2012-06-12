@@ -27,6 +27,24 @@ public class JMeterResultParserTest extends TestCase {
     assertEquals("failure", 0, r.getDuration().getErrorsCount());
   }
 
+  /**
+   * Nodenames can be {@link JMeterResultParser#HTTPSAMPLE_ELEMENT} or {@link JMeterResultParser#SAMPLE_ELEMENT}
+   */
+  public void testDifferentNodeNames() throws Exception {
+
+    JMeterResultParser a = new JMeterResultParser();
+    Map<String, AggregatedResponses> result = a.aggregate(new InputStreamReader(getClass().getResourceAsStream("JMeterResultParserTest-differentNodeNames.xml")));
+
+    assertEquals("size", 1, result.size());
+
+    AggregatedResponses r = result.get("warmup");
+
+    // test requests
+    assertEquals("samples", 3, r.getDuration().getStoredSamplesCount());
+    assertEquals("success", 3, r.getDuration().getSuccessCount());
+    assertEquals("failure", 0, r.getDuration().getErrorsCount());
+  }
+
   public void testSomeErrors() throws Exception {
 
     JMeterResultParser a = new JMeterResultParser();
