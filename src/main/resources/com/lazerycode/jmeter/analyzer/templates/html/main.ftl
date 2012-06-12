@@ -62,6 +62,9 @@
 </head>
 <body>
   <h1>JMeter Summary</h1>
+<#if !self?keys?has_content>
+  <p>Results file is empty.</p>
+<#else>
   <div class="aggregations">
     <#list self?keys as key>
       <#assign aggregatedResponses=self(key)/>
@@ -70,5 +73,6 @@
       <#include "aggregatedResponse.ftl" />
     </#list>
   </div>
+</#if>
 </body>
 </html>
