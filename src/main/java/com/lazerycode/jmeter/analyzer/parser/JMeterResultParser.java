@@ -32,6 +32,16 @@ import static com.lazerycode.jmeter.analyzer.parser.StatusCodes.HTTPCODE_ERROR;
 public class JMeterResultParser {
 
   /**
+   * Example from JMeter results file:
+   * <httpSample t="1" lt="1" ts="1305278457847" s="false" lb="/sample/url/path.html" rc="404" rm="Not Found" tn="homepage 4-1" dt="" by="0"/>
+   *
+   * According to the documentation, the two possible node names are {@link #HTTPSAMPLE_ELEMENT} and {@link #SAMPLE_ELEMENT}:
+   * http://jmeter.apache.org/usermanual/listeners.html
+   */
+  private static final String HTTPSAMPLE_ELEMENT = "httpSample";
+  private static final String SAMPLE_ELEMENT = "sample";
+
+  /**
    * number of parsed items after which a log message is written
    */
   private static final int LOGMESSAGE_ITEMS = 10000;
@@ -72,16 +82,6 @@ public class JMeterResultParser {
    * Parser does the heavy lifting.
    */
   private static class Parser extends DefaultHandler {
-
-    /**
-     * Example from JMeter results file:
-     * <httpSample t="1" lt="1" ts="1305278457847" s="false" lb="/sample/url/path.html" rc="404" rm="Not Found" tn="homepage 4-1" dt="" by="0"/>
-     *
-     * According to the documentation, the two possible node names are {@link #HTTPSAMPLE_ELEMENT} and {@link #SAMPLE_ELEMENT}:
-     * http://jmeter.apache.org/usermanual/listeners.html
-     */
-    private static final String HTTPSAMPLE_ELEMENT = "httpSample";
-    private static final String SAMPLE_ELEMENT = "sample";
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final AntPathMatcher matcher = new AntPathMatcher();
