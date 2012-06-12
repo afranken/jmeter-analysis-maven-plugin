@@ -75,42 +75,34 @@ public class AnalyzeCommand {
 
     Map<String, AggregatedResponses> testResults = new JMeterResultParser().aggregate(jmeterResult);
 
+    renderTextToStdOut(testResults);
+    renderTextAsFile(testResults);
 
-    if (testResults.size() == 0) {
-      System.err.println("No results available"); // NOSONAR
-    }
-    else {
+    renderHTML(testResults);
 
-      renderTextToStdOut(testResults);
-      renderTextAsFile(testResults);
+    if(generateCSVs || generateCharts) {
+      // Process every AggregatedResponse
+      for (Map.Entry<String, AggregatedResponses> entry : testResults.entrySet()) {
 
-      renderHTML(testResults);
+        String name = entry.getKey();
+        AggregatedResponses aggregatedResponses = entry.getValue();
 
-      if(generateCSVs || generateCharts) {
-        // Process every AggregatedResponse
-        for (Map.Entry<String, AggregatedResponses> entry : testResults.entrySet()) {
+        if (generateCSVs) {
 
-          String name = entry.getKey();
-          AggregatedResponses aggregatedResponses = entry.getValue();
+          // write durations by uri
+          String durationsFilename = urlEncode(name) + DURATIONS_CSV_SUFFIX;
+          writeCSVs(durationsFilename,aggregatedResponses.getDurationByUri());
 
-          if (generateCSVs) {
-
-            // write durations by uri
-            String durationsFilename = urlEncode(name) + DURATIONS_CSV_SUFFIX;
-            writeCSVs(durationsFilename,aggregatedResponses.getDurationByUri());
-
-            // write size by uri
-            String sizeFilename = urlEncode(name) + SIZES_CSV_SUFFIX;
-            writeCSVs(sizeFilename, aggregatedResponses.getSizeByUri());
-          }
-
-          if (generateCharts) {
-            writeChart(name, aggregatedResponses);
-          }
-
+          // write size by uri
+          String sizeFilename = urlEncode(name) + SIZES_CSV_SUFFIX;
+          writeCSVs(sizeFilename, aggregatedResponses.getSizeByUri());
         }
-      }
 
+        if (generateCharts) {
+          writeChart(name, aggregatedResponses);
+        }
+
+      }
     }
 
 
