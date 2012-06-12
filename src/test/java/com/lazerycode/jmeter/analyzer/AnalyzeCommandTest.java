@@ -128,7 +128,7 @@ public class AnalyzeCommandTest extends TestCase {
     for(String fileName : fileNames) {
       File expected = new File(getClass().getResource(PACKAGE_PATH+localPackagePath+fileName).getFile());
       File actual = new File(workDir, fileName);
-      assertTrue("file"+actual+" doesn't have the right content.", FileUtils.contentEquals(expected, actual));
+      assertTrue("file"+actual+" doesn't have the right content.", FileUtils.contentEqualsIgnoreEOL(expected, actual, "UTF-8"));
     }
 
   }
