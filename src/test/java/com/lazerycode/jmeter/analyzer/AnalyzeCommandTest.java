@@ -40,8 +40,6 @@ public class AnalyzeCommandTest extends TestCase {
   private final boolean cleanup = true; // set this to false if you want to test the results manually
   private static final SimpleDateFormat LOCAL_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HHmmssZ", Locale.getDefault());
   private static final String PACKAGE_PATH = "/com/lazerycode/jmeter/analyzer/analyzecommand/";
-  private static final Pattern END_OF_LINE_PATTERN = Pattern.compile("(\\r\\n|\\r|\\n)");
-  private static final Pattern DATE_PATTERN = Pattern.compile("\\d\\d\\d\\d\\d\\d\\d\\dT\\d\\d\\d\\d\\d\\d+\\d\\d\\d\\d");
   
   @Override
   protected void setUp() throws Exception {
@@ -256,7 +254,6 @@ public class AnalyzeCommandTest extends TestCase {
 
   /**
    * Strip line ends from String contents of a file so that contents can be compared on different platforms.
-   * Convert date strings contained in a file so that it matches the local timezone.
    *
    * @param file
    * @return normalized String
@@ -269,25 +266,14 @@ public class AnalyzeCommandTest extends TestCase {
     //replace line endings
     content = content.replaceAll("(\\r\\n|\\r|\\n)", "");
 
-
-    Matcher endOfLineMatcher = END_OF_LINE_PATTERN.matcher(content);
-    if(endOfLineMatcher.matches()) {
-      endOfLineMatcher.replaceAll("");
-      content = endOfLineMatcher.toString();
-    }
-
     //replace date with date converted to the local timezone
-    Matcher dateMatcher = DATE_PATTERN.matcher(content);
-    if(dateMatcher.matches()) {
-      //convert and replace dates one at a time
-      while(dateMatcher.matches()) {
-        dateMatcher.replaceFirst(toLocal(dateMatcher.group()));
-      }
-
-      content = dateMatcher.toString();
+    Pattern datePattern = Pattern.compile("\\d\\d\\d\\d\\d\\d\\d\\dT\\d\\d\\d\\d\\d\\d+\\d\\d\\d\\d");
+    Matcher matcher = datePattern.matcher(content);
+    while(matcher.matches()) {
+      matcher.replaceFirst(toLocal(matcher.group()));
     }
 
-    return content;
+    return matcher.toString();
   }
 
   /**
