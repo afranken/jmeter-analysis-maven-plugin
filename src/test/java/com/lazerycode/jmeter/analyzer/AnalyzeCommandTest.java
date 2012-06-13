@@ -123,17 +123,33 @@ public class AnalyzeCommandTest extends TestCase {
 
     setUpEnvironment(true, true, patterns, null);
 
+    //test summary.html and summary.txt
     testOutput(localPackagePath);
 
     List<String> fileNames = Arrays.asList(
             "blob-durations.csv", "blob-durations.png", "blob-sizes.csv",
-            "page-durations.csv", "page-durations.png", "page-sizes.csv",
-            "summary.html", "summary.txt");
+            "page-durations.csv", "page-durations.png", "page-sizes.csv");
 
     for(String fileName : fileNames) {
       File expected = new File(getClass().getResource(PACKAGE_PATH+localPackagePath+fileName).getFile());
       File actual = new File(workDir, fileName);
-      assertTrue("file"+actual+" doesn't have the right content.", FileUtils.contentEqualsIgnoreEOL(expected, actual, null));
+
+      assertTrue("required file does not exist: ",
+              actual.exists());
+
+      if(fileName.contains(".png")) {
+        assertTrue("file"+actual+" doesn't have the right content.",
+                FileUtils.contentEquals(expected, actual));
+      }
+      else {
+        //normalize text files
+        String actualContent = normalizeFileContents(actual);
+        String expectedContent = normalizeFileContents(expected);
+
+        assertThat("lines in TXT file do not match: ",
+                actualContent,
+                is(equalTo(expectedContent)));
+      }
     }
 
   }
@@ -191,8 +207,10 @@ public class AnalyzeCommandTest extends TestCase {
 
     File downloadedFile = new File(workDir, "download.txt");
 
-    assertTrue("file was not successfully downloaded.", downloadedFile.exists());
-    assertTrue("file doesn't have the right content.", FileUtils.contentEquals(downloadableFile, downloadedFile));
+    assertTrue("file was not successfully downloaded: ",
+            downloadedFile.exists());
+    assertTrue("file doesn't have the right content: ",
+            FileUtils.contentEquals(downloadableFile, downloadedFile));
   }
 
   //--------------------------------------------------------------------------------------------------------------------
