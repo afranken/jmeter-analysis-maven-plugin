@@ -25,6 +25,9 @@ import java.util.Map;
 import java.util.Properties;
 
 import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertThat;
 
 /**
  * Tests {@link com.lazerycode.jmeter.analyzer.AnalyzeCommand}
@@ -229,14 +232,43 @@ public class AnalyzeCommandTest extends TestCase {
     File actualTXT = new File(workDir+"/summary.txt");
     File expectedTXT = new File(getClass().getResource(localPackagePath+"summary.txt").getFile());
 
-    assertTrue("TXT file contents do not match",FileUtils.contentEqualsIgnoreEOL(actualTXT,expectedTXT,null));
+    String actualTXTContent = normalizeFileContents(actualTXT);
+    String expectedTXTContent = normalizeFileContents(expectedTXT);
+
+    assertThat("lines in TXT file do not match: ",
+            actualTXTContent,
+            is(equalTo(expectedTXTContent)));
 
     File actualHTML = new File(workDir+"/summary.html");
     File expectedHTML = new File(getClass().getResource(localPackagePath+"summary.html").getFile());
 
-    assertTrue("HTML file contents do not match",FileUtils.contentEqualsIgnoreEOL(actualHTML,expectedHTML,null));
+    String actualHTMLContent = normalizeFileContents(actualHTML);
+    String expectedHTMLContent = normalizeFileContents(expectedHTML);
+
+    assertThat("lines in TXT file do not match: ",
+            actualHTMLContent,
+            is(equalTo(expectedHTMLContent)));
   }
 
+  /**
+   * Strip line ends from String contents of a file so that contents can be compared on different platforms.
+   *
+   * @param file
+   * @return normalized String
+   * @throws IOException
+   */
+  private String normalizeFileContents(File file) throws IOException {
+
+    String content = FileUtils.readFileToString(file,"UTF-8");
+    content = content.replaceAll("(\\r\\n|\\r|\\n)", "");
+
+    return content;
+  }
+
+  /**
+   * Remove all contents (including subdirectories) from given directory
+   * @param dir
+   */
   private void cleanDir(File dir) {
 
     for( File file : dir.listFiles() ) {
