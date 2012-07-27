@@ -62,6 +62,12 @@ Usage Example
             <generateCharts>true</generateCharts>
 
             <!--
+            If set to true will process all files found by the pattern defined in <source>.
+            If set to false (the default) it will only process the first file found.
+            -->
+            <processAllFilesFound>false</processAllFilesFound>
+
+            <!--
             Template directory where custom freemarker templates are stored.
             Freemarker templates are used for all generated output. (CSV files, HTML files, console output)
             Templates must be stored in one of the following three subfolders of the templateDirectory:
