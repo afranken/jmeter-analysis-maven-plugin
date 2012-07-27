@@ -36,7 +36,7 @@ Usage Example
             <!--
             directory where to store analysis result files. At least the files "summary.txt" and "summary.html" will be stored here.
             -->
-            <target>${project.build.directory}/results</target>
+            <targetDirectory>${project.build.directory}/results</targetDirectory>
 
             <!--
             Request groups as a mapping from "group name" to "ant pattern".
