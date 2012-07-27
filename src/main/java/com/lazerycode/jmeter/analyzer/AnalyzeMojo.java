@@ -26,7 +26,7 @@ import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
  */
 @SuppressWarnings({"UnusedDeclaration", "FieldCanBeLocal", "JavaDoc"}) // Mojos get their fields set via reflection
 public class AnalyzeMojo extends AbstractMojo {
-  
+
   /**
    * An AntPath-Style pattern matching a JMeter XML result file to analyze. Must be a fully qualified path.
    * File may be GZiped, must end in .gz then.
@@ -64,6 +64,16 @@ public class AnalyzeMojo extends AbstractMojo {
    * @parameter expression="${generateCharts}" default-value="true"
    */
   private boolean generateCharts;
+
+    /**
+     * Should we process all files found by pattern used in ${source}?
+     * Defaults to false for following reasons:
+     * - Previously we only processed the first file so default functionality is consistent with previous versions
+     * - Processing everything will increase run time, that should be an explicit choice to keep things fast by default
+     *
+     * @parameter expression="${processAllFilesFound}" default-value="false"
+     */
+    private boolean processAllFilesFound;
 
   /**
    * Request groups as a mapping from "group name" to "ant pattern".
@@ -106,49 +116,53 @@ public class AnalyzeMojo extends AbstractMojo {
    */
   private File templateDirectory;
 
-  @Override
-  public void execute() throws MojoExecutionException, MojoFailureException {
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
 
-    initializeEnvironment();
+        initializeEnvironment();
 
-    try {
+        try {
 
-      PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+            PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+            Resource[] resultDataFiles = resolver.getResources("file:" + source);
 
-      Resource[] resources = resolver.getResources("file:"+source);
+            //No JMeter result file found, makes no sense to go on
+            if (resultDataFiles.length == 0) throw new MojoExecutionException("Property source not set correctly, no JMeter Result XML file found matching " + source);
 
-      if(resources.length == 0) {
-        //no JMeter result file found, makes no sense to go on
-        throw new IllegalArgumentException("Property source not set correctly, no JMeter Result XML file found matching "+source);
-      }
+            for (int dataFileIdentifier = 0; dataFileIdentifier < resultDataFiles.length; dataFileIdentifier++) {
 
-      //get first file for now.
-      //TODO: what to do if there are more files matching the pattern?
-      File resource = resources[0].getFile();
+                //Drop out of the loop after processing first file if we only want to process the first file found.
+                if(dataFileIdentifier == 1 && !processAllFilesFound) break;
 
-      Reader data;
-      if(resource.getName().endsWith(".gz")) {
-        data = new InputStreamReader(new GZIPInputStream(new FileInputStream(resource)));
-      }
-      else {
-        data = new FileReader(resource);
-      }
+                File resultDataFile = resultDataFiles[dataFileIdentifier].getFile();
 
-      try {
-          AnalyzeCommand reportAnalyser = new AnalyzeCommand();
-          reportAnalyser.setSummaryFilename(resource.getName());
-          reportAnalyser.analyze(data);
-      }
-      finally {
-        data.close();
-      }
+                Reader resultData;
+                if (resultDataFile.getName().endsWith(".gz")) {
+                    resultData = new InputStreamReader(new GZIPInputStream(new FileInputStream(resultDataFile)));
+                } else {
+                    resultData = new FileReader(resultDataFile);
+                }
+
+                try {
+                    AnalyzeCommand reportAnalyser = new AnalyzeCommand();
+                    reportAnalyser.setSummaryFilename(resultDataFile.getName());
+                    reportAnalyser.analyze(resultData);
+                } finally {
+                    resultData.close();
+                }
+            }
+        }
+        catch (MojoExecutionException mee){
+            throw mee;
+        }
+        catch (MojoFailureException mfe){
+            throw mfe;
+        }
+        catch (Exception e) {
+            throw new MojoExecutionException("Error analyzing", e);
+        }
 
     }
-    catch (Exception e) {
-      throw new MojoExecutionException("Error analyzing", e);
-    }
-
-  }
 
   //====================================================================================================================
 
