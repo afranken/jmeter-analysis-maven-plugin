@@ -44,9 +44,9 @@ public class AnalyzeCommand {
   private static final String DURATIONS_CSV_SUFFIX = "-durations.csv";
   private static final String DURATIONS_PNG_FILE_SUFFIX = "-durations.png";
 
-  private static final String SUMMARY_FILE_NAME = "summary";
-  private static final String SUMMARY_TXT_FILE_NAME = SUMMARY_FILE_NAME + ".txt";
-  private static final String SUMMARY_HTML_FILE_NAME = SUMMARY_FILE_NAME + ".html";
+  private String SUMMARY_FILE_NAME = "summary";
+  private final String SUMMARY_TXT_FILE_NAME = SUMMARY_FILE_NAME + ".txt";
+  private final String SUMMARY_HTML_FILE_NAME = SUMMARY_FILE_NAME + ".html";
 
   protected ResultRenderHelper resultRenderHelper;
 
@@ -63,6 +63,16 @@ public class AnalyzeCommand {
     this.remoteResources = ENVIRONMENT.getRemoteResources();
     this.targetDirectory = ENVIRONMENT.getTargetDirectory();
   }
+
+    /**
+     * Set the filename used to generate summary file.
+     * (This does not strip off any file extensions so you may end up with foo.jtl.txt)
+     *
+     * @param filename
+     */
+    public void setSummaryFilename(String filename) {
+        this.SUMMARY_FILE_NAME = filename;
+    }
 
   /**
    * Analyzes a JMeter XML results file

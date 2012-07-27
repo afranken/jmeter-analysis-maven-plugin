@@ -135,7 +135,9 @@ public class AnalyzeMojo extends AbstractMojo {
       }
 
       try {
-        new AnalyzeCommand().analyze(data);
+          AnalyzeCommand reportAnalyser = new AnalyzeCommand();
+          reportAnalyser.setSummaryFilename(resource.getName());
+          reportAnalyser.analyze(data);
       }
       finally {
         data.close();
