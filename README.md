@@ -64,6 +64,9 @@ Usage Example
             <!--
             If set to true will process all files found by the pattern defined in <source>.
             If set to false (the default) it will only process the first file found.
+
+            *SETTING TO TRUE IS NOT RECOMMENDED*
+            It can substantially impact performance, if you do this you do it at your own risk!
             -->
             <processAllFilesFound>false</processAllFilesFound>
 
