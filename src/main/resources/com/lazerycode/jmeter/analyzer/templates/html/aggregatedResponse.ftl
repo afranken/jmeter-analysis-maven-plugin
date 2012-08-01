@@ -9,6 +9,7 @@
 <#-- @ftlvariable name="PERCENT_100" type="java.lang.Integer" -->
 <#-- @ftlvariable name="CHARTS" type="java.lang.Boolean" -->
 <#-- @ftlvariable name="DETAILS" type="java.lang.Boolean" -->
+<#-- @ftlvariable name="SUMMARY_FILE_NAME" type="java.lang.String" -->
     <h2>Group ${key}</h2>
     <div class="aggregation">
       <h3>Summary</h3>
@@ -106,15 +107,15 @@
     <#if CHARTS >
     <div class="images">
       <h3>Response duration</h3>
-      <img src="${key}-durations.png" tooltip="Durations"/>
+      <img src="${key}-durations-${SUMMARY_FILE_NAME}.png" tooltip="Durations"/>
     </div>
     </#if>
     <#if DETAILS>
     <div class="details">
       <h3>Detailed response information</h3>
       <ul>
-        <li><a href="${key}-durations.csv">Response durations per URL (CSV)</a></li>
-        <li><a href="${key}-sizes.csv">Response sizes per URL (CSV)</a></li>
+        <li><a href="${key}-durations-${SUMMARY_FILE_NAME}.csv">Response durations per URL (CSV)</a></li>
+        <li><a href="${key}-sizes-${SUMMARY_FILE_NAME}.csv">Response sizes per URL (CSV)</a></li>
       </ul>
     </div>
     </#if>

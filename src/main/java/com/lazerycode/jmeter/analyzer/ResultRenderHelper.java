@@ -92,9 +92,10 @@ public class ResultRenderHelper {
    * @throws IOException
    * @throws TemplateException
    */
-  public void renderHTML(Map<String, AggregatedResponses> testResults, PrintWriter out) throws IOException, TemplateException {
+  public void renderHTML(Map<String, AggregatedResponses> testResults, PrintWriter out, String summaryFileName) throws IOException, TemplateException {
 
     Map<String,Object> rootMap = getRootMap(testResults);
+    rootMap.put("SUMMARY_FILE_NAME", summaryFileName);
 
     Template root = getTemplate("html/main.ftl");
 
