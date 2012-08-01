@@ -145,7 +145,8 @@ public class AnalyzeMojo extends AbstractMojo {
 
                 try {
                     AnalyzeCommand reportAnalyser = new AnalyzeCommand();
-                    reportAnalyser.setSummaryFilename(resultDataFile.getName());
+                    String resultDataFileName = resultDataFile.getName();
+                    reportAnalyser.setSummaryFilename(resultDataFileName.substring(0, resultDataFileName.lastIndexOf(".")));
                     reportAnalyser.analyze(resultData);
                 } finally {
                     resultData.close();
