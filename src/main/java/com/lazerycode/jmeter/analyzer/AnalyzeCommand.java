@@ -45,8 +45,8 @@ public class AnalyzeCommand {
   private static final String DURATIONS_PNG_FILE_SUFFIX = "-durations.png";
 
   private String SUMMARY_FILE_NAME = "summary";
-  private final String SUMMARY_TXT_FILE_NAME = SUMMARY_FILE_NAME + ".txt";
-  private final String SUMMARY_HTML_FILE_NAME = SUMMARY_FILE_NAME + ".html";
+  private String SUMMARY_TXT_FILE_NAME = SUMMARY_FILE_NAME + ".txt";
+  private String SUMMARY_HTML_FILE_NAME = SUMMARY_FILE_NAME + ".html";
 
   protected ResultRenderHelper resultRenderHelper;
 
@@ -65,13 +65,15 @@ public class AnalyzeCommand {
   }
 
     /**
-     * Set the filename used to generate summary file.
+     * Set the filenames used to generate summary files.
      * (This does not strip off any file extensions so you may end up with foo.jtl.txt)
      *
      * @param filename
      */
     public void setSummaryFilename(String filename) {
         this.SUMMARY_FILE_NAME = filename;
+        SUMMARY_TXT_FILE_NAME = SUMMARY_FILE_NAME + ".txt";
+        SUMMARY_HTML_FILE_NAME = SUMMARY_FILE_NAME + ".html";
     }
 
   /**
