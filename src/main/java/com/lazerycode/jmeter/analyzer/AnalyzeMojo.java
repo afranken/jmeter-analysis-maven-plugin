@@ -118,6 +118,11 @@ public class AnalyzeMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        getLog().info(" ");
+        getLog().info("-------------------------------------------------------");
+        getLog().info(" A N A L Y S I N G    J M E T E R    R E S U L T S");
+        getLog().info("-------------------------------------------------------");
+        getLog().info(" ");
 
         initializeEnvironment();
 
