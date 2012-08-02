@@ -140,6 +140,7 @@ public class AnalyzeMojo extends AbstractMojo {
                 if(dataFileIdentifier == 1 && !processAllFilesFound) break;
 
                 File resultDataFile = resultDataFiles[dataFileIdentifier].getFile();
+                getLog().info("Analysing '" + resultDataFile.getName() + "'...");
 
                 Reader resultData;
                 if (resultDataFile.getName().endsWith(".gz")) {
@@ -156,6 +157,8 @@ public class AnalyzeMojo extends AbstractMojo {
                 } finally {
                     resultData.close();
                 }
+                getLog().info("Results Generated for '" + resultDataFile.getName() + "'.");
+                getLog().info(" ");
             }
         }
         catch (MojoExecutionException mee){
@@ -165,7 +168,7 @@ public class AnalyzeMojo extends AbstractMojo {
             throw mfe;
         }
         catch (Exception e) {
-            throw new MojoExecutionException("Error analyzing", e);
+            throw new MojoExecutionException("Error analysing", e);
         }
 
     }
