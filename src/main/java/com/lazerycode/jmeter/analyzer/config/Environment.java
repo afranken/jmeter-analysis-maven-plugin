@@ -45,6 +45,7 @@ public enum Environment {
   private Configuration configuration;
   private File targetDirectory;
 
+	private boolean parseOnlyHttpSamples;
 	/**
 	 * If true, we should preserve the relative part ot result file's path
 	 */
@@ -156,4 +157,13 @@ public enum Environment {
 	public void setPreserveOutputDirStructure(boolean preserveOutputDirStructure) {
 		this.preserveOutputDirStructure = preserveOutputDirStructure;
 	}
+
+	public boolean isParseOnlyHttpSamples() {
+		return parseOnlyHttpSamples;
+	}
+
+	public void setParseOnlyHttpSamples(boolean parseOnlyHttpSamples) {
+		this.parseOnlyHttpSamples = parseOnlyHttpSamples;
+	}
+
 }
