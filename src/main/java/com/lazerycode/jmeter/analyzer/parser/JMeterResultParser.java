@@ -327,7 +327,7 @@ public class JMeterResultParser {
     private String getKey(Attributes attributes) {
 
       String key = null;
-      if( pathPatterns != null ) {
+      if( pathPatterns != null && !pathPatterns.isEmpty()) {
 
         // try to find a pattern key
         String uri = attributes.getValue("lb");
