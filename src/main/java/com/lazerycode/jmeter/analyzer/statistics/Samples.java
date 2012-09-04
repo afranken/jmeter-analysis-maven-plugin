@@ -118,7 +118,7 @@ public class Samples {
     if( value > max ) {
       max = value;
     }
-    if( value < min ) {
+    if( value < min && value > 0) {
       min = value;
     }
 
