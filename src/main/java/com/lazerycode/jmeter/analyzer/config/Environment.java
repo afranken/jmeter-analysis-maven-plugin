@@ -45,6 +45,11 @@ public enum Environment {
   private Configuration configuration;
   private File targetDirectory;
 
+	/**
+	 * If true, we should preserve the relative part ot result file's path
+	 */
+	private boolean preserveOutputDirStructure;
+
   public void clear() {
     this.templateDirectory = null;
     this.resultRenderHelper = null;
@@ -144,4 +149,11 @@ public enum Environment {
     configuration.setAutoFlush(true);
   }
 
+	public boolean isPreserveOutputDirStructure() {
+		return preserveOutputDirStructure;
+	}
+
+	public void setPreserveOutputDirStructure(boolean preserveOutputDirStructure) {
+		this.preserveOutputDirStructure = preserveOutputDirStructure;
+	}
 }

@@ -75,6 +75,15 @@ public class AnalyzeMojo extends AbstractMojo {
      */
     private boolean processAllFilesFound;
 
+	/**
+	 * Should the ${source} directory structure be preserved at output time?
+	 * Defaults to false for the backward compatibility
+	 * 
+	 * @parameter expression="${preserveOutputDirStructure}"
+	 *            default-value="false"
+	 */
+	private boolean preserveOutputDirStructure;
+
   /**
    * Request groups as a mapping from "group name" to "ant pattern".
    * A request uri that matches an ant pattern will be associated with the group name.
@@ -145,6 +154,7 @@ public class AnalyzeMojo extends AbstractMojo {
 
                 try {
                     AnalyzeCommand reportAnalyser = new AnalyzeCommand();
+					reportAnalyser.setResultDataFileAbsolutePath(resultDataFile.getAbsolutePath());
                     reportAnalyser.setSummaryFilename(resultDataFile.getName());
                     reportAnalyser.analyze(resultData);
                 } finally {
@@ -176,6 +186,7 @@ public class AnalyzeMojo extends AbstractMojo {
     ENVIRONMENT.setTargetDirectory(targetDirectory);
     ENVIRONMENT.initializeFreemarkerConfiguration();
     ENVIRONMENT.setResultRenderHelper(new ResultRenderHelper());
+	ENVIRONMENT.setPreserveOutputDirStructure(preserveOutputDirStructure);
   }
 
 }
