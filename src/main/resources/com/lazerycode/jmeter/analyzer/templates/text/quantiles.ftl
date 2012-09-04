@@ -7,8 +7,8 @@
     <#assign quantiles=requests.getQuantiles(Q_QUANTILES)/>
     <#assign x=90/>
     <#list 1..x as i>
-      <#if i % 10 == 0>
-         ${i}%  ${quantiles.getQuantile(i*10)?string?left_pad(7)}
+      <#if i % 5 == 0>
+         ${i}%  ${quantiles.getQuantile(i*5)?string?left_pad(7)}
       </#if>
     </#list>
          99%  ${quantiles.getQuantile(K_99_PERCENT)?string?left_pad(7)}
