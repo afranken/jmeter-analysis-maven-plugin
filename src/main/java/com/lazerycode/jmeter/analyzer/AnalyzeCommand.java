@@ -40,15 +40,15 @@ public class AnalyzeCommand {
   private static final String TOKEN_TO = "_TO_";
   private static final int READ_BUFFER = 1024;
 
-  private static final String SIZES_CSV_SUFFIX = "-sizes.csv";
-  private static final String DURATIONS_CSV_SUFFIX = "-durations.csv";
-  private static final String DURATIONS_PNG_FILE_SUFFIX = "-durations.png";
+  private String SUMMARY_FILE_NAME = "summary";
+  private String SUMMARY_TXT_FILE_NAME = SUMMARY_FILE_NAME + ".txt";
+  private String SUMMARY_HTML_FILE_NAME = SUMMARY_FILE_NAME + ".html";
 
   private String resultDataFileAbsolutePath;
 
-  private String SUMMARY_FILE_NAME = "summary";
-  private final String SUMMARY_TXT_FILE_NAME = SUMMARY_FILE_NAME + ".txt";
-  private final String SUMMARY_HTML_FILE_NAME = SUMMARY_FILE_NAME + ".html";
+  private String SIZES_CSV_SUFFIX = "-sizes-" + SUMMARY_FILE_NAME + ".csv";
+  private String DURATIONS_CSV_SUFFIX = "-durations-" + SUMMARY_FILE_NAME + ".csv";
+  private String DURATIONS_PNG_FILE_SUFFIX = "-durations-" + SUMMARY_FILE_NAME + ".png";
 
   protected ResultRenderHelper resultRenderHelper;
 
@@ -70,13 +70,18 @@ public class AnalyzeCommand {
   }
 
     /**
-     * Set the filename used to generate summary file.
+     * Set the filenames used to generate summary files.
      * (This does not strip off any file extensions so you may end up with foo.jtl.txt)
      *
      * @param filename
      */
     public void setSummaryFilename(String filename) {
         this.SUMMARY_FILE_NAME = filename;
+        this.SUMMARY_TXT_FILE_NAME = SUMMARY_FILE_NAME + ".txt";
+        this.SUMMARY_HTML_FILE_NAME = SUMMARY_FILE_NAME + ".html";
+        this.SIZES_CSV_SUFFIX = "-sizes-" + SUMMARY_FILE_NAME + ".csv";
+        this.DURATIONS_CSV_SUFFIX = "-durations-" + SUMMARY_FILE_NAME + ".csv";
+        this.DURATIONS_PNG_FILE_SUFFIX = "-durations-" + SUMMARY_FILE_NAME + ".png";
     }
 
   /**
@@ -187,7 +192,7 @@ public class AnalyzeCommand {
     FileWriter w = new FileWriter(initializeFile(targetDirectory, SUMMARY_HTML_FILE_NAME));
     PrintWriter html = new PrintWriter(w, false);
 
-    resultRenderHelper.renderHTML(testResults, html);
+    resultRenderHelper.renderHTML(testResults, html, this.SUMMARY_FILE_NAME);
 
     html.flush();
     html.close();

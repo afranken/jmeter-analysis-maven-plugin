@@ -125,13 +125,13 @@ public class AnalyzeCommandTest extends TestCase {
 
 
     List<String> fileNames = new ArrayList<String>();
-    fileNames.add("blob-durations.csv");
-    fileNames.add("blob-sizes.csv");
-    fileNames.add("page-durations.csv");
-    fileNames.add("page-sizes.csv");
+    fileNames.add("blob-durations-summary.csv");
+    fileNames.add("blob-sizes-summary.csv");
+    fileNames.add("page-durations-summary.csv");
+    fileNames.add("page-sizes-summary.csv");
     //TODO: skip blob comparison for now, doesn't work across all platforms
-    //fileNames.add("page-durations.png");
-    //fileNames.add("blob-durations.png");
+    //fileNames.add("page-durations-summary.png");
+    //fileNames.add("blob-durations-summary.png");
 
     testOutput(localPackagePath, fileNames);
 

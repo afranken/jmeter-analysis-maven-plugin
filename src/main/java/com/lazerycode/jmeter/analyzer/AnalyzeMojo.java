@@ -135,6 +135,11 @@ public class AnalyzeMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        getLog().info(" ");
+        getLog().info("-------------------------------------------------------");
+        getLog().info(" A N A L Y S I N G    J M E T E R    R E S U L T S");
+        getLog().info("-------------------------------------------------------");
+        getLog().info(" ");
 
         initializeEnvironment();
 
@@ -152,6 +157,7 @@ public class AnalyzeMojo extends AbstractMojo {
                 if(dataFileIdentifier == 1 && !processAllFilesFound) break;
 
                 File resultDataFile = resultDataFiles[dataFileIdentifier].getFile();
+                getLog().info("Analysing '" + resultDataFile.getName() + "'...");
 
                 Reader resultData;
                 if (resultDataFile.getName().endsWith(".gz")) {
@@ -161,13 +167,16 @@ public class AnalyzeMojo extends AbstractMojo {
                 }
 
                 try {
-                    AnalyzeCommand reportAnalyser = new AnalyzeCommand();
+                    AnalyzeCommand reportAnalyser = new AnalyzeCommand();					
 					reportAnalyser.setResultDataFileAbsolutePath(resultDataFile.getAbsolutePath());
-                    reportAnalyser.setSummaryFilename(resultDataFile.getName());
+                    String resultDataFileName = resultDataFile.getName();
+                    reportAnalyser.setSummaryFilename(resultDataFileName.substring(0, resultDataFileName.lastIndexOf(".")));
                     reportAnalyser.analyze(resultData);
                 } finally {
                     resultData.close();
                 }
+                getLog().info("Results Generated for '" + resultDataFile.getName() + "'.");
+                getLog().info(" ");
             }
         }
         catch (MojoExecutionException mee){
@@ -177,7 +186,7 @@ public class AnalyzeMojo extends AbstractMojo {
             throw mfe;
         }
         catch (Exception e) {
-            throw new MojoExecutionException("Error analyzing", e);
+            throw new MojoExecutionException("Error analysing", e);
         }
 
     }
