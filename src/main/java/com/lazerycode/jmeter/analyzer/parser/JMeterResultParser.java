@@ -47,7 +47,7 @@ public class JMeterResultParser {
   private static final int LOGMESSAGE_ITEMS = 10000;
 
   /**
-   * Parses a JMeter Result XML file and provides a {@link AggregatedResponses} for every {@link Parser#getKey key}
+   * Parses a JMeter Result XML file and provides a {@link AggregatedResponses} for every {@link Parser#getKey(Attributes)}
    *
    * @param reader the JMeter xml file
    *
