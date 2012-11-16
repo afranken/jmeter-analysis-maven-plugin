@@ -20,7 +20,7 @@ Usage Example
 
     <plugin>
       <groupId>com.lazerycode.jmeter</groupId>
-      <artifactId>jmeter-analyze-maven-plugin</artifactId>
+      <artifactId>jmeter-analysis-maven-plugin</artifactId>
       <executions>
         <execution>
           <goals>
