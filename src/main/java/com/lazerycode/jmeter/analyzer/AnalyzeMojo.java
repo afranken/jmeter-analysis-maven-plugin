@@ -20,6 +20,8 @@ import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
 /**
  * Analyzes JMeter XML test report file and generates a report
  *
+ * @goal analyze
+ *
  * @author Dennis Homann, Arne Franken, Peter Kaul
  */
 @SuppressWarnings({"UnusedDeclaration", "FieldCanBeLocal", "JavaDoc"}) // Mojos get their fields set via reflection
