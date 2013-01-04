@@ -339,6 +339,7 @@ public class AnalyzeCommandTest extends TestCase {
     private Writer writer;
 
     LocalAnalyzeCommand(Writer writer) {
+      super(null);
       this.writer = writer;
     }
 

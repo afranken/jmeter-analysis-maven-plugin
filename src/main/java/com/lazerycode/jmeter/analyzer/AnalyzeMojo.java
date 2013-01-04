@@ -76,6 +76,14 @@ public class AnalyzeMojo extends AbstractMojo {
     private boolean processAllFilesFound;
 
   /**
+   * True, if the directory structure relative to {@link #source} should be preserved during output.
+   * Defaults to false for backward compatibility
+   *
+   * @parameter expression="${preserveDirectories}" default-value="false"
+   */
+  private boolean preserveDirectories;
+
+  /**
    * Request groups as a mapping from "group name" to "ant pattern".
    * A request uri that matches an ant pattern will be associated with the group name.
    * Request details, charts and CSV files are generated per requestGroup.
@@ -128,16 +136,21 @@ public class AnalyzeMojo extends AbstractMojo {
 
         try {
 
-            PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+            CustomPathMatchingResourcePatternResolver resolver = new CustomPathMatchingResourcePatternResolver();
             Resource[] resultDataFiles = resolver.getResources("file:" + source);
+            String rootPath = resolver.getRootDir(source);
 
             //No JMeter result file found, makes no sense to go on
-            if (resultDataFiles.length == 0) throw new MojoExecutionException("Property source not set correctly, no JMeter Result XML file found matching " + source);
+            if (resultDataFiles.length == 0) {
+              throw new MojoExecutionException("Property source not set correctly, no JMeter Result XML file found matching " + source);
+            }
 
             for (int dataFileIdentifier = 0; dataFileIdentifier < resultDataFiles.length; dataFileIdentifier++) {
 
                 //Drop out of the loop after processing first file if we only want to process the first file found.
-                if(dataFileIdentifier == 1 && !processAllFilesFound) break;
+                if(dataFileIdentifier == 1 && !processAllFilesFound) {
+                  break;
+                }
 
                 File resultDataFile = resultDataFiles[dataFileIdentifier].getFile();
                 getLog().info("Analysing '" + resultDataFile.getName() + "'...");
@@ -145,18 +158,32 @@ public class AnalyzeMojo extends AbstractMojo {
                 Reader resultData;
                 if (resultDataFile.getName().endsWith(".gz")) {
                     resultData = new InputStreamReader(new GZIPInputStream(new FileInputStream(resultDataFile)));
-                } else {
+                }
+                else {
                     resultData = new FileReader(resultDataFile);
                 }
 
                 try {
-                    AnalyzeCommand reportAnalyser = new AnalyzeCommand();
+
                     String resultDataFileName = resultDataFile.getName();
+
+                    String relativePath = null;
+                    if(preserveDirectories) {
+                      //get relative path from source pattern to the resultDataFile
+                      relativePath = resultDataFile.getAbsolutePath().replace(rootPath,"").replace(resultDataFileName,"");
+                    }
+
+                    AnalyzeCommand reportAnalyser = new AnalyzeCommand(relativePath);
+
+                    //do not use file extension
                     reportAnalyser.setSummaryFilename(resultDataFileName.substring(0, resultDataFileName.lastIndexOf(".")));
+
                     reportAnalyser.analyze(resultData);
-                } finally {
+                }
+                finally {
                     resultData.close();
                 }
+
                 getLog().info("Results Generated for '" + resultDataFile.getName() + "'.");
                 getLog().info(" ");
             }
@@ -185,6 +212,26 @@ public class AnalyzeMojo extends AbstractMojo {
     ENVIRONMENT.setTargetDirectory(targetDirectory);
     ENVIRONMENT.initializeFreemarkerConfiguration();
     ENVIRONMENT.setResultRenderHelper(new ResultRenderHelper());
+    ENVIRONMENT.setPreserveDirectories(preserveDirectories);
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+
+  /**
+   * needed to call protected method {@link #determineRootDir(String)}
+   */
+  private class CustomPathMatchingResourcePatternResolver extends PathMatchingResourcePatternResolver {
+
+    /**
+     * Redirect to protected method {@link #determineRootDir(String)}
+     *
+     * @param pattern the location to check
+     * @return the part of the location that denotes the root directory
+     */
+    public String getRootDir(String pattern) {
+      return super.determineRootDir(pattern);
+    }
+
   }
 
 }

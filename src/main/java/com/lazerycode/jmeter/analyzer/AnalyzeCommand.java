@@ -4,6 +4,7 @@ import com.lazerycode.jmeter.analyzer.parser.AggregatedResponses;
 import com.lazerycode.jmeter.analyzer.parser.JMeterResultParser;
 import com.lazerycode.jmeter.analyzer.statistics.Samples;
 import freemarker.template.TemplateException;
+import org.codehaus.plexus.util.StringUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -48,20 +49,24 @@ public class AnalyzeCommand {
   private String DURATIONS_CSV_SUFFIX = "-durations-" + SUMMARY_FILE_NAME + ".csv";
   private String DURATIONS_PNG_FILE_SUFFIX = "-durations-" + SUMMARY_FILE_NAME + ".png";
 
+  private final File targetDirectory;
+  private final Properties remoteResources;
+  private final boolean generateCharts;
+  private final boolean generateCSVs;
+  private final String resultDataFileRelativePath;
+  private final boolean preserveDirectories;
+
   protected ResultRenderHelper resultRenderHelper;
 
-  private File targetDirectory;
-  private Properties remoteResources;
-  private boolean generateCharts;
-  private boolean generateCSVs;
+  public AnalyzeCommand(String resultDataFileRelativePath) {
 
-  public AnalyzeCommand() {
-
+    this.resultDataFileRelativePath = resultDataFileRelativePath;
     this.resultRenderHelper = ENVIRONMENT.getResultRenderHelper();
     this.generateCharts = ENVIRONMENT.isGenerateCharts();
     this.generateCSVs = ENVIRONMENT.isGenerateCSVs();
     this.remoteResources = ENVIRONMENT.getRemoteResources();
     this.targetDirectory = ENVIRONMENT.getTargetDirectory();
+    this.preserveDirectories = ENVIRONMENT.isPreserveDirectories();
   }
 
     /**
@@ -272,6 +277,15 @@ public class AnalyzeCommand {
    * Create and return file of given name in given directory
    */
   private File initializeFile(File dir, String name) throws IOException {
+
+    //add relative path to output directory if configured to do so
+    if (preserveDirectories && StringUtils.isNotEmpty(this.resultDataFileRelativePath)) {
+      String filename = dir.getAbsolutePath()
+              + File.separator
+              + resultDataFileRelativePath;
+      dir = new File(filename);
+    }
+
     File result = new File(dir, name);
 
     if (!result.getParentFile().mkdirs() && !result.getParentFile().exists()) {

@@ -45,6 +45,14 @@ public enum Environment {
   private Configuration configuration;
   private File targetDirectory;
 
+  /**
+   * If true, preserve the relative part of the result file's path
+   */
+  private boolean preserveDirectories;
+
+  /**
+   * Clear all fields that are re-assigned during tests
+   */
   public void clear() {
     this.templateDirectory = null;
     this.resultRenderHelper = null;
@@ -121,6 +129,14 @@ public enum Environment {
 
   public Configuration getConfiguration() {
     return configuration;
+  }
+
+  public boolean isPreserveDirectories() {
+    return preserveDirectories;
+  }
+
+  public void setPreserveDirectories(boolean preserveDirectories) {
+    this.preserveDirectories = preserveDirectories;
   }
 
   /**
