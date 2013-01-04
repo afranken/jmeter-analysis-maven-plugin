@@ -31,16 +31,6 @@ import static com.lazerycode.jmeter.analyzer.parser.StatusCodes.HTTPCODE_ERROR;
 public class JMeterResultParser {
 
   /**
-   * Example from JMeter results file:
-   * <httpSample t="1" lt="1" ts="1305278457847" s="false" lb="/sample/url/path.html" rc="404" rm="Not Found" tn="homepage 4-1" dt="" by="0"/>
-   *
-   * According to the documentation, the two possible node names are {@link #HTTPSAMPLE_ELEMENT} and {@link #SAMPLE_ELEMENT}:
-   * http://jmeter.apache.org/usermanual/listeners.html
-   */
-  private static final String HTTPSAMPLE_ELEMENT = "httpSample";
-  private static final String SAMPLE_ELEMENT = "sample";
-
-  /**
    * number of parsed items after which a log message is written
    */
   private static final int LOGMESSAGE_ITEMS = 10000;
@@ -99,7 +89,7 @@ public class JMeterResultParser {
     private long parsedCount = 0;
 
     private Map<String, AggregatedResponses> results = new LinkedHashMap<String, AggregatedResponses>();
-    private Set<String> nodeNames = new HashSet<String>();
+    private Set<String> nodeNames;
 
     /**
      * Constructor.
@@ -109,7 +99,8 @@ public class JMeterResultParser {
       this(ENVIRONMENT.getMaxSamples(),
            ENVIRONMENT.getRequestGroups(),
            ENVIRONMENT.isGenerateCSVs(),
-           ENVIRONMENT.isGenerateCSVs());
+           ENVIRONMENT.isGenerateCSVs(),
+           ENVIRONMENT.getSampleNames());
     }
 
     /**
@@ -120,16 +111,14 @@ public class JMeterResultParser {
      *        grouped by uris matching these patterns. If not set then the threadgroup is used
      * @param sizeByUris true, if the response size shall be counted for each uri separately
      * @param durationByUris true, if the response duration shall be counted for each uri separately
+     * @param nodeNames Set of node names to process
      */
-    public Parser(int maxSamples, Map<String, String> pathPatterns, boolean sizeByUris, boolean durationByUris) {
+    public Parser(int maxSamples, Map<String, String> pathPatterns, boolean sizeByUris, boolean durationByUris, Set<String> nodeNames) {
       this.maxSamples = maxSamples;
       this.pathPatterns = pathPatterns;
       this.sizeByUris = sizeByUris;
       this.durationByUris = durationByUris;
-
-      //add node names to set
-      nodeNames.add(HTTPSAMPLE_ELEMENT);
-      nodeNames.add(SAMPLE_ELEMENT);
+      this.nodeNames = nodeNames;
     }
 
     /**

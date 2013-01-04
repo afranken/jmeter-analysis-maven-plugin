@@ -8,6 +8,7 @@ import org.apache.maven.plugin.logging.Log;
 import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * Stores information used by several objects
@@ -20,6 +21,17 @@ public enum Environment {
    * This is the only instance of this enum.
    */
   ENVIRONMENT;
+
+  /**
+   * Example from JMeter results file:
+   * <httpSample t="1" lt="1" ts="1305278457847" s="false" lb="/sample/url/path.html" rc="404" rm="Not Found" tn="homepage 4-1" dt="" by="0"/>
+   *
+   * According to the documentation, the two possible node names are
+   * {@link #HTTPSAMPLE_ELEMENT_NAME} and {@link #SAMPLE_ELEMENT_NAME}:
+   * http://jmeter.apache.org/usermanual/listeners.html
+   */
+  public static final String HTTPSAMPLE_ELEMENT_NAME = "httpSample";
+  public static final String SAMPLE_ELEMENT_NAME = "sample";
 
   public static final int DEFAULT_MAXSAMPLES = 50000;
 
@@ -41,6 +53,7 @@ public enum Environment {
   private File templateDirectory;
   private ResultRenderHelper resultRenderHelper;
   private Properties remoteResources;
+  private Set<String> sampleNames;
   private LinkedHashMap<String,String> requestGroups;
   private int maxSamples = DEFAULT_MAXSAMPLES;
   private Configuration configuration;
@@ -147,6 +160,14 @@ public enum Environment {
 
   public void setLog(Log log) {
     this.log = log;
+  }
+
+  public Set<String> getSampleNames() {
+    return sampleNames;
+  }
+
+  public void setSampleNames(Set<String> sampleNames) {
+    this.sampleNames = sampleNames;
   }
 
   /**

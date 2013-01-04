@@ -1,5 +1,6 @@
 package com.lazerycode.jmeter.analyzer;
 
+import com.lazerycode.jmeter.analyzer.config.Environment;
 import com.lazerycode.jmeter.analyzer.parser.AggregatedResponses;
 import freemarker.template.TemplateException;
 import junit.framework.TestCase;
@@ -18,7 +19,10 @@ import java.io.Writer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -105,6 +109,20 @@ public class AnalyzeCommandTest extends TestCase {
     String localPackagePath = "/empty/";
 
     setUpEnvironment(false,false, null, null);
+
+    testOutput(localPackagePath, null);
+  }
+
+  /**
+   * Tests the text output where only "customSample" nodes are processed
+   */
+  public void testSampleNames() throws Exception {
+
+    String localPackagePath = "/samplenames/";
+
+    setUpEnvironment(false,false, null, null);
+    //jmeter-result.jtl does not contain <sample> elements.
+    ENVIRONMENT.setSampleNames(Collections.singleton("customSample"));
 
     testOutput(localPackagePath, null);
   }
@@ -211,6 +229,7 @@ public class AnalyzeCommandTest extends TestCase {
     ENVIRONMENT.initializeFreemarkerConfiguration();
     ENVIRONMENT.setResultRenderHelper(new ResultRenderHelper());
     ENVIRONMENT.setLog(new SystemStreamLog());
+    ENVIRONMENT.setSampleNames(new HashSet<String>(Arrays.asList(new String[]{Environment.HTTPSAMPLE_ELEMENT_NAME, Environment.SAMPLE_ELEMENT_NAME})));
   }
 
   /**

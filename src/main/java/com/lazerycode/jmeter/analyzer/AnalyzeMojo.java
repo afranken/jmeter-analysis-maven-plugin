@@ -11,8 +11,11 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Properties;
+import java.util.Set;
 import java.util.zip.GZIPInputStream;
 
 import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
@@ -65,15 +68,15 @@ public class AnalyzeMojo extends AbstractMojo {
    */
   private boolean generateCharts;
 
-    /**
-     * Should we process all files found by pattern used in ${source}?
-     * Defaults to false for following reasons:
-     * - Previously we only processed the first file so default functionality is consistent with previous versions
-     * - Processing everything will increase run time, that should be an explicit choice to keep things fast by default
-     *
-     * @parameter expression="${processAllFilesFound}" default-value="false"
-     */
-    private boolean processAllFilesFound;
+  /**
+   * Should we process all files found by pattern used in ${source}?
+   * Defaults to false for following reasons:
+   * - Previously we only processed the first file so default functionality is consistent with previous versions
+   * - Processing everything will increase run time, that should be an explicit choice to keep things fast by default
+   *
+   * @parameter expression="${processAllFilesFound}" default-value="false"
+   */
+  private boolean processAllFilesFound;
 
   /**
    * True, if the directory structure relative to {@link #source} should be preserved during output.
@@ -82,6 +85,18 @@ public class AnalyzeMojo extends AbstractMojo {
    * @parameter expression="${preserveDirectories}" default-value="false"
    */
   private boolean preserveDirectories;
+
+  /**
+   * Set<String> of sample names that should be processed when analysing a results file.
+   * Defaults to {@link Environment#HTTPSAMPLE_ELEMENT_NAME} and {@link Environment#SAMPLE_ELEMENT_NAME}
+   *
+   * @parameter
+   */
+  private Set<String> sampleNames = new HashSet<String>(
+          Arrays.asList( new String[]{
+                           Environment.HTTPSAMPLE_ELEMENT_NAME,
+                           Environment.SAMPLE_ELEMENT_NAME
+                         }));
 
   /**
    * Request groups as a mapping from "group name" to "ant pattern".
@@ -214,6 +229,7 @@ public class AnalyzeMojo extends AbstractMojo {
     ENVIRONMENT.setResultRenderHelper(new ResultRenderHelper());
     ENVIRONMENT.setPreserveDirectories(preserveDirectories);
     ENVIRONMENT.setLog(getLog());
+    ENVIRONMENT.setSampleNames(sampleNames);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
