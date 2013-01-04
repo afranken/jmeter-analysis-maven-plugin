@@ -188,7 +188,7 @@ public class AnalyzeMojo extends AbstractMojo {
                       relativePath = resultDataFile.getAbsolutePath().replace(rootPath,"").replace(resultDataFileName,"");
                     }
 
-                    AnalyzeCommand reportAnalyser = new AnalyzeCommand(relativePath);
+                    ResultAnalyzer reportAnalyser = new ResultAnalyzer(relativePath);
 
                     //do not use file extension
                     reportAnalyser.setSummaryFilename(resultDataFileName.substring(0, resultDataFileName.lastIndexOf(".")));

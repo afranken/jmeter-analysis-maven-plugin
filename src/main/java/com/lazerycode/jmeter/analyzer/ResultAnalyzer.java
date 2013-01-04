@@ -29,13 +29,14 @@ import static com.lazerycode.jmeter.analyzer.config.Environment.ISO8601_FORMAT;
 
 
 /**
- * Command line tool for analyzing jmeter result
+ * Analyze JMeter Result files.
+ * Handles output to stdout and Freemarker templates.
  *
  * @see AnalyzeMojo
  *
  * @author Dennis Homann, Arne Franken, Peter Kaul
  */
-public class AnalyzeCommand {
+public class ResultAnalyzer {
 
   private static final String TOKEN_FROM = "_FROM_";
   private static final String TOKEN_TO = "_TO_";
@@ -58,7 +59,7 @@ public class AnalyzeCommand {
 
   protected ResultRenderHelper resultRenderHelper;
 
-  public AnalyzeCommand(String resultDataFileRelativePath) {
+  public ResultAnalyzer(String resultDataFileRelativePath) {
 
     this.resultDataFileRelativePath = resultDataFileRelativePath;
     this.resultRenderHelper = ENVIRONMENT.getResultRenderHelper();

@@ -37,14 +37,14 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
 
 /**
- * Tests {@link com.lazerycode.jmeter.analyzer.AnalyzeCommand}
+ * Tests {@link ResultAnalyzer}
  */
-public class AnalyzeCommandTest extends TestCase {
+public class ResultAnalyzerTest extends TestCase {
 
   private File workDir;
   private final boolean cleanup = true; // set this to false if you want to test the results manually
   private static final SimpleDateFormat LOCAL_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HHmmssZ", Locale.getDefault());
-  private static final String PACKAGE_PATH = "/com/lazerycode/jmeter/analyzer/analyzecommand/";
+  private static final String PACKAGE_PATH = "/com/lazerycode/jmeter/analyzer/resultanalyzer/";
   
   @Override
   protected void setUp() throws Exception {
@@ -253,7 +253,7 @@ public class AnalyzeCommandTest extends TestCase {
     //2. ---- run plugin
     Reader data = new InputStreamReader(getClass().getResourceAsStream(localPackagePath+"jmeter-result.jtl"));
     //commandline output does not matter during tests and is routed to a NullWriter
-    new LocalAnalyzeCommand(new NullWriter()).analyze(data);
+    new LocalResultAnalyzer(new NullWriter()).analyze(data);
     data.close();
 
     //3. ---- assert that result files are correct
@@ -353,13 +353,13 @@ public class AnalyzeCommandTest extends TestCase {
 
   /**
    * Implementation that supports passing a writer into the object.
-   * Per default, {@link AnalyzeCommand} would write output to {@link System#out}
+   * Per default, {@link ResultAnalyzer} would write output to {@link System#out}
    */
-  private class LocalAnalyzeCommand extends AnalyzeCommand {
+  private class LocalResultAnalyzer extends ResultAnalyzer {
 
     private Writer writer;
 
-    LocalAnalyzeCommand(Writer writer) {
+    LocalResultAnalyzer(Writer writer) {
       super(null);
       this.writer = writer;
     }

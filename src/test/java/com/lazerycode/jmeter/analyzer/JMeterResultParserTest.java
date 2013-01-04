@@ -1,16 +1,27 @@
 package com.lazerycode.jmeter.analyzer;
 
+import com.lazerycode.jmeter.analyzer.config.Environment;
 import com.lazerycode.jmeter.analyzer.parser.AggregatedResponses;
 import com.lazerycode.jmeter.analyzer.parser.JMeterResultParser;
 import junit.framework.TestCase;
+import org.apache.maven.plugin.logging.SystemStreamLog;
 
 import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
+
+import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
 
 /**
  * Tests {@link JMeterResultParser}
  */
 public class JMeterResultParserTest extends TestCase {
+
+  public void setUp() {
+    ENVIRONMENT.setLog(new SystemStreamLog());
+    ENVIRONMENT.setSampleNames(new HashSet<String>(Arrays.asList(new String[]{Environment.HTTPSAMPLE_ELEMENT_NAME, Environment.SAMPLE_ELEMENT_NAME})));
+  }
 
   public void testSuccess() throws Exception {
 
@@ -28,7 +39,7 @@ public class JMeterResultParserTest extends TestCase {
   }
 
   /**
-   * Nodenames can be {@link JMeterResultParser#HTTPSAMPLE_ELEMENT} or {@link JMeterResultParser#SAMPLE_ELEMENT}
+   * Nodenames can be {@link Environment#HTTPSAMPLE_ELEMENT_NAME} or {@link Environment#SAMPLE_ELEMENT_NAME}
    */
   public void testDifferentNodeNames() throws Exception {
 
