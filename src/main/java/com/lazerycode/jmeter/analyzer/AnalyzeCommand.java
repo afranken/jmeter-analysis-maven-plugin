@@ -147,7 +147,6 @@ public class AnalyzeCommand {
     resultRenderHelper.renderText(testResults, out);
 
     out.flush();
-    out.close();
   }
 
   //====================================================================================================================
