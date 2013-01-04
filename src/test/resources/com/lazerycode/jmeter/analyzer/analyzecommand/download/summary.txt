@@ -4,20 +4,29 @@ warmup
   requests:             10
   requests per second:  0
   response duration (ms)
-    min:                0
+    min:                1
     average:            137
     max:                1352
     standard deviation: 404
     quantiles (ms)
+         5%        0
          10%        0
+         15%        0
          20%        0
+         25%        0
          30%        0
-         40%        1
-         50%        1
-         60%        1
-         70%        3
-         80%        4
-         90%       13
+         35%        0
+         40%        0
+         45%        0
+         50%        0
+         55%        0
+         60%        0
+         65%        0
+         70%        0
+         75%        0
+         80%        1
+         85%        1
+         90%        1
          99%       13
        99.9%       13
       100.0%     1352 (max. value)

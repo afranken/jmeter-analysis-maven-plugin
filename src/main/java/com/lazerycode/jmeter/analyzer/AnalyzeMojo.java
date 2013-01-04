@@ -75,6 +75,23 @@ public class AnalyzeMojo extends AbstractMojo {
      */
     private boolean processAllFilesFound;
 
+	/**
+	 * Should the ${source} directory structure be preserved at output time?
+	 * Defaults to false for the backward compatibility
+	 * 
+	 * @parameter expression="${preserveOutputDirStructure}"
+	 *            default-value="false"
+	 */
+	private boolean preserveOutputDirStructure;
+
+	/**
+	 * Should we parse only http samples (<httpSample> elements) and skip
+	 * <sample> elements?
+	 * 
+	 * @parameter expression="${parseOnlyHttpSamples}" default-value="false"
+	 */
+	private boolean parseOnlyHttpSamples;
+
   /**
    * Request groups as a mapping from "group name" to "ant pattern".
    * A request uri that matches an ant pattern will be associated with the group name.
@@ -150,7 +167,8 @@ public class AnalyzeMojo extends AbstractMojo {
                 }
 
                 try {
-                    AnalyzeCommand reportAnalyser = new AnalyzeCommand();
+                    AnalyzeCommand reportAnalyser = new AnalyzeCommand();					
+					reportAnalyser.setResultDataFileAbsolutePath(resultDataFile.getAbsolutePath());
                     String resultDataFileName = resultDataFile.getName();
                     reportAnalyser.setSummaryFilename(resultDataFileName.substring(0, resultDataFileName.lastIndexOf(".")));
                     reportAnalyser.analyze(resultData);
@@ -185,6 +203,8 @@ public class AnalyzeMojo extends AbstractMojo {
     ENVIRONMENT.setTargetDirectory(targetDirectory);
     ENVIRONMENT.initializeFreemarkerConfiguration();
     ENVIRONMENT.setResultRenderHelper(new ResultRenderHelper());
+	ENVIRONMENT.setPreserveOutputDirStructure(preserveOutputDirStructure);
+	ENVIRONMENT.setParseOnlyHttpSamples(parseOnlyHttpSamples);
   }
 
 }

@@ -70,7 +70,7 @@
   </issueManagement>
 
   <ciManagement>
-    <system>TeamCity</system>
+    <system>Jenkins CI</system>
     <url>http://ci.lazerycode.com</url>
   </ciManagement>
 
@@ -95,6 +95,7 @@
     <tag>HEAD</tag>
   </scm>
 
+  <!-- TODO: request storage in Sonatype repo -->
   <distributionManagement>
     <repository>
       <id>sonatype-nexus-staging</id>

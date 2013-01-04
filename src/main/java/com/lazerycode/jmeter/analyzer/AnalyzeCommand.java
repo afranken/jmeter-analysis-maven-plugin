@@ -44,6 +44,8 @@ public class AnalyzeCommand {
   private String SUMMARY_TXT_FILE_NAME = SUMMARY_FILE_NAME + ".txt";
   private String SUMMARY_HTML_FILE_NAME = SUMMARY_FILE_NAME + ".html";
 
+  private String resultDataFileAbsolutePath;
+
   private String SIZES_CSV_SUFFIX = "-sizes-" + SUMMARY_FILE_NAME + ".csv";
   private String DURATIONS_CSV_SUFFIX = "-durations-" + SUMMARY_FILE_NAME + ".csv";
   private String DURATIONS_PNG_FILE_SUFFIX = "-durations-" + SUMMARY_FILE_NAME + ".png";
@@ -55,6 +57,8 @@ public class AnalyzeCommand {
   private boolean generateCharts;
   private boolean generateCSVs;
 
+  private final boolean preserveOutputDirStructure;
+
   public AnalyzeCommand() {
 
     this.resultRenderHelper = ENVIRONMENT.getResultRenderHelper();
@@ -62,6 +66,7 @@ public class AnalyzeCommand {
     this.generateCSVs = ENVIRONMENT.isGenerateCSVs();
     this.remoteResources = ENVIRONMENT.getRemoteResources();
     this.targetDirectory = ENVIRONMENT.getTargetDirectory();
+    this.preserveOutputDirStructure = ENVIRONMENT.isPreserveOutputDirStructure();
   }
 
     /**
@@ -272,6 +277,36 @@ public class AnalyzeCommand {
    * Create and return file of given name in given directory
    */
   private File initializeFile(File dir, String name) throws IOException {
+		if (preserveOutputDirStructure
+				&& this.resultDataFileAbsolutePath != null
+				&& this.resultDataFileAbsolutePath != "") {
+			// search common parent
+			String[] resultDataFileParents = new File(this.resultDataFileAbsolutePath).getParent()
+																			.split(File.separator);
+			String[] targetDirParents = dir.getParent()
+											.split(File.separator);
+
+			for (int i = 0; i < resultDataFileParents.length; i++) {
+				boolean found = false;
+				for (int j = 0; j < targetDirParents.length; j++) {
+					if (targetDirParents[j].equals(resultDataFileParents[i])) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					String filename = dir.getAbsolutePath()
+							+ File.separator
+							+ resultDataFileParents[i]
+							+ new File(this.resultDataFileAbsolutePath).getParent()
+																		.split(	resultDataFileParents[i],
+																				2)[1];
+					dir = new File(filename);
+					break;
+				}
+			}
+		}
+
     File result = new File(dir, name);
 
     if (!result.getParentFile().mkdirs() && !result.getParentFile().exists()) {
@@ -351,4 +386,8 @@ public class AnalyzeCommand {
       throw new IOException("Error writing " + url + " to " + target, e);
     }
   }
+
+	public void setResultDataFileAbsolutePath(String resultDataFileAbsolutePath) {
+		this.resultDataFileAbsolutePath = resultDataFileAbsolutePath;
+	}
 }

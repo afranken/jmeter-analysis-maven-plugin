@@ -47,7 +47,7 @@ public class JMeterResultParser {
   private static final int LOGMESSAGE_ITEMS = 10000;
 
   /**
-   * Parses a JMeter Result XML file and provides a {@link AggregatedResponses} for every {@link Parser#getKey key}
+   * Parses a JMeter Result XML file and provides a {@link AggregatedResponses} for every {@link Parser#getKey(Attributes)}
    *
    * @param reader the JMeter xml file
    *
@@ -91,6 +91,8 @@ public class JMeterResultParser {
     private final boolean sizeByUris;
     private final boolean durationByUris;
 
+	private int cntHttpSampleTag;
+
     private long parsedCount = 0;
 
     private Map<String, AggregatedResponses> results = new LinkedHashMap<String, AggregatedResponses>();
@@ -104,7 +106,8 @@ public class JMeterResultParser {
       this(ENVIRONMENT.getMaxSamples(),
            ENVIRONMENT.getRequestGroups(),
            ENVIRONMENT.isGenerateCSVs(),
-           ENVIRONMENT.isGenerateCSVs());
+		   ENVIRONMENT.isGenerateCSVs(),
+		   ENVIRONMENT.isParseOnlyHttpSamples());
     }
 
     /**
@@ -115,16 +118,18 @@ public class JMeterResultParser {
      *        grouped by uris matching these patterns. If not set then the threadgroup is used
      * @param sizeByUris true, if the response size shall be counted for each uri separately
      * @param durationByUris true, if the response duration shall be counted for each uri separately
+     * @param parseOnlyHttpSamples false, if we should ignore the tag <sample>
      */
-    public Parser(int maxSamples, Map<String, String> pathPatterns, boolean sizeByUris, boolean durationByUris) {
+    public Parser(int maxSamples, Map<String, String> pathPatterns, boolean sizeByUris, boolean durationByUris,boolean parseOnlyHttpSamples) {
       this.maxSamples = maxSamples;
       this.pathPatterns = pathPatterns;
       this.sizeByUris = sizeByUris;
       this.durationByUris = durationByUris;
-
+      
       //add node names to set
       nodeNames.add(HTTPSAMPLE_ELEMENT);
-      nodeNames.add(SAMPLE_ELEMENT);
+      if(!parseOnlyHttpSamples)
+      	nodeNames.add(SAMPLE_ELEMENT);
     }
 
     /**
@@ -137,7 +142,11 @@ public class JMeterResultParser {
     @Override
     public void startElement(String u, String localName, String qName, Attributes atts) throws SAXException {
 
-      if( nodeNames.contains(localName) || nodeNames.contains(qName) ) {
+		if (cntHttpSampleTag < 2
+				&& (nodeNames.contains(localName) || nodeNames.contains(qName))) {
+
+			cntHttpSampleTag++;
+		if (cntHttpSampleTag < 2) {
 
         String uri = atts.getValue("lb");
         String timestampString = atts.getValue("ts");
@@ -186,6 +195,7 @@ public class JMeterResultParser {
           log.info("Parsed {} entries ...", parsedCount);
         }
       }
+			}
 
       super.startElement(u, localName, qName, atts);
     }
@@ -317,7 +327,7 @@ public class JMeterResultParser {
     private String getKey(Attributes attributes) {
 
       String key = null;
-      if( pathPatterns != null ) {
+      if( pathPatterns != null && !pathPatterns.isEmpty()) {
 
         // try to find a pattern key
         String uri = attributes.getValue("lb");
@@ -375,6 +385,16 @@ public class JMeterResultParser {
         s.addSample(timestamp, value);
       }
     }
+
+		@Override
+		public void endElement(String uri, String localName, String qName)
+				throws SAXException {
+			if (nodeNames.contains(localName)
+					|| nodeNames.contains(qName)) {
+				cntHttpSampleTag--;
+			}
+			super.endElement(uri, localName, qName);
+		}
 
   }
 

@@ -45,6 +45,12 @@ public enum Environment {
   private Configuration configuration;
   private File targetDirectory;
 
+	private boolean parseOnlyHttpSamples;
+	/**
+	 * If true, we should preserve the relative part ot result file's path
+	 */
+	private boolean preserveOutputDirStructure;
+
   public void clear() {
     this.templateDirectory = null;
     this.resultRenderHelper = null;
@@ -143,5 +149,21 @@ public enum Environment {
 
     configuration.setAutoFlush(true);
   }
+
+	public boolean isPreserveOutputDirStructure() {
+		return preserveOutputDirStructure;
+	}
+
+	public void setPreserveOutputDirStructure(boolean preserveOutputDirStructure) {
+		this.preserveOutputDirStructure = preserveOutputDirStructure;
+	}
+
+	public boolean isParseOnlyHttpSamples() {
+		return parseOnlyHttpSamples;
+	}
+
+	public void setParseOnlyHttpSamples(boolean parseOnlyHttpSamples) {
+		this.parseOnlyHttpSamples = parseOnlyHttpSamples;
+	}
 
 }
