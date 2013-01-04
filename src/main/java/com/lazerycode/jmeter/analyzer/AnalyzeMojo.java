@@ -213,6 +213,7 @@ public class AnalyzeMojo extends AbstractMojo {
     ENVIRONMENT.initializeFreemarkerConfiguration();
     ENVIRONMENT.setResultRenderHelper(new ResultRenderHelper());
     ENVIRONMENT.setPreserveDirectories(preserveDirectories);
+    ENVIRONMENT.setLog(getLog());
   }
 
   //--------------------------------------------------------------------------------------------------------------------

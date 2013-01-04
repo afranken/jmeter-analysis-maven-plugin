@@ -3,6 +3,7 @@ package com.lazerycode.jmeter.analyzer.config;
 import com.lazerycode.jmeter.analyzer.ResultRenderHelper;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
+import org.apache.maven.plugin.logging.Log;
 
 import java.io.File;
 import java.util.LinkedHashMap;
@@ -44,6 +45,7 @@ public enum Environment {
   private int maxSamples = DEFAULT_MAXSAMPLES;
   private Configuration configuration;
   private File targetDirectory;
+  private Log log;
 
   /**
    * If true, preserve the relative part of the result file's path
@@ -137,6 +139,14 @@ public enum Environment {
 
   public void setPreserveDirectories(boolean preserveDirectories) {
     this.preserveDirectories = preserveDirectories;
+  }
+  
+  public Log getLog() {
+    return log;
+  }
+
+  public void setLog(Log log) {
+    this.log = log;
   }
 
   /**

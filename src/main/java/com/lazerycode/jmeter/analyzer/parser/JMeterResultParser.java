@@ -1,8 +1,7 @@
 package com.lazerycode.jmeter.analyzer.parser;
 
 import com.lazerycode.jmeter.analyzer.statistics.Samples;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.maven.plugin.logging.Log;
 import org.springframework.util.AntPathMatcher;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -79,11 +78,17 @@ public class JMeterResultParser {
   // ==================
 
   /**
+   * @return the current log
+   */
+  private static Log getLog() {
+    return ENVIRONMENT.getLog();
+  }
+
+  /**
    * Parser does the heavy lifting.
    */
   private static class Parser extends DefaultHandler {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
     private final AntPathMatcher matcher = new AntPathMatcher();
 
     private final int maxSamples;
@@ -158,7 +163,7 @@ public class JMeterResultParser {
           bytes = Long.parseLong(byteString);
         }
         catch (Exception e) {
-          log.warn("Error parsing bytes: '{}'", byteString);
+          getLog().warn("Error parsing bytes: '"+byteString+"'");
         }
 
 
@@ -169,7 +174,7 @@ public class JMeterResultParser {
           duration = Long.parseLong(durationString);
         }
         catch (Exception e) {
-          log.warn("Error parsing duration '{}'", durationString);
+          getLog().warn("Error parsing duration '"+durationString+"'");
         }
 
         // --- parse responseCode
@@ -183,7 +188,7 @@ public class JMeterResultParser {
         
         // write a log message every 10000 entries
         if( parsedCount % LOGMESSAGE_ITEMS == 0 ) {
-          log.info("Parsed {} entries ...", parsedCount);
+          getLog().info("Parsed "+parsedCount+" entries ...");
         }
       }
 
@@ -197,6 +202,7 @@ public class JMeterResultParser {
       for( AggregatedResponses r : results.values() ) {
         r.finish();
       }
+      getLog().info("Finished Parsing "+parsedCount+" entries.");
     }
 
     //==================================================================================================================
@@ -299,7 +305,7 @@ public class JMeterResultParser {
         responseCode = Integer.valueOf(responseCodeString);
       }
       catch (Exception e) {
-        log.warn("Error parsing response code '{}'", responseCodeString);
+        getLog().warn("Error parsing response code '"+responseCodeString+"'");
         responseCode = HTTPCODE_CONNECTIONERROR;
       }
 

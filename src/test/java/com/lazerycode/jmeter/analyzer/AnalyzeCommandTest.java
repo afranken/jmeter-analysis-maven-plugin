@@ -5,6 +5,7 @@ import freemarker.template.TemplateException;
 import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.NullWriter;
+import org.apache.maven.plugin.logging.SystemStreamLog;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -209,6 +210,7 @@ public class AnalyzeCommandTest extends TestCase {
     ENVIRONMENT.setTemplateDirectory(templateDirectory);
     ENVIRONMENT.initializeFreemarkerConfiguration();
     ENVIRONMENT.setResultRenderHelper(new ResultRenderHelper());
+    ENVIRONMENT.setLog(new SystemStreamLog());
   }
 
   /**
