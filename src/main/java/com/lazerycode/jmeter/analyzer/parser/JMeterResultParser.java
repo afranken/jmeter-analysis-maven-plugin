@@ -46,20 +46,20 @@ public class JMeterResultParser {
    */
   public Map<String, AggregatedResponses> aggregate(Reader reader) throws IOException, SAXException {
 
-    SAXParser parser;
+    SAXParser saxParser;
     try {
 
-      parser = SAXParserFactory.newInstance().newSAXParser();
+      saxParser = SAXParserFactory.newInstance().newSAXParser();
     }
     catch (ParserConfigurationException e) {
 
-      throw new IllegalStateException("Parser problems", e);
+      throw new IllegalStateException("Parser could not be created ", e);
     }
 
-    Parser p = new Parser();
-    parser.parse(new InputSource(reader), p);
+    Parser parser = new Parser();
+    saxParser.parse(new InputSource(reader), parser);
 
-    return p.getResults();
+    return parser.getResults();
   }
 
 
@@ -128,17 +128,17 @@ public class JMeterResultParser {
     }
 
     @Override
-    public void startElement(String u, String localName, String qName, Attributes atts) throws SAXException {
+    public void startElement(String u, String localName, String qName, Attributes attributes) throws SAXException {
 
       if( nodeNames.contains(localName) || nodeNames.contains(qName) ) {
 
-        String uri = atts.getValue("lb");
-        String timestampString = atts.getValue("ts");
+        String uri = attributes.getValue("lb");
+        String timestampString = attributes.getValue("ts");
         long timestamp = Long.parseLong(timestampString);
 
-        boolean success = Boolean.valueOf(atts.getValue("s"));
+        boolean success = Boolean.valueOf(attributes.getValue("s"));
 
-        String key = getKey(atts);
+        String key = getKey(attributes);
 
         // --- create / provide result container
         AggregatedResponses resultContainer = getResult(key);
@@ -146,7 +146,7 @@ public class JMeterResultParser {
 
         // --- parse bytes
         long bytes = -1;
-        String byteString = atts.getValue("by");
+        String byteString = attributes.getValue("by");
         try {
           bytes = Long.parseLong(byteString);
         }
@@ -157,7 +157,7 @@ public class JMeterResultParser {
 
         // --- parse duration
         long duration = -1;
-        String durationString = atts.getValue("t");
+        String durationString = attributes.getValue("t");
         try {
           duration = Long.parseLong(durationString);
         }
@@ -166,7 +166,7 @@ public class JMeterResultParser {
         }
 
         // --- parse responseCode
-        int responseCode = getResponseCode(atts);
+        int responseCode = getResponseCode(attributes);
 
         // ==== add data to the resultContainer
         addData(resultContainer, uri, timestamp, bytes, duration, responseCode, success);
@@ -180,15 +180,15 @@ public class JMeterResultParser {
         }
       }
 
-      super.startElement(u, localName, qName, atts);
+      super.startElement(u, localName, qName, attributes);
     }
 
     @Override
     public void endDocument() throws SAXException {
       super.endDocument();
       //finish collection of responses/samples
-      for( AggregatedResponses r : results.values() ) {
-        r.finish();
+      for( AggregatedResponses responses : results.values() ) {
+        responses.finish();
       }
       getLog().info("Finished Parsing "+parsedCount+" entries.");
     }
@@ -357,16 +357,16 @@ public class JMeterResultParser {
 
       if( uriSamples != null ) {
 
-        Samples s = uriSamples.get(uri);
+        Samples samples = uriSamples.get(uri);
 
-        if( s == null ) {
+        if( samples == null ) {
           // no Sample was previously stored for the uri.
-          s = new Samples(0, false); // 0 = don't collect samples. This is important, otherwise a OOM may occur if the result set is big
+          samples = new Samples(0, false); // 0 = don't collect samples. This is important, otherwise a OOM may occur if the result set is big
 
-          uriSamples.put(uri, s);
+          uriSamples.put(uri, samples);
         }
 
-        s.addSample(timestamp, value);
+        samples.addSample(timestamp, value);
       }
     }
 
