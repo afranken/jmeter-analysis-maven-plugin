@@ -30,11 +30,17 @@ Usage Example
             <!--
             An AntPath-Style pattern matching a JMeter XML result file to analyze. Must be a fully qualified path.
             File may be GZiped, must end in .gz then.
+
+            Default: not set.
+            Required.
             -->
             <source>${project.build.directory}/**/*.jtl</source>
 
             <!--
             directory where to store analysis result files. At least the files "summary.txt" and "summary.html" will be stored here.
+
+            Default: not set.
+            Required.
             -->
             <targetDirectory>${project.build.directory}/results</targetDirectory>
 
@@ -44,6 +50,8 @@ Usage Example
             Request details, charts and CSV files are generated per requestGroup.
 
             If not set, the threadgroup name of the request will be used.
+
+            Default: not set.
             -->
             <requestGroups>
               <pages>/page/**</pages>
@@ -53,13 +61,34 @@ Usage Example
             <!--
             If set to true, additional files "<category>-sizes.csv" and "<category>-durations.csv" will be stored.
             These files contain detailed information for response size and response durations for every URI.
+
+            Default: true
             -->
             <generateCSVs>true</generateCSVs>
 
             <!--
             If set to true, additional chart files "<category>-durations.png" will be created.
+
+            Default: true
             -->
             <generateCharts>true</generateCharts>
+
+            <!--
+            If set to true, the directory structure relative to source will be preserved during output.
+
+            Default: false
+            -->
+            <preserveDirectories>false</preserveDirectories>
+
+            <!--
+            Set<String> of sample names that should be processed when analysing a results file.
+
+            Default: sample, httpSample
+            -->
+            <sampleNames>
+              <sampleName>sample</sampleName>
+              <sampleName>httpSample</sampleName>
+            </sampleNames>
 
             <!--
             If set to true will process all files found by the pattern defined in <source>.
@@ -67,6 +96,8 @@ Usage Example
 
             *SETTING TO TRUE IS NOT RECOMMENDED*
             It can substantially impact performance, if you do this you do it at your own risk!
+
+            Default: false
             -->
             <processAllFilesFound>false</processAllFilesFound>
 
@@ -83,6 +114,8 @@ Usage Example
 
             For example,
             templateDirectory/text/main.ftl will be used for generating the console output.
+
+            Default: not set.
             -->
             <templateDirectory>${project.basedir}/src/main/resources/</templateDirectory>
 
@@ -90,6 +123,8 @@ Usage Example
             Mapping from resource URL to file name. Every resource will be downloaded and stored in 'targetDirectory'
             with the given filename. Tokens "_FROM_" and "_TO_" can be used as placeholders. These placeholders will
             be replaced by timestamps of execution interval (formatted as ISO8601, e.g. '20111216T145509+0100').
+
+            Default: not set.
             -->
             <remoteResources>
               <property>
