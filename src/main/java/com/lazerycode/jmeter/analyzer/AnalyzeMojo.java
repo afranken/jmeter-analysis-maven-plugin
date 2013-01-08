@@ -4,6 +4,8 @@ import com.lazerycode.jmeter.analyzer.config.Environment;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import java.io.File;
@@ -23,75 +25,68 @@ import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
 /**
  * Analyzes JMeter XML test report file and generates a report
  *
- * @goal analyze
- *
  * @author Dennis Homann, Arne Franken, Peter Kaul
  */
-@SuppressWarnings({"UnusedDeclaration", "FieldCanBeLocal", "JavaDoc"}) // Mojos get their fields set via reflection
+@Mojo(name="analyze")
+@SuppressWarnings({"UnusedDeclaration", "FieldCanBeLocal"}) // Mojos get their fields set via reflection
 public class AnalyzeMojo extends AbstractMojo {
 
   /**
    * An AntPath-Style pattern matching a JMeter XML result file to analyze. Must be a fully qualified path.
    * File may be GZiped, must end in .gz then.
-   *
-   * @parameter expression="${source}"
-   * @required
    */
+  @Parameter(required = true)
   private String source;
 
   /**
-   * Directory to store result files in
-   *
-   * @parameter expression="${targetDirectory}" default-value="${project.build.directory}"
-   * @required
+   * Directory to store result files in.
+   * defaultValue = "${project.build.directory}"
    */
+  @Parameter(required = true, defaultValue = "${project.build.directory}")
   private File targetDirectory;
 
   /**
-   * Maximum number of samples to keep (in main memory)
-   *
-   * @parameter expression="${maxSamples}" default-value="50000"
+   * Maximum number of samples to keep (in main memory) before compressing.
+   * defaultValue = "50000"
    */
+  @Parameter(defaultValue = "50000")
   private int maxSamples = Environment.DEFAULT_MAXSAMPLES;
 
   /**
    * True, if CSV files with detailed information for each request should be generated
-   *
-   * @parameter expression="${generateCSVs}" default-value="true"
+   * defaultValue = "true"
    */
+  @Parameter(defaultValue = "true")
   private boolean generateCSVs;
 
   /**
-   * True, if charts should be generated
-   *
-   * @parameter expression="${generateCharts}" default-value="true"
+   * True, if charts for each requestGroup should be generated
+   * defaultValue = "true"
    */
+  @Parameter(defaultValue = "true")
   private boolean generateCharts;
 
   /**
-   * Should we process all files found by pattern used in ${source}?
-   * Defaults to false for following reasons:
+   * True if all files found by pattern used in ${source} should be processed
+   * defaultValue = "false" for following reasons:
    * - Previously we only processed the first file so default functionality is consistent with previous versions
    * - Processing everything will increase run time, that should be an explicit choice to keep things fast by default
-   *
-   * @parameter expression="${processAllFilesFound}" default-value="false"
    */
+  @Parameter(defaultValue = "false")
   private boolean processAllFilesFound;
 
   /**
    * True, if the directory structure relative to {@link #source} should be preserved during output.
-   * Defaults to false for backward compatibility
-   *
-   * @parameter expression="${preserveDirectories}" default-value="false"
+   * defaultValue = "false" for backward compatibility
    */
+  @Parameter(defaultValue = "false")
   private boolean preserveDirectories;
 
   /**
-   * Set<String> of sample names that should be processed when analysing a results file.
+   * Set&lt;String&gt; of sample names that should be processed when analysing a results file.
    * Defaults to {@link Environment#HTTPSAMPLE_ELEMENT_NAME} and {@link Environment#SAMPLE_ELEMENT_NAME}
-   *
-   * @parameter
    */
+  @Parameter
   private Set<String> sampleNames = new HashSet<String>(
           Arrays.asList( new String[]{
                            Environment.HTTPSAMPLE_ELEMENT_NAME,
@@ -104,9 +99,8 @@ public class AnalyzeMojo extends AbstractMojo {
    * Request details, charts and CSV files are generated per requestGroup.
    *
    * If not set, the threadgroup name of the request will be used.
-   *
-   * @parameter
    */
+  @Parameter
   @SuppressWarnings("all") // avoid "Loose coupling" violation. LinkedHashMap is used to keep order
   private LinkedHashMap<String,String> requestGroups;
 
@@ -115,9 +109,8 @@ public class AnalyzeMojo extends AbstractMojo {
    * Mapping from URL to filename.
    * URL may contain placeholders _FROM_ and _TO_. Those placeholders will be replaced by ISO8601 formatted timestamps
    * (e.g. 20120116T163600%2B0100) that are extracted from the JMeter result file (min/max time)
-   *
-   * @parameter
    */
+  @Parameter
   private Properties remoteResources;
 
   /**
@@ -126,17 +119,14 @@ public class AnalyzeMojo extends AbstractMojo {
    *
    * Templates must be stored in one of the following three subfolders of the templateDirectory:
    *
-   * csv
-   * html
-   * text
+   * csv, html, text.
    *
    * The entry template must be called "main.ftl".
    *
    * For example,
-   * <templateDirectory>/text/main.ftl will be used for generating the console output.
-   *
-   * @parameter
+   * &lt;templateDirectory&gt;/text/main.ftl will be used for generating the console output.
    */
+  @Parameter
   private File templateDirectory;
 
     @Override

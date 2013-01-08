@@ -20,6 +20,11 @@ Build status
 Buildhive CI:
 [![Build Status](https://buildhive.cloudbees.com/job/afranken/job/jmeter-analysis-maven-plugin/badge/icon)](https://buildhive.cloudbees.com/job/afranken/job/jmeter-analysis-maven-plugin/)
 
+Help
+----
+Run the HelpMojo of this plugin:
+`mvn jmeter-analysis:help -Ddetail=true -Dgoal=analyze`
+
 Usage Example
 -------------
 
@@ -111,9 +116,7 @@ Usage Example
             Freemarker templates are used for all generated output. (CSV files, HTML files, console output)
             Templates must be stored in one of the following three subfolders of the templateDirectory:
 
-            csv
-            html
-            text
+            csv, html, text
 
             The entry template must be called "main.ftl".
 
