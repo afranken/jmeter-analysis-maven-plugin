@@ -9,7 +9,7 @@ class ValueCount {
   private long value;
   private long count;
 
-  public ValueCount(long value) {
+  public ValueCount(final long value) {
     this.value = value;
   }
 

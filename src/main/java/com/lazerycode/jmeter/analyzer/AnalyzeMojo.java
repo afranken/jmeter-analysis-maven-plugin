@@ -1,6 +1,7 @@
 package com.lazerycode.jmeter.analyzer;
 
 import com.lazerycode.jmeter.analyzer.config.Environment;
+import freemarker.template.TemplateException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -8,9 +9,12 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.xml.sax.SAXException;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Arrays;
@@ -166,12 +170,6 @@ public class AnalyzeMojo extends AbstractMojo {
         getLog().info(" ");
       }
     }
-    catch (MojoExecutionException mee) {
-      throw mee;
-    }
-    catch (MojoFailureException mfe) {
-      throw mfe;
-    }
     catch (Exception e) {
       throw new MojoExecutionException("Error analysing", e);
     }
@@ -204,9 +202,8 @@ public class AnalyzeMojo extends AbstractMojo {
    *
    * @param resultDataFile the file to analyze
    * @param rootPath the root path of the resultDataFile
-   * @throws Exception
    */
-  private void analyze(File resultDataFile, String rootPath) throws Exception {
+  private void analyze(File resultDataFile, String rootPath) throws IOException, SAXException, TemplateException {
 
     Reader resultData;
     if (resultDataFile.getName().endsWith(".gz")) {
@@ -228,8 +225,8 @@ public class AnalyzeMojo extends AbstractMojo {
 
       ResultAnalyzer reportAnalyser = new ResultAnalyzer(relativePath);
 
-      //do not use file extension
-      reportAnalyser.setSummaryFilename(resultDataFileName.substring(0, resultDataFileName.lastIndexOf(".")));
+      //only use data file name, do not use file extension
+      reportAnalyser.setSummaryFilename(resultDataFileName.substring(0, resultDataFileName.lastIndexOf('.')));
 
       reportAnalyser.analyze(resultData);
     }
@@ -244,7 +241,7 @@ public class AnalyzeMojo extends AbstractMojo {
   /**
    * needed to call protected method {@link #determineRootDir(String)}
    */
-  private class CustomPathMatchingResourcePatternResolver extends PathMatchingResourcePatternResolver {
+  private static class CustomPathMatchingResourcePatternResolver extends PathMatchingResourcePatternResolver {
 
     /**
      * Redirect to protected method {@link #determineRootDir(String)}

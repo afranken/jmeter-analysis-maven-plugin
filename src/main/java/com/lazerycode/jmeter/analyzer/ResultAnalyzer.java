@@ -5,6 +5,7 @@ import com.lazerycode.jmeter.analyzer.parser.JMeterResultParser;
 import com.lazerycode.jmeter.analyzer.statistics.Samples;
 import freemarker.template.TemplateException;
 import org.codehaus.plexus.util.StringUtils;
+import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -42,13 +43,19 @@ public class ResultAnalyzer {
   private static final String TOKEN_TO = "_TO_";
   private static final int READ_BUFFER = 1024;
 
-  private String SUMMARY_FILE_NAME = "summary";
-  private String SUMMARY_TXT_FILE_NAME = SUMMARY_FILE_NAME + ".txt";
-  private String SUMMARY_HTML_FILE_NAME = SUMMARY_FILE_NAME + ".html";
+  private static final String CSV_EXT = ".csv";
+  private static final String TXT_EXT = ".txt";
+  private static final String PNG_EXT = ".png";
+  private static final String HTML_EXT = ".html";
+  private static final String DURATIONS = "-durations-";
 
-  private String SIZES_CSV_SUFFIX = "-sizes-" + SUMMARY_FILE_NAME + ".csv";
-  private String DURATIONS_CSV_SUFFIX = "-durations-" + SUMMARY_FILE_NAME + ".csv";
-  private String DURATIONS_PNG_FILE_SUFFIX = "-durations-" + SUMMARY_FILE_NAME + ".png";
+  private String summary = "summary";
+  private String summaryTxtFileName = summary + TXT_EXT;
+  private String summaryHtmlFileName = summary + HTML_EXT;
+
+  private String sizesCsvSuffix = "-sizes-" + summary + CSV_EXT;
+  private String durationsCsvSuffix = DURATIONS + summary + CSV_EXT;
+  private String durationsPngFileSuffix = DURATIONS + summary + PNG_EXT;
 
   private final File targetDirectory;
   private final Properties remoteResources;
@@ -70,29 +77,27 @@ public class ResultAnalyzer {
     this.preserveDirectories = ENVIRONMENT.isPreserveDirectories();
   }
 
-    /**
-     * Set the filenames used to generate summary files.
-     * (This does not strip off any file extensions so you may end up with foo.jtl.txt)
-     *
-     * @param filename
-     */
-    public void setSummaryFilename(String filename) {
-        this.SUMMARY_FILE_NAME = filename;
-        this.SUMMARY_TXT_FILE_NAME = SUMMARY_FILE_NAME + ".txt";
-        this.SUMMARY_HTML_FILE_NAME = SUMMARY_FILE_NAME + ".html";
-        this.SIZES_CSV_SUFFIX = "-sizes-" + SUMMARY_FILE_NAME + ".csv";
-        this.DURATIONS_CSV_SUFFIX = "-durations-" + SUMMARY_FILE_NAME + ".csv";
-        this.DURATIONS_PNG_FILE_SUFFIX = "-durations-" + SUMMARY_FILE_NAME + ".png";
-    }
+  /**
+   * Set the filenames used to generate summary files.
+   * (This does not strip off any file extensions so you may end up with foo.jtl.txt)
+   *
+   * @param filename
+   */
+  public void setSummaryFilename(String filename) {
+    this.summary = filename;
+    this.summaryTxtFileName = summary + TXT_EXT;
+    this.summaryHtmlFileName = summary + HTML_EXT;
+    this.sizesCsvSuffix = "-sizes-" + summary + CSV_EXT;
+    this.durationsCsvSuffix = DURATIONS + summary + CSV_EXT;
+    this.durationsPngFileSuffix = DURATIONS + summary + PNG_EXT;
+  }
 
   /**
    * Analyzes a JMeter XML results file
    *
    * @param jmeterResult    The jmeter XML result file
-   *
-   * @throws Exception When a problem occurs
    */
-  public void analyze(Reader jmeterResult) throws Exception {
+  public void analyze(Reader jmeterResult) throws IOException, TemplateException, SAXException {
 
     Map<String, AggregatedResponses> testResults = new JMeterResultParser().aggregate(jmeterResult);
 
@@ -111,11 +116,11 @@ public class ResultAnalyzer {
         if (generateCSVs) {
 
           // write durations by uri
-          String durationsFilename = urlEncode(name) + DURATIONS_CSV_SUFFIX;
+          String durationsFilename = urlEncode(name) + durationsCsvSuffix;
           writeCSVs(durationsFilename,aggregatedResponses.getDurationByUri());
 
           // write size by uri
-          String sizeFilename = urlEncode(name) + SIZES_CSV_SUFFIX;
+          String sizeFilename = urlEncode(name) + sizesCsvSuffix;
           writeCSVs(sizeFilename, aggregatedResponses.getSizeByUri());
         }
 
@@ -168,7 +173,7 @@ public class ResultAnalyzer {
   private void renderTextAsFile(Map<String, AggregatedResponses> testResults)
           throws IOException, TemplateException {
 
-    FileWriter out = new FileWriter(initializeFile(targetDirectory, SUMMARY_TXT_FILE_NAME));
+    FileWriter out = new FileWriter(initializeFile(targetDirectory, summaryTxtFileName));
     PrintWriter text = new PrintWriter(out, false);
 
     resultRenderHelper.renderText(testResults, text);
@@ -189,10 +194,10 @@ public class ResultAnalyzer {
   private void renderHTML(Map<String, AggregatedResponses> testResults)
           throws IOException, TemplateException {
 
-    FileWriter w = new FileWriter(initializeFile(targetDirectory, SUMMARY_HTML_FILE_NAME));
+    FileWriter w = new FileWriter(initializeFile(targetDirectory, summaryHtmlFileName));
     PrintWriter html = new PrintWriter(w, false);
 
-    resultRenderHelper.renderHTML(testResults, html, this.SUMMARY_FILE_NAME);
+    resultRenderHelper.renderHTML(testResults, html, this.summary);
 
     html.flush();
     html.close();
@@ -230,7 +235,7 @@ public class ResultAnalyzer {
      */
   private void writeChart(String name, AggregatedResponses aggregatedResponses) throws IOException {
 
-    String fileName = urlEncode(name) + DURATIONS_PNG_FILE_SUFFIX;
+    String fileName = urlEncode(name) + durationsPngFileSuffix;
     File requestChartFile = initializeFile(targetDirectory, fileName);
     Samples aggregatedResult = aggregatedResponses.getDuration();
     ResultRenderHelper.renderChart(name, aggregatedResult, requestChartFile);
@@ -279,15 +284,17 @@ public class ResultAnalyzer {
    */
   private File initializeFile(File dir, String name) throws IOException {
 
+    File directory = dir;
+
     //add relative path to output directory if configured to do so
     if (preserveDirectories && StringUtils.isNotEmpty(this.resultDataFileRelativePath)) {
       String filename = dir.getAbsolutePath()
               + File.separator
               + resultDataFileRelativePath;
-      dir = new File(filename);
+      directory = new File(filename);
     }
 
-    File result = new File(dir, name);
+    File result = new File(directory, name);
 
     if (!result.getParentFile().mkdirs() && !result.getParentFile().exists()) {
       throw new IOException("Cannot create directories: " + result.getParentFile().getAbsolutePath());
