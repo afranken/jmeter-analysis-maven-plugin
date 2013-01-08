@@ -42,9 +42,9 @@ Usage Example
             <source>${project.build.directory}/**/*.jtl</source>
 
             <!--
-            directory where to store analysis result files. At least the files "summary.txt" and "summary.html" will be stored here.
+            directory where to store analysis result files.
 
-            Default: not set.
+            Default: ${project.build.directory}
             Required.
             -->
             <targetDirectory>${project.build.directory}/results</targetDirectory>
