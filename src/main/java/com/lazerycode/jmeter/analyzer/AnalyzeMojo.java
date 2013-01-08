@@ -129,84 +129,61 @@ public class AnalyzeMojo extends AbstractMojo {
   @Parameter
   private File templateDirectory;
 
-    @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+  @Override
+  public void execute() throws MojoExecutionException, MojoFailureException {
+    getLog().info(" ");
+    getLog().info("-------------------------------------------------------");
+    getLog().info(" A N A L Y S I N G    J M E T E R    R E S U L T S");
+    getLog().info("-------------------------------------------------------");
+    getLog().info(" ");
+
+    initializeEnvironment();
+
+    try {
+
+      CustomPathMatchingResourcePatternResolver resolver = new CustomPathMatchingResourcePatternResolver();
+      Resource[] resultDataFiles = resolver.getResources("file:" + source);
+      String rootPath = resolver.getRootDir(source);
+
+      //No JMeter result file found, makes no sense to go on
+      if (resultDataFiles.length == 0) {
+        throw new MojoExecutionException("Property source not set correctly, no JMeter Result XML file found matching " + source);
+      }
+
+      for (int dataFileIdentifier = 0; dataFileIdentifier < resultDataFiles.length; dataFileIdentifier++) {
+
+        //Drop out of the loop after processing first file if we only want to process the first file found.
+        if (dataFileIdentifier == 1 && !processAllFilesFound) {
+          break;
+        }
+
+        File resultDataFile = resultDataFiles[dataFileIdentifier].getFile();
+        getLog().info("Analysing '" + resultDataFile.getName() + "'...");
+
+        analyze(resultDataFile, rootPath);
+
+        getLog().info("Results Generated for '" + resultDataFile.getName() + "'.");
         getLog().info(" ");
-        getLog().info("-------------------------------------------------------");
-        getLog().info(" A N A L Y S I N G    J M E T E R    R E S U L T S");
-        getLog().info("-------------------------------------------------------");
-        getLog().info(" ");
-
-        initializeEnvironment();
-
-        try {
-
-            CustomPathMatchingResourcePatternResolver resolver = new CustomPathMatchingResourcePatternResolver();
-            Resource[] resultDataFiles = resolver.getResources("file:" + source);
-            String rootPath = resolver.getRootDir(source);
-
-            //No JMeter result file found, makes no sense to go on
-            if (resultDataFiles.length == 0) {
-              throw new MojoExecutionException("Property source not set correctly, no JMeter Result XML file found matching " + source);
-            }
-
-            for (int dataFileIdentifier = 0; dataFileIdentifier < resultDataFiles.length; dataFileIdentifier++) {
-
-                //Drop out of the loop after processing first file if we only want to process the first file found.
-                if(dataFileIdentifier == 1 && !processAllFilesFound) {
-                  break;
-                }
-
-                File resultDataFile = resultDataFiles[dataFileIdentifier].getFile();
-                getLog().info("Analysing '" + resultDataFile.getName() + "'...");
-
-                Reader resultData;
-                if (resultDataFile.getName().endsWith(".gz")) {
-                    resultData = new InputStreamReader(new GZIPInputStream(new FileInputStream(resultDataFile)));
-                }
-                else {
-                    resultData = new FileReader(resultDataFile);
-                }
-
-                try {
-
-                    String resultDataFileName = resultDataFile.getName();
-
-                    String relativePath = null;
-                    if(preserveDirectories) {
-                      //get relative path from source pattern to the resultDataFile
-                      relativePath = resultDataFile.getAbsolutePath().replace(rootPath,"").replace(resultDataFileName,"");
-                    }
-
-                    ResultAnalyzer reportAnalyser = new ResultAnalyzer(relativePath);
-
-                    //do not use file extension
-                    reportAnalyser.setSummaryFilename(resultDataFileName.substring(0, resultDataFileName.lastIndexOf(".")));
-
-                    reportAnalyser.analyze(resultData);
-                }
-                finally {
-                    resultData.close();
-                }
-
-                getLog().info("Results Generated for '" + resultDataFile.getName() + "'.");
-                getLog().info(" ");
-            }
-        }
-        catch (MojoExecutionException mee){
-            throw mee;
-        }
-        catch (MojoFailureException mfe){
-            throw mfe;
-        }
-        catch (Exception e) {
-            throw new MojoExecutionException("Error analysing", e);
-        }
-
+      }
     }
+    catch (MojoExecutionException mee) {
+      throw mee;
+    }
+    catch (MojoFailureException mfe) {
+      throw mfe;
+    }
+    catch (Exception e) {
+      throw new MojoExecutionException("Error analysing", e);
+    }
+
+  }
 
   //====================================================================================================================
 
+  /**
+   * Store all necessary configuration in current {@link Environment#ENVIRONMENT} instance so that
+   * other objects have access to it.
+   */
   private void initializeEnvironment() {
     ENVIRONMENT.setGenerateCharts(generateCharts);
     ENVIRONMENT.setGenerateCSVs(generateCSVs);
@@ -220,6 +197,46 @@ public class AnalyzeMojo extends AbstractMojo {
     ENVIRONMENT.setPreserveDirectories(preserveDirectories);
     ENVIRONMENT.setLog(getLog());
     ENVIRONMENT.setSampleNames(sampleNames);
+  }
+
+  /**
+   * Analyze given file.
+   *
+   * @param resultDataFile the file to analyze
+   * @param rootPath the root path of the resultDataFile
+   * @throws Exception
+   */
+  private void analyze(File resultDataFile, String rootPath) throws Exception {
+
+    Reader resultData;
+    if (resultDataFile.getName().endsWith(".gz")) {
+      resultData = new InputStreamReader(new GZIPInputStream(new FileInputStream(resultDataFile)));
+    }
+    else {
+      resultData = new FileReader(resultDataFile);
+    }
+
+    try {
+
+      String resultDataFileName = resultDataFile.getName();
+
+      String relativePath = null;
+      if (preserveDirectories) {
+        //get relative path from source pattern to the resultDataFile
+        relativePath = resultDataFile.getAbsolutePath().replace(rootPath, "").replace(resultDataFileName, "");
+      }
+
+      ResultAnalyzer reportAnalyser = new ResultAnalyzer(relativePath);
+
+      //do not use file extension
+      reportAnalyser.setSummaryFilename(resultDataFileName.substring(0, resultDataFileName.lastIndexOf(".")));
+
+      reportAnalyser.analyze(resultData);
+    }
+    finally {
+      resultData.close();
+    }
+
   }
 
   //--------------------------------------------------------------------------------------------------------------------
