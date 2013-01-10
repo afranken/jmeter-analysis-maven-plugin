@@ -277,14 +277,14 @@ public class ResultAnalyzerTest extends TestCase {
       File actual = new File(workDir+"/"+resultFile);
       File expected = new File(getClass().getResource(localPackagePath+resultFile).getFile());
 
-      assertTrue("Expected file does not exist: ",
+      assertTrue("Expected file "+resultFile+" does not exist: ",
               expected.exists());
 
       //normalize text files
       String actualContent = normalizeFileContents(actual);
       String expectedContent = normalizeFileContents(expected);
 
-      assertThat("lines in TXT file do not match: ",
+      assertThat("lines in file "+resultFile+" do not match: ",
               actualContent,
               is(equalTo(expectedContent)));
     }
