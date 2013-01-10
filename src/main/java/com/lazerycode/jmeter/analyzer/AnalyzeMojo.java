@@ -3,6 +3,7 @@ package com.lazerycode.jmeter.analyzer;
 import com.lazerycode.jmeter.analyzer.config.Environment;
 import com.lazerycode.jmeter.analyzer.writer.ChartWriter;
 import com.lazerycode.jmeter.analyzer.writer.DetailsToCsvWriter;
+import com.lazerycode.jmeter.analyzer.writer.DetailsToHtmlWriter;
 import com.lazerycode.jmeter.analyzer.writer.HtmlWriter;
 import com.lazerycode.jmeter.analyzer.writer.SummaryTextToFileWriter;
 import com.lazerycode.jmeter.analyzer.writer.SummaryTextToStdOutWriter;
@@ -148,6 +149,7 @@ public class AnalyzeMojo extends AbstractMojo {
    * Defaults to:
    * {@link ChartWriter} (generates detailed charts as PNGs),
    * {@link DetailsToCsvWriter} (generates CSV files for every request group),
+   * {@link DetailsToHtmlWriter} (generates HTML files for every request group),
    * {@link HtmlWriter} (generates an HTML overview file),
    * {@link SummaryTextToFileWriter} (generates a TXT overview file),
    * {@link SummaryTextToStdOutWriter} (generates overview output to stdout)
@@ -226,6 +228,7 @@ public class AnalyzeMojo extends AbstractMojo {
       writers.add(new SummaryTextToFileWriter());
       writers.add(new HtmlWriter());
       writers.add(new DetailsToCsvWriter());
+      writers.add(new DetailsToHtmlWriter());
       writers.add(new ChartWriter());
     }
 
@@ -233,7 +236,7 @@ public class AnalyzeMojo extends AbstractMojo {
 
     //MUST be called after initialization of writers List !!!
     ENVIRONMENT.setGenerateCharts(writers.contains(new ChartWriter()));
-    ENVIRONMENT.setGenerateCSVs(writers.contains(new DetailsToCsvWriter()));
+    ENVIRONMENT.setGenerateDetails(writers.contains(new DetailsToHtmlWriter()));
 
 
     ENVIRONMENT.setMaxSamples(maxSamples);

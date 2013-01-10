@@ -1,9 +1,9 @@
 package com.lazerycode.jmeter.analyzer;
 
 import com.lazerycode.jmeter.analyzer.config.Environment;
-import com.lazerycode.jmeter.analyzer.util.TemplateUtil;
 import com.lazerycode.jmeter.analyzer.writer.ChartWriter;
 import com.lazerycode.jmeter.analyzer.writer.DetailsToCsvWriter;
+import com.lazerycode.jmeter.analyzer.writer.DetailsToHtmlWriter;
 import com.lazerycode.jmeter.analyzer.writer.HtmlWriter;
 import com.lazerycode.jmeter.analyzer.writer.SummaryTextToFileWriter;
 import com.lazerycode.jmeter.analyzer.writer.SummaryTextToStdOutWriter;
@@ -222,7 +222,7 @@ public class ResultAnalyzerTest extends TestCase {
 
   private void setUpEnvironment(boolean generateCSVs, boolean generateCharts, LinkedHashMap<String, String> patterns, File templateDirectory) {
     ENVIRONMENT.clear();
-    ENVIRONMENT.setGenerateCSVs(generateCSVs);
+    ENVIRONMENT.setGenerateDetails(generateCSVs);
     ENVIRONMENT.setGenerateCharts(generateCharts);
     ENVIRONMENT.setMaxSamples(1000);
     ENVIRONMENT.setTargetDirectory(workDir);
@@ -237,8 +237,9 @@ public class ResultAnalyzerTest extends TestCase {
     writers.add(new SummaryTextToStdOutWriter());
     writers.add(new SummaryTextToFileWriter());
     writers.add(new HtmlWriter());
-    if(ENVIRONMENT.isGenerateCSVs()) {
+    if(ENVIRONMENT.isGenerateDetails()) {
       writers.add(new DetailsToCsvWriter());
+      writers.add(new DetailsToHtmlWriter());
     }
     if(ENVIRONMENT.isGenerateCharts()) {
       writers.add(new ChartWriter());

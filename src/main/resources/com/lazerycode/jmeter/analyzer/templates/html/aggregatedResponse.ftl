@@ -114,8 +114,8 @@
     <div class="details">
       <h3>Detailed response information</h3>
       <ul>
-        <li><a href="${key}-durations-${SUMMARY_FILE_NAME}.csv">Response durations per URL (CSV)</a></li>
-        <li><a href="${key}-sizes-${SUMMARY_FILE_NAME}.csv">Response sizes per URL (CSV)</a></li>
+        <li><a href="${key}-durations-${SUMMARY_FILE_NAME}.html">Response durations per URL (HTML)</a></li>
+        <li><a href="${key}-sizes-${SUMMARY_FILE_NAME}.html">Response sizes per URL (HTML)</a></li>
       </ul>
     </div>
     </#if>

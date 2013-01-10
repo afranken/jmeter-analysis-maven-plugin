@@ -1,6 +1,5 @@
 package com.lazerycode.jmeter.analyzer.config;
 
-import com.lazerycode.jmeter.analyzer.util.TemplateUtil;
 import com.lazerycode.jmeter.analyzer.writer.Writer;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
@@ -47,7 +46,7 @@ public enum Environment {
   /**
    * true, if response sizes and response durations should be provided for each uri
    */
-  private boolean generateCSVs;
+  private boolean generateDetails;
 
   /**
    * Template directory where custom freemarker templates are stored.
@@ -96,12 +95,12 @@ public enum Environment {
     this.generateCharts = generateCharts;
   }
 
-  public boolean isGenerateCSVs() {
-    return generateCSVs;
+  public boolean isGenerateDetails() {
+    return generateDetails;
   }
 
-  public void setGenerateCSVs(boolean generateCSVs) {
-    this.generateCSVs = generateCSVs;
+  public void setGenerateDetails(boolean generateDetails) {
+    this.generateDetails = generateDetails;
   }
 
   public File getTemplateDirectory() {

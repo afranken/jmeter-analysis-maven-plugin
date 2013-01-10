@@ -48,7 +48,7 @@ public class TemplateUtil {
     rootMap.put("K_99_PERCENT", K_99_PERCENT);
     rootMap.put("K_99_PONT_9_PERCENT", K_99_PONT_9_PERCENT);
     rootMap.put("PERCENT_100", PERCENT_100);
-    rootMap.put("DETAILS", ENVIRONMENT.isGenerateCSVs());
+    rootMap.put("DETAILS", ENVIRONMENT.isGenerateDetails());
     rootMap.put("CHARTS", ENVIRONMENT.isGenerateCharts());
 
     return rootMap;

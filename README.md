@@ -146,6 +146,7 @@ Usage Example
            Defaults to:
            * com.lazerycode.jmeter.analyzer.writer.ChartWriter (generates detailed charts as PNGs),
            * com.lazerycode.jmeter.analyzer.writer.DetailsToCsvWriter (generates CSV files for every request group),
+           * com.lazerycode.jmeter.analyzer.writer.DetailsToHtmlWriter (generates HTML files for every request group),
            * com.lazerycode.jmeter.analyzer.writer.HtmlWriter (generates an HTML overview file),
            * com.lazerycode.jmeter.analyzer.writer.SummaryTextToFileWriter (generates a TXT overview file),
            * com.lazerycode.jmeter.analyzer.writer.SummaryTextToStdOutWriter (generates overview output to stdout)
@@ -158,6 +159,7 @@ Usage Example
               <!--<com.lazerycode.jmeter.analyzer.writer.SummaryTextToFileWriter/>-->
               <!--<com.lazerycode.jmeter.analyzer.writer.HtmlWriter/>-->
               <!--<com.lazerycode.jmeter.analyzer.writer.DetailsToCsvWriter/>-->
+              <!--<com.lazerycode.jmeter.analyzer.writer.DetailsToHtmlWriter/>-->
               <!--<com.lazerycode.jmeter.analyzer.writer.ChartWriter/>-->
             <!--</writers>-->
 

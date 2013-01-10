@@ -40,7 +40,10 @@ public abstract class AbstractWriter implements Writer {
     this.summaryTxtFileName = this.fileName + TXT_EXT;
     this.summaryHtmlFileName = this.fileName + HTML_EXT;
     this.sizesCsvSuffix = SIZES + this.fileName + CSV_EXT;
+    this.sizesHtmlSuffix = SIZES + this.fileName + HTML_EXT;
+    this.sizesPngFileSuffix = SIZES + this.fileName + PNG_EXT;
     this.durationsCsvSuffix = DURATIONS + this.fileName + CSV_EXT;
+    this.durationsHtmlSuffix = DURATIONS + this.fileName + HTML_EXT;
     this.durationsPngFileSuffix = DURATIONS + this.fileName + PNG_EXT;
   }
 

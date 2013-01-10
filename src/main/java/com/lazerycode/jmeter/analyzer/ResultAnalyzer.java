@@ -23,11 +23,11 @@ import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
  */
 public class ResultAnalyzer {
 
-  private String summary;
+  private String fileName;
   private final String resultDataFileRelativePath;
 
   public ResultAnalyzer(String resultDataFileRelativePath, String fileName) {
-    this.summary = fileName != null ? fileName : "summary";
+    this.fileName = fileName != null ? fileName : "summary";
     this.resultDataFileRelativePath = resultDataFileRelativePath;
   }
 
@@ -41,7 +41,7 @@ public class ResultAnalyzer {
     Map<String, AggregatedResponses> testResults = new JMeterResultParser().aggregate(jmeterResult);
 
     for(Writer writer : ENVIRONMENT.getWriters()) {
-      writer.setFileName(summary);
+      writer.setFileName(fileName);
       writer.setResultDataFileRelativePath(resultDataFileRelativePath);
       writer.write(testResults);
     }
