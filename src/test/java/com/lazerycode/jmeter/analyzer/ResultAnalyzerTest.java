@@ -234,7 +234,8 @@ public class ResultAnalyzerTest extends TestCase {
 
     //set up default writers
     List<Writer> writers = new ArrayList<Writer>();
-    writers.add(new SummaryTextToStdOutWriter());
+    //do not write text to stdout during tests.
+//    writers.add(new SummaryTextToStdOutWriter());
     writers.add(new SummaryTextToFileWriter());
     writers.add(new HtmlWriter());
     if(ENVIRONMENT.isGenerateDetails()) {
