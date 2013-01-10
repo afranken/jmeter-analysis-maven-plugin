@@ -1,11 +1,15 @@
 package com.lazerycode.jmeter.analyzer;
 
 import com.lazerycode.jmeter.analyzer.config.Environment;
-import com.lazerycode.jmeter.analyzer.parser.AggregatedResponses;
-import freemarker.template.TemplateException;
+import com.lazerycode.jmeter.analyzer.util.TemplateUtil;
+import com.lazerycode.jmeter.analyzer.writer.ChartWriter;
+import com.lazerycode.jmeter.analyzer.writer.DetailsToCsvWriter;
+import com.lazerycode.jmeter.analyzer.writer.HtmlWriter;
+import com.lazerycode.jmeter.analyzer.writer.SummaryTextToFileWriter;
+import com.lazerycode.jmeter.analyzer.writer.SummaryTextToStdOutWriter;
+import com.lazerycode.jmeter.analyzer.writer.Writer;
 import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.output.NullWriter;
 import org.apache.maven.plugin.logging.SystemStreamLog;
 
 import java.io.File;
@@ -15,7 +19,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
-import java.io.Writer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,7 +29,6 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -227,9 +229,22 @@ public class ResultAnalyzerTest extends TestCase {
     ENVIRONMENT.setRequestGroups(patterns);
     ENVIRONMENT.setTemplateDirectory(templateDirectory);
     ENVIRONMENT.initializeFreemarkerConfiguration();
-    ENVIRONMENT.setResultRenderHelper(new ResultRenderHelper());
     ENVIRONMENT.setLog(new SystemStreamLog());
     ENVIRONMENT.setSampleNames(new HashSet<String>(Arrays.asList(new String[]{Environment.HTTPSAMPLE_ELEMENT_NAME, Environment.SAMPLE_ELEMENT_NAME})));
+
+    //set up default writers
+    List<Writer> writers = new ArrayList<Writer>();
+    writers.add(new SummaryTextToStdOutWriter());
+    writers.add(new SummaryTextToFileWriter());
+    writers.add(new HtmlWriter());
+    if(ENVIRONMENT.isGenerateCSVs()) {
+      writers.add(new DetailsToCsvWriter());
+    }
+    if(ENVIRONMENT.isGenerateCharts()) {
+      writers.add(new ChartWriter());
+    }
+    ENVIRONMENT.setWriters(writers);
+
   }
 
   /**
@@ -253,7 +268,7 @@ public class ResultAnalyzerTest extends TestCase {
     //2. ---- run plugin
     Reader data = new InputStreamReader(getClass().getResourceAsStream(localPackagePath+"jmeter-result.jtl"));
     //commandline output does not matter during tests and is routed to a NullWriter
-    new LocalResultAnalyzer(new NullWriter()).analyze(data);
+    new ResultAnalyzer(null,null).analyze(data);
     data.close();
 
     //3. ---- assert that result files are correct
@@ -351,22 +366,22 @@ public class ResultAnalyzerTest extends TestCase {
 
   //====================================================================================================================
 
-  /**
-   * Implementation that supports passing a writer into the object.
-   * Per default, {@link ResultAnalyzer} would write output to {@link System#out}
-   */
-  private class LocalResultAnalyzer extends ResultAnalyzer {
-
-    private Writer writer;
-
-    LocalResultAnalyzer(Writer writer) {
-      super(null);
-      this.writer = writer;
-    }
-
-    @Override
-    protected void renderTextToStdOut(Map<String, AggregatedResponses> testResults) throws IOException, TemplateException {
-      resultRenderHelper.renderText(testResults, writer);
-    }
-  }
+//  /**
+//   * Implementation that supports passing a writer into the object.
+//   * Per default, {@link ResultAnalyzer} would write output to {@link System#out}
+//   */
+//  private class LocalResultAnalyzer extends ResultAnalyzer {
+//
+//    private Writer writer;
+//
+//    LocalResultAnalyzer(Writer writer) {
+//      super(null);
+//      this.writer = writer;
+//    }
+//
+//    @Override
+//    protected void renderTextToStdOut(Map<String, AggregatedResponses> testResults) throws IOException, TemplateException {
+//      templateUtil.renderText(testResults, writer);
+//    }
+//  }
 }

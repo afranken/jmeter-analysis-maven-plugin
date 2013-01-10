@@ -1,12 +1,14 @@
 package com.lazerycode.jmeter.analyzer.config;
 
-import com.lazerycode.jmeter.analyzer.ResultRenderHelper;
+import com.lazerycode.jmeter.analyzer.util.TemplateUtil;
+import com.lazerycode.jmeter.analyzer.writer.Writer;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
 import org.apache.maven.plugin.logging.Log;
 
 import java.io.File;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -51,7 +53,6 @@ public enum Environment {
    * Template directory where custom freemarker templates are stored.
    */
   private File templateDirectory;
-  private ResultRenderHelper resultRenderHelper;
   private Properties remoteResources;
   private Set<String> sampleNames;
   @SuppressWarnings("all") // avoid "Loose coupling" violation. LinkedHashMap is used to keep order
@@ -60,6 +61,7 @@ public enum Environment {
   private Configuration configuration;
   private File targetDirectory;
   private Log log;
+  private List<Writer> writers;
 
   /**
    * If true, preserve the relative part of the result file's path
@@ -71,7 +73,6 @@ public enum Environment {
    */
   public void clear() {
     this.templateDirectory = null;
-    this.resultRenderHelper = null;
     this.remoteResources = null;
     this.requestGroups = null;
     this.maxSamples = 0;
@@ -109,14 +110,6 @@ public enum Environment {
 
   public void setTemplateDirectory(File templateDirectory) {
     this.templateDirectory = templateDirectory;
-  }
-
-  public ResultRenderHelper getResultRenderHelper() {
-    return resultRenderHelper;
-  }
-
-  public void setResultRenderHelper(ResultRenderHelper resultRenderHelper) {
-    this.resultRenderHelper = resultRenderHelper;
   }
 
   public Properties getRemoteResources() {
@@ -194,4 +187,11 @@ public enum Environment {
     configuration.setAutoFlush(true);
   }
 
+  public List<Writer> getWriters() {
+    return writers;
+  }
+
+  public void setWriters(List<Writer> writers) {
+    this.writers = writers;
+  }
 }

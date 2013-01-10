@@ -141,6 +141,26 @@ Usage Example
               </property>
             </remoteResources>
 
+            <!--
+            List of writers that handle all output of the plugin.
+           Defaults to:
+           * com.lazerycode.jmeter.analyzer.writer.ChartWriter (generates detailed charts as PNGs),
+           * com.lazerycode.jmeter.analyzer.writer.DetailsToCsvWriter (generates CSV files for every request group),
+           * com.lazerycode.jmeter.analyzer.writer.HtmlWriter (generates an HTML overview file),
+           * com.lazerycode.jmeter.analyzer.writer.SummaryTextToFileWriter (generates a TXT overview file),
+           * com.lazerycode.jmeter.analyzer.writer.SummaryTextToStdOutWriter (generates overview output to stdout)
+
+           If one of those should be deactivated or a new com.lazerycode.jmeter.analyzer.writer.Writer implementation should be added,
+           all desired writers need to be configured!
+            -->
+            <!--<writers>-->
+              <!--<com.lazerycode.jmeter.analyzer.writer.SummaryTextToStdOutWriter/>-->
+              <!--<com.lazerycode.jmeter.analyzer.writer.SummaryTextToFileWriter/>-->
+              <!--<com.lazerycode.jmeter.analyzer.writer.HtmlWriter/>-->
+              <!--<com.lazerycode.jmeter.analyzer.writer.DetailsToCsvWriter/>-->
+              <!--<com.lazerycode.jmeter.analyzer.writer.ChartWriter/>-->
+            <!--</writers>-->
+
           </configuration>
         </execution>
       </executions>

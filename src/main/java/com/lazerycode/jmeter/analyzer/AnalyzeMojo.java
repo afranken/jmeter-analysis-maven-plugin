@@ -1,6 +1,12 @@
 package com.lazerycode.jmeter.analyzer;
 
 import com.lazerycode.jmeter.analyzer.config.Environment;
+import com.lazerycode.jmeter.analyzer.writer.ChartWriter;
+import com.lazerycode.jmeter.analyzer.writer.DetailsToCsvWriter;
+import com.lazerycode.jmeter.analyzer.writer.HtmlWriter;
+import com.lazerycode.jmeter.analyzer.writer.SummaryTextToFileWriter;
+import com.lazerycode.jmeter.analyzer.writer.SummaryTextToStdOutWriter;
+import com.lazerycode.jmeter.analyzer.writer.Writer;
 import freemarker.template.TemplateException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -17,14 +23,18 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.zip.GZIPInputStream;
 
 import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
+import static com.lazerycode.jmeter.analyzer.config.Environment.HTTPSAMPLE_ELEMENT_NAME;
+import static com.lazerycode.jmeter.analyzer.config.Environment.SAMPLE_ELEMENT_NAME;
 
 /**
  * Analyzes JMeter XML test report file and generates a report
@@ -93,8 +103,8 @@ public class AnalyzeMojo extends AbstractMojo {
   @Parameter
   private Set<String> sampleNames = new HashSet<String>(
           Arrays.asList( new String[]{
-                           Environment.HTTPSAMPLE_ELEMENT_NAME,
-                           Environment.SAMPLE_ELEMENT_NAME
+                           HTTPSAMPLE_ELEMENT_NAME,
+                           SAMPLE_ELEMENT_NAME
                          }));
 
   /**
@@ -132,6 +142,21 @@ public class AnalyzeMojo extends AbstractMojo {
    */
   @Parameter
   private File templateDirectory;
+
+  /**
+   * List of writers that handle all output of the plugin.
+   * Defaults to:
+   * {@link ChartWriter} (generates detailed charts as PNGs),
+   * {@link DetailsToCsvWriter} (generates CSV files for every request group),
+   * {@link HtmlWriter} (generates an HTML overview file),
+   * {@link SummaryTextToFileWriter} (generates a TXT overview file),
+   * {@link SummaryTextToStdOutWriter} (generates overview output to stdout)
+   *
+   * If one of those should be deactivated or a new {@link Writer} implementation should be added,
+   * all desired writers need to be configured.
+   */
+  @Parameter
+  private List<Writer> writers;
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
@@ -182,16 +207,41 @@ public class AnalyzeMojo extends AbstractMojo {
    * Store all necessary configuration in current {@link Environment#ENVIRONMENT} instance so that
    * other objects have access to it.
    */
-  private void initializeEnvironment() {
-    ENVIRONMENT.setGenerateCharts(generateCharts);
-    ENVIRONMENT.setGenerateCSVs(generateCSVs);
+  private void initializeEnvironment() throws MojoExecutionException {
+
+    if(writers != null) {
+      //<writers> property was configured by user, use configured Writer implementations
+
+      if(writers.contains(null)) {
+        //if Maven can't find the configured class, it will insert a "null" element into the list.
+        //throw exception here to warn the user about this.
+        throw new MojoExecutionException("One of the configured writers could not be found by Maven.");
+      }
+
+    }
+    else {
+      //user did not specify custom Writers, use default list
+      writers = new ArrayList<Writer>();
+      writers.add(new SummaryTextToStdOutWriter());
+      writers.add(new SummaryTextToFileWriter());
+      writers.add(new HtmlWriter());
+      writers.add(new DetailsToCsvWriter());
+      writers.add(new ChartWriter());
+    }
+
+    ENVIRONMENT.setWriters(writers);
+
+    //MUST be called after initialization of writers List !!!
+    ENVIRONMENT.setGenerateCharts(writers.contains(new ChartWriter()));
+    ENVIRONMENT.setGenerateCSVs(writers.contains(new DetailsToCsvWriter()));
+
+
     ENVIRONMENT.setMaxSamples(maxSamples);
     ENVIRONMENT.setRemoteResources(remoteResources);
     ENVIRONMENT.setRequestGroups(requestGroups);
     ENVIRONMENT.setTemplateDirectory(templateDirectory);
     ENVIRONMENT.setTargetDirectory(targetDirectory);
     ENVIRONMENT.initializeFreemarkerConfiguration();
-    ENVIRONMENT.setResultRenderHelper(new ResultRenderHelper());
     ENVIRONMENT.setPreserveDirectories(preserveDirectories);
     ENVIRONMENT.setLog(getLog());
     ENVIRONMENT.setSampleNames(sampleNames);
@@ -223,10 +273,10 @@ public class AnalyzeMojo extends AbstractMojo {
         relativePath = resultDataFile.getAbsolutePath().replace(rootPath, "").replace(resultDataFileName, "");
       }
 
-      ResultAnalyzer reportAnalyser = new ResultAnalyzer(relativePath);
-
       //only use data file name, do not use file extension
-      reportAnalyser.setSummaryFilename(resultDataFileName.substring(0, resultDataFileName.lastIndexOf('.')));
+      resultDataFileName = resultDataFileName.substring(0, resultDataFileName.lastIndexOf('.'));
+
+      ResultAnalyzer reportAnalyser = new ResultAnalyzer(relativePath, resultDataFileName);
 
       reportAnalyser.analyze(resultData);
     }
