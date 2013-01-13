@@ -24,13 +24,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.zip.GZIPInputStream;
 
 import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
@@ -112,6 +106,9 @@ public class AnalyzeMojo extends AbstractMojo {
    * Request groups as a mapping from "group name" to "ant pattern".
    * A request uri that matches an ant pattern will be associated with the group name.
    * Request details, charts and CSV files are generated per requestGroup.
+   *
+   * The order is honored, a sample will be added to the first matching pattern. So it's possible
+   * to define various patterns and one catch all pattern.
    *
    * If not set, the threadgroup name of the request will be used.
    */

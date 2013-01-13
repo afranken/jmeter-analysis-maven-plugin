@@ -59,6 +59,9 @@ Usage Example
             A request uri that matches an ant pattern will be associated with the group name.
             Request details, charts and CSV files are generated per requestGroup.
 
+            The order is honored, a sample will be added to the first matching pattern. So it's possible
+            to define various patterns and one catch all pattern.
+
             If not set, the threadgroup name of the request will be used.
 
             Default: not set.
