@@ -9,7 +9,7 @@
 
   <groupId>com.lazerycode.jmeter</groupId>
   <artifactId>jmeter-analysis-maven-plugin</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
   <name>JMeter Result Analyzer Maven Plugin</name>
   <description>
@@ -92,7 +92,7 @@
     <connection>scm:git:git@github.com:afranken/jmeter-analysis-maven-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:afranken/jmeter-analysis-maven-plugin.git</developerConnection>
     <url>https://github.com/afranken/jmeter-analysis-maven-plugin</url>
-    <tag>jmeter-analysis-maven-plugin-1.0.2</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <distributionManagement>
