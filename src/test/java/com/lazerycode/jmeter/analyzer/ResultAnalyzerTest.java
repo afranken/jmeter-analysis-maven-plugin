@@ -5,8 +5,8 @@ import com.lazerycode.jmeter.analyzer.writer.ChartWriter;
 import com.lazerycode.jmeter.analyzer.writer.DetailsToCsvWriter;
 import com.lazerycode.jmeter.analyzer.writer.DetailsToHtmlWriter;
 import com.lazerycode.jmeter.analyzer.writer.HtmlWriter;
+import com.lazerycode.jmeter.analyzer.writer.SummaryJsonFileWriter;
 import com.lazerycode.jmeter.analyzer.writer.SummaryTextToFileWriter;
-import com.lazerycode.jmeter.analyzer.writer.SummaryTextToStdOutWriter;
 import com.lazerycode.jmeter.analyzer.writer.Writer;
 import junit.framework.TestCase;
 import org.apache.commons.io.FileUtils;
@@ -156,6 +156,19 @@ public class ResultAnalyzerTest extends TestCase {
 
     testOutput(localPackagePath, fileNames);
 
+  }
+
+  /**
+   * Tests the text output with only successful samples
+   */
+  public void testTextOutputJson() throws Exception {
+
+    String localPackagePath = "/json/";
+
+    setUpEnvironment(false, false, null, null);
+    ENVIRONMENT.setWriters(Arrays.<Writer>asList(new SummaryJsonFileWriter(), new SummaryTextToFileWriter(), new HtmlWriter()));
+
+    testOutput(localPackagePath, Arrays.asList("summary.json"));
   }
 
   /**
