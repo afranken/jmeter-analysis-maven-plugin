@@ -25,6 +25,10 @@ Help
 Run the HelpMojo of this plugin:
 `mvn jmeter-analysis:help -Ddetail=true -Dgoal=analyze`
 
+Release Notes
+----
+See [Release Notes][5] in the Wiki.
+
 Usage Example
 -------------
 
@@ -226,3 +230,4 @@ Part of the development of this plugin is sponsored by [CoreMedia][3]
 [2]:    http://jakarta.apache.org/jmeter/                           "JMeter"
 [3]:    http://www.coremedia.com                                    "CoreMedia AG"
 [4]:    http://freemarker.sourceforge.net/                          "Freemarker"
+[5]:    https://github.com/afranken/jmeter-analysis-maven-plugin/wiki/Release-Notes                          "Release Notes"
