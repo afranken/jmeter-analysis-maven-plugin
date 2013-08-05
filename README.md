@@ -70,6 +70,16 @@ Usage Example
               <pages>/page/**</pages>
               <binaries>/binary/**</binaries>
             </requestGroups>
+            <requestGroups>
+              <requestGroup>
+                <name>pages</name>
+                <pattern>/page/**</pattern>
+              </requestGroup>
+              <requestGroup>
+                <name>binaries</name>
+                <pattern>/binary/**</pattern>
+              </requestGroup>
+            </requestGroups>
 
             <!--
             If set to true, additional files "<category>-sizes.csv" and "<category>-durations.csv" will be stored.

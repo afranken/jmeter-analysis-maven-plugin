@@ -1,11 +1,11 @@
 package com.lazerycode.jmeter.analyzer;
 
 import com.lazerycode.jmeter.analyzer.config.Environment;
+import com.lazerycode.jmeter.analyzer.config.RequestGroup;
 import com.lazerycode.jmeter.analyzer.writer.ChartWriter;
 import com.lazerycode.jmeter.analyzer.writer.DetailsToCsvWriter;
 import com.lazerycode.jmeter.analyzer.writer.DetailsToHtmlWriter;
 import com.lazerycode.jmeter.analyzer.writer.HtmlWriter;
-import com.lazerycode.jmeter.analyzer.writer.SummaryJsonFileWriter;
 import com.lazerycode.jmeter.analyzer.writer.SummaryTextToFileWriter;
 import com.lazerycode.jmeter.analyzer.writer.Writer;
 import junit.framework.TestCase;
@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
@@ -141,7 +140,7 @@ public class ResultAnalyzerTest extends TestCase {
 
   //--------------------------------------------------------------------------------------------------------------------
 
-  private void setUpEnvironment(boolean generateCSVs, boolean generateCharts, LinkedHashMap<String, String> patterns, File templateDirectory) {
+  private void setUpEnvironment(boolean generateCSVs, boolean generateCharts, List<RequestGroup> patterns, File templateDirectory) {
     ENVIRONMENT.clear();
     ENVIRONMENT.setGenerateDetails(generateCSVs);
     ENVIRONMENT.setGenerateCharts(generateCharts);

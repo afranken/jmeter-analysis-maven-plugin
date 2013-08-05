@@ -54,8 +54,7 @@ public enum Environment {
   private File templateDirectory;
   private Properties remoteResources;
   private Set<String> sampleNames;
-  @SuppressWarnings("all") // avoid "Loose coupling" violation. LinkedHashMap is used to keep order
-  private LinkedHashMap<String,String> requestGroups;
+  private List<RequestGroup> requestGroups;
   private int maxSamples = DEFAULT_MAXSAMPLES;
   private Configuration configuration;
   private File targetDirectory;
@@ -119,13 +118,11 @@ public enum Environment {
     this.remoteResources = remoteResources;
   }
 
-  @SuppressWarnings("all") // avoid "Loose coupling" violation. LinkedHashMap is used to keep order
-  public LinkedHashMap<String, String> getRequestGroups() {
+  public List<RequestGroup> getRequestGroups() {
     return requestGroups;
   }
 
-  @SuppressWarnings("all") // avoid "Loose coupling" violation. LinkedHashMap is used to keep order
-  public void setRequestGroups(LinkedHashMap<String, String> requestGroups) {
+  public void setRequestGroups(List<RequestGroup> requestGroups) {
     this.requestGroups = requestGroups;
   }
 

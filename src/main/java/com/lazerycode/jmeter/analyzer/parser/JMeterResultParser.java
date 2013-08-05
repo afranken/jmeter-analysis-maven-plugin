@@ -1,5 +1,6 @@
 package com.lazerycode.jmeter.analyzer.parser;
 
+import com.lazerycode.jmeter.analyzer.config.RequestGroup;
 import com.lazerycode.jmeter.analyzer.statistics.Samples;
 import org.apache.maven.plugin.logging.Log;
 import org.springframework.util.AntPathMatcher;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -81,7 +83,7 @@ public class JMeterResultParser {
     private final AntPathMatcher matcher = new AntPathMatcher();
 
     private final int maxSamples;
-    private final Map<String, String> pathPatterns;
+    private final List<RequestGroup> pathPatterns;
     private final boolean sizeByUris;
     private final boolean durationByUris;
 
@@ -112,7 +114,7 @@ public class JMeterResultParser {
      * @param durationByUris true, if the response duration shall be counted for each uri separately
      * @param nodeNames Set of node names to process
      */
-    public Parser(int maxSamples, Map<String, String> pathPatterns, boolean sizeByUris, boolean durationByUris, Set<String> nodeNames) {
+    public Parser(int maxSamples, List<RequestGroup> pathPatterns, boolean sizeByUris, boolean durationByUris, Set<String> nodeNames) {
       this.maxSamples = maxSamples;
       this.pathPatterns = pathPatterns;
       this.sizeByUris = sizeByUris;
@@ -315,11 +317,11 @@ public class JMeterResultParser {
 
         // try to find a pattern key
         String uri = attributes.getValue("lb");
-        for( Map.Entry<String, String> entry : pathPatterns.entrySet() ) {
+        for( RequestGroup requestGroup : pathPatterns ) {
 
-          if( matcher.match(entry.getValue(), uri) ) {
+          if( matcher.match(requestGroup.getPattern(), uri) ) {
             // found a pattern
-            key = entry.getKey();
+            key = requestGroup.getName();
             break;
           }
         }

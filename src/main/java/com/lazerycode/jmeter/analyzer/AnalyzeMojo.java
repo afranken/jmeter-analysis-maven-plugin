@@ -1,6 +1,7 @@
 package com.lazerycode.jmeter.analyzer;
 
 import com.lazerycode.jmeter.analyzer.config.Environment;
+import com.lazerycode.jmeter.analyzer.config.RequestGroup;
 import com.lazerycode.jmeter.analyzer.writer.ChartWriter;
 import com.lazerycode.jmeter.analyzer.writer.DetailsToCsvWriter;
 import com.lazerycode.jmeter.analyzer.writer.DetailsToHtmlWriter;
@@ -100,8 +101,7 @@ public class AnalyzeMojo extends AbstractMojo {
    * If not set, the threadgroup name of the request will be used.
    */
   @Parameter
-  @SuppressWarnings("all") // avoid "Loose coupling" violation. LinkedHashMap is used to keep order
-  private LinkedHashMap<String,String> requestGroups;
+  private List<RequestGroup> requestGroups;
 
   /**
    * URLs of resources to be downloaded and to be stored in target directory.
