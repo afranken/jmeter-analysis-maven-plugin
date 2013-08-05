@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testResults version="1.2">
+<httpSample t="1352" lt="1178" ts="1324043709785" s="true" lb="/main" rc="200" rm="OK" tn="warmup 1-1" dt="text" by="53890"/>
+<customSample t="13" lt="13" ts="1324043711142" s="true" lb="/main/6/data" rc="200" rm="OK" tn="warmup 1-1" dt="bin" by="20480"/>
+<httpSample t="4" lt="4" ts="1324043711156" s="true" lb="/main/10/data" rc="200" rm="OK" tn="warmup 1-1" dt="bin" by="20480"/>
+<httpSample t="3" lt="3" ts="1324043711161" s="true" lb="/main/14/data" rc="200" rm="OK" tn="warmup 1-1" dt="bin" by="20480"/>
+<httpSample t="0" lt="0" ts="1324043739763" s="true" lb="/main/346/data" rc="200" rm="OK" tn="warmup 1-1" dt="bin" by="20480"/>
+<httpSample t="1" lt="0" ts="1324043739763" s="true" lb="/main/350/data" rc="200" rm="OK" tn="warmup 1-1" dt="bin" by="20480"/>
+<httpSample t="0" lt="0" ts="1324043739764" s="true" lb="/main/354/data" rc="200" rm="OK" tn="warmup 1-1" dt="bin" by="20480"/>
+<httpSample t="1" lt="0" ts="1324043739764" s="true" lb="/main/358/data" rc="200" rm="OK" tn="warmup 1-1" dt="bin" by="20480"/>
+<httpSample t="1" lt="1" ts="1324043739765" s="true" lb="/main/366/data" rc="200" rm="OK" tn="warmup 1-1" dt="bin" by="20480"/>
+<httpSample t="0" lt="0" ts="1324043739766" s="true" lb="/main/370/data" rc="200" rm="OK" tn="warmup 1-1" dt="bin" by="20480"/>
+</testResults>

@@ -23,11 +23,12 @@ import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
  */
 public class ResultAnalyzer {
 
+  private static final String FILENAME_DEFAULT = "summary";
   private String fileName;
   private final String resultDataFileRelativePath;
 
   public ResultAnalyzer(String resultDataFileRelativePath, String fileName) {
-    this.fileName = fileName != null ? fileName : "summary";
+    this.fileName = fileName != null ? fileName : FILENAME_DEFAULT;
     this.resultDataFileRelativePath = resultDataFileRelativePath;
   }
 

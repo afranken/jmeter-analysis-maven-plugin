@@ -11,6 +11,6 @@
     {
       "min": ${requests.min},
       "max": ${requests.max},
-      "quantile": ${quantiles.getQuantile(90)},
+      "quantile90": ${quantiles.getQuantile(900)},
       "average": ${requests.average}
     }

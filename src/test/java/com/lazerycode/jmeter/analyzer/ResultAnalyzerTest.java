@@ -30,8 +30,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
 import static org.hamcrest.core.Is.is;
@@ -44,7 +42,7 @@ import static org.junit.Assert.assertThat;
 public class ResultAnalyzerTest extends TestCase {
 
   private File workDir;
-  private final boolean cleanup = true; // set this to false if you want to test the results manually
+  private final boolean cleanup = false; // set this to false if you want to test the results manually
   private static final SimpleDateFormat LOCAL_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HHmmssZ", Locale.getDefault());
   private static final String PACKAGE_PATH = "/com/lazerycode/jmeter/analyzer/resultanalyzer/";
   
@@ -68,54 +66,6 @@ public class ResultAnalyzerTest extends TestCase {
   //--------------------------------------------------------------------------------------------------------------------
 
   /**
-   * Tests the text output with only successful samples
-   */
-  public void testTextOutputSuccess() throws Exception {
-
-    String localPackagePath = "/success/";
-
-    setUpEnvironment(false, false, null, null);
-
-    testOutput(localPackagePath, null);
-  }
-
-  /**
-   * Tests the text output with a few unsuccessful samples
-   */
-  public void testTextOutputSomeErrors() throws Exception {
-
-    String localPackagePath = "/someerrors/";
-
-    setUpEnvironment(false,false, null, null);
-
-    testOutput(localPackagePath, null);
-  }
-
-  /**
-   * Tests the text output with only unsuccessful samples
-   */
-  public void testTextOnlyErrors() throws Exception {
-
-    String localPackagePath = "/onlyerrors/";
-
-    setUpEnvironment(false, false, null, null);
-
-    testOutput(localPackagePath, null);
-  }
-
-  /**
-   * Tests the text output with an empty results file
-   */
-  public void testTextEmptyOutput() throws Exception {
-
-    String localPackagePath = "/empty/";
-
-    setUpEnvironment(false,false, null, null);
-
-    testOutput(localPackagePath, null);
-  }
-
-  /**
    * Tests the text output where only "customSample" nodes are processed
    */
   public void testSampleNames() throws Exception {
@@ -127,48 +77,6 @@ public class ResultAnalyzerTest extends TestCase {
     ENVIRONMENT.setSampleNames(Collections.singleton("customSample"));
 
     testOutput(localPackagePath, null);
-  }
-
-  /**
-   * Tests that all result files are available
-   *
-   * Text, HTML, CSVs and Images
-   */
-  public void testAllFiles() throws Exception {
-
-    String localPackagePath = "/allfiles/";
-
-    LinkedHashMap<String, String> patterns = new LinkedHashMap<java.lang.String, java.lang.String>();
-    patterns.put("page", "/main");
-    patterns.put("blob", "/main/**");
-
-    setUpEnvironment(true, true, patterns, null);
-
-
-    List<String> fileNames = new ArrayList<String>();
-    fileNames.add("blob-durations-summary.csv");
-    fileNames.add("blob-sizes-summary.csv");
-    fileNames.add("page-durations-summary.csv");
-    fileNames.add("page-sizes-summary.csv");
-    //TODO: skip blob comparison for now, doesn't work across all platforms
-    //fileNames.add("page-durations-summary.png");
-    //fileNames.add("blob-durations-summary.png");
-
-    testOutput(localPackagePath, fileNames);
-
-  }
-
-  /**
-   * Tests the text output with only successful samples
-   */
-  public void testTextOutputJson() throws Exception {
-
-    String localPackagePath = "/json/";
-
-    setUpEnvironment(false, false, null, null);
-    ENVIRONMENT.setWriters(Arrays.<Writer>asList(new SummaryJsonFileWriter(), new SummaryTextToFileWriter(), new HtmlWriter()));
-
-    testOutput(localPackagePath, Arrays.asList("summary.json"));
   }
 
   /**
@@ -273,17 +181,17 @@ public class ResultAnalyzerTest extends TestCase {
 
     //1. ---- initialization
     List<String> resultFiles = new ArrayList<String>();
-    resultFiles.add("summary.txt");
-    resultFiles.add("summary.html");
+    resultFiles.add("test.txt");
+    resultFiles.add("test.html");
     if(additionalFiles != null ) {
       resultFiles.addAll(additionalFiles);
     }
     String localPackagePath = PACKAGE_PATH + packagePath;
 
     //2. ---- run plugin
-    Reader data = new InputStreamReader(getClass().getResourceAsStream(localPackagePath+"jmeter-result.jtl"));
+    Reader data = new InputStreamReader(getClass().getResourceAsStream(localPackagePath+"test.jtl"));
     //commandline output does not matter during tests and is routed to a NullWriter
-    new ResultAnalyzer(null,null).analyze(data);
+    new ResultAnalyzer(null,"test").analyze(data);
     data.close();
 
     //3. ---- assert that result files are correct
@@ -320,14 +228,7 @@ public class ResultAnalyzerTest extends TestCase {
     //replace line endings
     content = content.replaceAll("(\\r\\n|\\r|\\n)", "");
 
-    //replace date with date converted to the local timezone
-    Pattern datePattern = Pattern.compile("\\d\\d\\d\\d\\d\\d\\d\\dT\\d\\d\\d\\d\\d\\d+\\d\\d\\d\\d");
-    Matcher matcher = datePattern.matcher(content);
-    while(matcher.matches()) {
-      matcher.replaceFirst(toLocal(matcher.group()));
-    }
-
-    return matcher.toString();
+    return content;
   }
 
   /**
@@ -378,25 +279,4 @@ public class ResultAnalyzerTest extends TestCase {
   private static String toLocal(String dateString) throws ParseException {
     return toLocal(parseDate(dateString));
   }
-
-  //====================================================================================================================
-
-//  /**
-//   * Implementation that supports passing a writer into the object.
-//   * Per default, {@link ResultAnalyzer} would write output to {@link System#out}
-//   */
-//  private class LocalResultAnalyzer extends ResultAnalyzer {
-//
-//    private Writer writer;
-//
-//    LocalResultAnalyzer(Writer writer) {
-//      super(null);
-//      this.writer = writer;
-//    }
-//
-//    @Override
-//    protected void renderTextToStdOut(Map<String, AggregatedResponses> testResults) throws IOException, TemplateException {
-//      templateUtil.renderText(testResults, writer);
-//    }
-//  }
 }

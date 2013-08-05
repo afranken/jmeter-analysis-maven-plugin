@@ -12,12 +12,12 @@ import java.util.Map;
  * discovered / configured {@link com.lazerycode.jmeter.analyzer.AnalyzeMojo#requestGroups RequestGroup} in
  * each discovered results file.
  *
- * Custom implementations should extend {@link AbstractWriter} to make use of it's convenience methods.
+ * Custom implementations should extend {@link WriterBase} to make use of it's convenience methods.
  */
 public interface Writer {
 
   /**
-   * Write test results to desired output. See {@link AbstractWriter},
+   * Write test results to desired output. See {@link WriterBase},
    * {@link com.lazerycode.jmeter.analyzer.util.TemplateUtil TemplateUtil}
    * and {@link com.lazerycode.jmeter.analyzer.util.FileUtil FileUtil} for convenience methods.
    *

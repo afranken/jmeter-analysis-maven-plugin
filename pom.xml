@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -59,9 +60,9 @@
 
   <!-- no contributors right now -->
   <!--<contributors>-->
-    <!--<contributor>-->
-      <!--<name>Jon Doe</name>-->
-    <!--</contributor>-->
+  <!--<contributor>-->
+  <!--<name>Jon Doe</name>-->
+  <!--</contributor>-->
   <!--</contributors>-->
 
   <issueManagement>
@@ -134,9 +135,21 @@
     </dependency>
 
     <dependency>
+      <groupId>com.googlecode.charts4j</groupId>
+      <artifactId>charts4j</artifactId>
+      <version>1.3</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.freemarker</groupId>
       <artifactId>freemarker</artifactId>
       <version>2.3.20</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>14.0.1</version>
     </dependency>
 
     <!-- generated help mojo has a dependency to plexus-utils -->
@@ -155,10 +168,24 @@
     </dependency>
 
     <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>1.9.5</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.hamcrest</groupId>
+          <artifactId>hamcrest-core</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <scope>test</scope>
       <version>4.11</version>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>
@@ -176,45 +203,45 @@
         </plugin>
         <!-- TODO: create mvn:site -->
         <!--<plugin>-->
-          <!--<groupId>org.apache.maven.plugins</groupId>-->
-          <!--<artifactId>maven-site-plugin</artifactId>-->
-          <!--<version>3.0</version>-->
-          <!--<configuration>-->
-            <!--<locales>en</locales>-->
-            <!--<inputEncoding>UTF-8</inputEncoding>-->
-            <!--<outputEncoding>UTF-8</outputEncoding>-->
-            <!--<reportPlugins>-->
-              <!--<reportPlugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-project-info-reports-plugin</artifactId>-->
-                <!--<configuration>-->
-                  <!--<dependencyDetailsEnabled>false</dependencyDetailsEnabled>-->
-                  <!--<dependencyLocationsEnabled>false</dependencyLocationsEnabled>-->
-                <!--</configuration>-->
-                <!--<reportSets>-->
-                  <!--<reportSet>-->
-                    <!--<reports>-->
-                      <!--<report>index</report>-->
-                      <!--<report>summary</report>-->
-                      <!--<report>dependency-management</report>-->
-                      <!--<report>issue-tracking</report>-->
-                      <!--<report>help</report>-->
-                      <!--<report>modules</report>-->
-                      <!--<report>dependencies</report>-->
-                      <!--<report>plugins</report>-->
-                      <!--<report>cim</report>-->
-                      <!--<report>license</report>-->
-                      <!--<report>mailing-list</report>-->
-                      <!--<report>project-team</report>-->
-                      <!--<report>scm</report>-->
-                      <!--<report>dependencies</report>-->
-                      <!--<report>distribution-management</report>-->
-                    <!--</reports>-->
-                  <!--</reportSet>-->
-                <!--</reportSets>-->
-              <!--</reportPlugin>-->
-            <!--</reportPlugins>-->
-          <!--</configuration>-->
+        <!--<groupId>org.apache.maven.plugins</groupId>-->
+        <!--<artifactId>maven-site-plugin</artifactId>-->
+        <!--<version>3.0</version>-->
+        <!--<configuration>-->
+        <!--<locales>en</locales>-->
+        <!--<inputEncoding>UTF-8</inputEncoding>-->
+        <!--<outputEncoding>UTF-8</outputEncoding>-->
+        <!--<reportPlugins>-->
+        <!--<reportPlugin>-->
+        <!--<groupId>org.apache.maven.plugins</groupId>-->
+        <!--<artifactId>maven-project-info-reports-plugin</artifactId>-->
+        <!--<configuration>-->
+        <!--<dependencyDetailsEnabled>false</dependencyDetailsEnabled>-->
+        <!--<dependencyLocationsEnabled>false</dependencyLocationsEnabled>-->
+        <!--</configuration>-->
+        <!--<reportSets>-->
+        <!--<reportSet>-->
+        <!--<reports>-->
+        <!--<report>index</report>-->
+        <!--<report>summary</report>-->
+        <!--<report>dependency-management</report>-->
+        <!--<report>issue-tracking</report>-->
+        <!--<report>help</report>-->
+        <!--<report>modules</report>-->
+        <!--<report>dependencies</report>-->
+        <!--<report>plugins</report>-->
+        <!--<report>cim</report>-->
+        <!--<report>license</report>-->
+        <!--<report>mailing-list</report>-->
+        <!--<report>project-team</report>-->
+        <!--<report>scm</report>-->
+        <!--<report>dependencies</report>-->
+        <!--<report>distribution-management</report>-->
+        <!--</reports>-->
+        <!--</reportSet>-->
+        <!--</reportSets>-->
+        <!--</reportPlugin>-->
+        <!--</reportPlugins>-->
+        <!--</configuration>-->
         <!--</plugin>-->
 
         <plugin>
@@ -240,6 +267,12 @@
               </goals>
             </execution>
           </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugin</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.4</version>
         </plugin>
 
       </plugins>
@@ -290,11 +323,11 @@
                 </execution>
               </executions>
             </plugin>
-              <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-release-plugin</artifactId>
-                  <version>2.3.1</version>
-              </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-release-plugin</artifactId>
+              <version>2.3.1</version>
+            </plugin>
           </plugins>
         </pluginManagement>
       </build>

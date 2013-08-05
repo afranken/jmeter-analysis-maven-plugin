@@ -5,6 +5,7 @@ import com.lazerycode.jmeter.analyzer.writer.ChartWriter;
 import com.lazerycode.jmeter.analyzer.writer.DetailsToCsvWriter;
 import com.lazerycode.jmeter.analyzer.writer.DetailsToHtmlWriter;
 import com.lazerycode.jmeter.analyzer.writer.HtmlWriter;
+import com.lazerycode.jmeter.analyzer.writer.SummaryJsonFileWriter;
 import com.lazerycode.jmeter.analyzer.writer.SummaryTextToFileWriter;
 import com.lazerycode.jmeter.analyzer.writer.SummaryTextToStdOutWriter;
 import com.lazerycode.jmeter.analyzer.writer.Writer;
@@ -60,20 +61,6 @@ public class AnalyzeMojo extends AbstractMojo {
    */
   @Parameter(defaultValue = "50000")
   private int maxSamples = Environment.DEFAULT_MAXSAMPLES;
-
-  /**
-   * True, if CSV files with detailed information for each request should be generated
-   * defaultValue = "true"
-   */
-  @Parameter(defaultValue = "true")
-  private boolean generateCSVs;
-
-  /**
-   * True, if charts for each requestGroup should be generated
-   * defaultValue = "true"
-   */
-  @Parameter(defaultValue = "true")
-  private boolean generateCharts;
 
   /**
    * True if all files found by pattern used in ${source} should be processed
@@ -223,6 +210,7 @@ public class AnalyzeMojo extends AbstractMojo {
       writers = new ArrayList<Writer>();
       writers.add(new SummaryTextToStdOutWriter());
       writers.add(new SummaryTextToFileWriter());
+      writers.add(new SummaryJsonFileWriter());
       writers.add(new HtmlWriter());
       writers.add(new DetailsToCsvWriter());
       writers.add(new DetailsToHtmlWriter());

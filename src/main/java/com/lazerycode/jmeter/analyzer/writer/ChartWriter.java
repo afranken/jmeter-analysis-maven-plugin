@@ -1,9 +1,9 @@
 package com.lazerycode.jmeter.analyzer.writer;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.lazerycode.jmeter.analyzer.parser.AggregatedResponses;
 import com.lazerycode.jmeter.analyzer.statistics.Samples;
 import freemarker.template.TemplateException;
-import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
@@ -12,17 +12,22 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
-import static com.lazerycode.jmeter.analyzer.util.FileUtil.*;
+import static com.lazerycode.jmeter.analyzer.util.FileUtil.urlEncode;
+import static org.jfree.chart.ChartUtilities.writeChartAsPNG;
 
 /**
  * Writes sizes and durations charts as PNG images
  */
-public class ChartWriter extends AbstractWriter {
+public class ChartWriter extends WriterBase {
 
   private static final int IMAGE_WIDTH = 800;
   private static final int IMAGE_HEIGHT = 600;
@@ -32,7 +37,6 @@ public class ChartWriter extends AbstractWriter {
    * Since this is more or less a simple PoJo, it is not necessary to make more than a simple instanceof check.
    *
    * @param obj the object to check
-   *
    * @return true of obj is an instance of ChartWriter.
    */
   @Override
@@ -53,14 +57,20 @@ public class ChartWriter extends AbstractWriter {
     }
   }
 
+  //--------------------------------------------------------------------------------------------------------------------
+
+  @VisibleForTesting
+  protected OutputStream getOut(File file) throws FileNotFoundException {
+    return new BufferedOutputStream(new FileOutputStream(file));
+  }
+
   //====================================================================================================================
 
   /**
    * Generate Charts
    *
-   * @param name identifier used as part of the name
+   * @param name                identifier used as part of the name
    * @param aggregatedResponses results to generate CSV from
-   *
    * @throws IOException
    */
   private void writeCharts(AggregatedResponses aggregatedResponses, String name) throws IOException, TemplateException {
@@ -71,17 +81,17 @@ public class ChartWriter extends AbstractWriter {
     String chartName;
 
     //durations chart
-    fileName = urlEncode(name) + durationsPngFileSuffix;
-    requestChartFile = initializeFile(getTargetDirectory(), fileName, getResultDataFileRelativePath());
+    fileName = urlEncode(name) + DURATIONS + super.getFileName() + PNG_EXT;
+    requestChartFile = getFile(fileName);
     aggregatedResult = aggregatedResponses.getDuration();
-    chartName = "Requests Duration ("+name+")";
+    chartName = "Requests Duration (" + name + ")";
     renderChart(chartName, "Duration", "Time / ms", "Duration / ms", aggregatedResult, requestChartFile);
 
     //sizes chart
-    fileName = urlEncode(name) + sizesPngFileSuffix;
-    requestChartFile = initializeFile(getTargetDirectory(), fileName, getResultDataFileRelativePath());
+    fileName = urlEncode(name) + SIZES + super.getFileName() + PNG_EXT;
+    requestChartFile = getFile(fileName);
     aggregatedResult = aggregatedResponses.getSize();
-    chartName = "Requests Size ("+name+")";
+    chartName = "Requests Size (" + name + ")";
     renderChart(chartName, "Size", "Time / ms", "Size / bytes", aggregatedResult, requestChartFile);
   }
 
@@ -94,10 +104,9 @@ public class ChartWriter extends AbstractWriter {
    * @param rangeAxisName
    * @param source
    * @param target
-   *
    */
-  private static void renderChart(String chartName, String singleValueName, String domainAxisName, String rangeAxisName,
-                                 Samples source, File target) throws IOException {
+  private void renderChart(String chartName, String singleValueName, String domainAxisName, String rangeAxisName,
+                                  Samples source, File target) throws IOException {
 
     XYSeries singleValue = new XYSeries(singleValueName);
     XYSeries average = new XYSeries("Average");
@@ -108,14 +117,14 @@ public class ChartWriter extends AbstractWriter {
     List<Long> timestamps = source.getTimestamps();
 
     long total = 0;
-    for( int x=0; x<samples.size(); x++ ) {
+    for (int x = 0; x < samples.size(); x++) {
 
       long current = samples.get(x);
       long timestamp = timestamps.get(x);
       singleValue.add(timestamp - minimumTimestamp, samples.get(x));
 
       total += current;
-      average.add(timestamp-minimumTimestamp, (int) (total / (x+1)));
+      average.add(timestamp - minimumTimestamp, (int) (total / (x + 1)));
     }
 
     XYSeriesCollection singleValues = new XYSeriesCollection();
@@ -142,7 +151,15 @@ public class ChartWriter extends AbstractWriter {
 
     JFreeChart chart = new JFreeChart(chartName, plot);
 
-    ChartUtilities.saveChartAsPNG(target, chart, IMAGE_WIDTH, IMAGE_HEIGHT, null);
+    OutputStream out = getOut(target);
+
+    try {
+      writeChartAsPNG(out, chart, IMAGE_WIDTH, IMAGE_HEIGHT, null);
+    }
+    finally {
+      out.close();
+    }
+
   }
 
 }
