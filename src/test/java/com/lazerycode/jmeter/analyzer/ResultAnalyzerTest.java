@@ -29,8 +29,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
+import static com.lazerycode.jmeter.analyzer.writer.WriterTestHelper.normalizeFileContents;
+import static com.lazerycode.jmeter.analyzer.writer.WriterTestHelper.toLocal;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertThat;
@@ -214,23 +218,6 @@ public class ResultAnalyzerTest extends TestCase {
   }
 
   /**
-   * Strip line ends from String contents of a file so that contents can be compared on different platforms.
-   *
-   * @param file
-   * @return normalized String
-   * @throws IOException
-   */
-  private String normalizeFileContents(File file) throws IOException, ParseException {
-
-    String content = FileUtils.readFileToString(file,"UTF-8");
-
-    //replace line endings
-    content = content.replaceAll("(\\r\\n|\\r|\\n)", "");
-
-    return content;
-  }
-
-  /**
    * Remove all contents (including subdirectories) from given directory
    * @param dir
    */
@@ -265,17 +252,5 @@ public class ResultAnalyzerTest extends TestCase {
     }
 
     return result;
-  }
-
-  private static Date parseDate(String dateString) throws ParseException {
-    return LOCAL_DATE_FORMAT.parse(dateString);
-  }
-  
-  private static String toLocal(Date date) {
-    return LOCAL_DATE_FORMAT.format(date);
-  }
-  
-  private static String toLocal(String dateString) throws ParseException {
-    return toLocal(parseDate(dateString));
   }
 }

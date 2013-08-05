@@ -10,8 +10,12 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -20,6 +24,8 @@ import static org.mockito.Mockito.when;
  * Abstract base for {@link Writer} tests
  */
 public final class WriterTestHelper {
+
+  private static final SimpleDateFormat LOCAL_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HHmmssZ", Locale.getDefault());
 
   public static Map<String, AggregatedResponses> getMockedTestResults() throws Exception {
     String key = "warmup";
@@ -73,9 +79,9 @@ public final class WriterTestHelper {
 
     when(value.getStatusCodes()).thenReturn(statusCodes);
     when(value.getSize()).thenReturn(size);
-    when(value.getSizeByUri()).thenReturn(ImmutableMap.of(key,size));
+    when(value.getSizeByUri()).thenReturn(ImmutableMap.of(key, size));
     when(value.getDuration()).thenReturn(duration);
-    when(value.getDurationByUri()).thenReturn(ImmutableMap.of(key,duration));
+    when(value.getDurationByUri()).thenReturn(ImmutableMap.of(key, duration));
 
     //--- add aggregatedResults as testresult
     return ImmutableMap.of(key, value);
@@ -105,7 +111,30 @@ public final class WriterTestHelper {
     //replace line endings
     content = content.replaceAll("(\\r\\n|\\r|\\n)", "");
 
-    return content;
+    //replace date with date converted to the local timezone
+    Pattern datePattern = Pattern.compile("\\d\\d\\d\\d\\d\\d\\d\\dT\\d\\d\\d\\d\\d\\d\\+\\d\\d\\d\\d");
+    Matcher matcher = datePattern.matcher(content);
+    StringBuffer sb = new StringBuffer();
+    while (matcher.find()) {
+      matcher.appendReplacement(sb, toLocal(matcher.group()));
+    }
+    matcher.appendTail(sb);
+
+    return sb.toString();
+  }
+
+  public static String toLocal(String dateString) throws ParseException {
+    return toLocal(parseDate(dateString));
+  }
+
+  //====================================================================================================================
+
+  private static Date parseDate(String dateString) throws ParseException {
+    return LOCAL_DATE_FORMAT.parse(dateString);
+  }
+
+  private static String toLocal(Date date) {
+    return LOCAL_DATE_FORMAT.format(date);
   }
 
 }
