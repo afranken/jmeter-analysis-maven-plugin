@@ -38,7 +38,7 @@ import static com.lazerycode.jmeter.analyzer.config.Environment.SAMPLE_ELEMENT_N
  *
  * @author Dennis Homann, Arne Franken, Peter Kaul
  */
-@Mojo(name="analyze",requiresDirectInvocation=true)
+@Mojo(name="analyze")
 @SuppressWarnings({"UnusedDeclaration", "FieldCanBeLocal"}) // Mojos get their fields set via reflection
 public class AnalyzeMojo extends AbstractMojo {
 
