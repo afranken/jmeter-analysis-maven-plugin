@@ -12,7 +12,9 @@
     <#assign aggregatedResponses=self(key)/>
     <#assign bytes=aggregatedResponses.size/>
     <#assign requests=aggregatedResponses.duration/>
+    <#if (requests.successCount > 0) >
     <#include "aggregatedResponse.ftl" />
+    </#if>
   </#list>
 
   ]
