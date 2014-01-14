@@ -1,11 +1,6 @@
 package com.lazerycode.jmeter.analyzer.statistics;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Collects samples (as a sequence of values of type "long") and provides the following values:

@@ -1,4 +1,4 @@
-package com.lazerycode.jmeter.analyzer.config;
+package com.lazerycode.jmeter.analyzer;
 
 /**
  * Configuration POJO containing a name and pattern tuple.

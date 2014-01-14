@@ -1,6 +1,6 @@
 package com.lazerycode.jmeter.analyzer.parser;
 
-import com.lazerycode.jmeter.analyzer.config.RequestGroup;
+import com.lazerycode.jmeter.analyzer.RequestGroup;
 import com.lazerycode.jmeter.analyzer.statistics.Samples;
 import org.apache.maven.plugin.logging.Log;
 import org.springframework.util.AntPathMatcher;
@@ -14,11 +14,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
 import static com.lazerycode.jmeter.analyzer.parser.StatusCodes.HTTPCODE_CONNECTIONERROR;

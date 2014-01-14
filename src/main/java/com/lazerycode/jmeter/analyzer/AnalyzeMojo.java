@@ -1,14 +1,7 @@
 package com.lazerycode.jmeter.analyzer;
 
 import com.lazerycode.jmeter.analyzer.config.Environment;
-import com.lazerycode.jmeter.analyzer.config.RequestGroup;
-import com.lazerycode.jmeter.analyzer.writer.ChartWriter;
-import com.lazerycode.jmeter.analyzer.writer.DetailsToCsvWriter;
-import com.lazerycode.jmeter.analyzer.writer.DetailsToHtmlWriter;
-import com.lazerycode.jmeter.analyzer.writer.HtmlWriter;
-import com.lazerycode.jmeter.analyzer.writer.SummaryJsonFileWriter;
-import com.lazerycode.jmeter.analyzer.writer.SummaryTextToFileWriter;
-import com.lazerycode.jmeter.analyzer.writer.SummaryTextToStdOutWriter;
+import com.lazerycode.jmeter.analyzer.writer.*;
 import com.lazerycode.jmeter.analyzer.writer.Writer;
 import freemarker.template.TemplateException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -20,18 +13,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.xml.sax.SAXException;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.util.*;
 import java.util.zip.GZIPInputStream;
 
-import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
-import static com.lazerycode.jmeter.analyzer.config.Environment.HTTPSAMPLE_ELEMENT_NAME;
-import static com.lazerycode.jmeter.analyzer.config.Environment.SAMPLE_ELEMENT_NAME;
+import static com.lazerycode.jmeter.analyzer.config.Environment.*;
 
 /**
  * Analyzes JMeter XML test report file and generates a report

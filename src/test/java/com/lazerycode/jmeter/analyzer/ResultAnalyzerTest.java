@@ -1,7 +1,6 @@
 package com.lazerycode.jmeter.analyzer;
 
 import com.lazerycode.jmeter.analyzer.config.Environment;
-import com.lazerycode.jmeter.analyzer.config.RequestGroup;
 import com.lazerycode.jmeter.analyzer.writer.ChartWriter;
 import com.lazerycode.jmeter.analyzer.writer.DetailsToCsvWriter;
 import com.lazerycode.jmeter.analyzer.writer.DetailsToHtmlWriter;
@@ -19,18 +18,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
 import static com.lazerycode.jmeter.analyzer.writer.WriterTestHelper.normalizeFileContents;

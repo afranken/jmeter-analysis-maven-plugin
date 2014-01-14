@@ -1,12 +1,12 @@
 package com.lazerycode.jmeter.analyzer.config;
 
+import com.lazerycode.jmeter.analyzer.RequestGroup;
 import com.lazerycode.jmeter.analyzer.writer.Writer;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
 import org.apache.maven.plugin.logging.Log;
 
 import java.io.File;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
