@@ -85,13 +85,13 @@ public class FileUtil {
    * @throws IOException If reading fails
    */
   public static void readResources(Properties remoteResources, File targetDir, String resultDataFileRelativePath,
-                                   Collection<AggregatedResponses> testResults) throws IOException {
+                                   Collection<AggregatedResponses> testResults, String fromuntilDateFormat) throws IOException {
 
     long[] startEnd = getStartEnd(testResults);
     long start = startEnd[0];
     long end = startEnd[1];
 
-    SimpleDateFormat dateFormat = new SimpleDateFormat(ISO8601_FORMAT);
+    SimpleDateFormat dateFormat = new SimpleDateFormat(fromuntilDateFormat);
     String fromString = urlEncode(dateFormat.format(new Date(start)));
     String endString = urlEncode(dateFormat.format(new Date(end)));
 

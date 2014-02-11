@@ -1,5 +1,6 @@
 package com.lazerycode.jmeter.analyzer;
 
+import com.lazerycode.jmeter.analyzer.config.Environment;
 import com.lazerycode.jmeter.analyzer.parser.AggregatedResponses;
 import com.lazerycode.jmeter.analyzer.parser.JMeterResultParser;
 import com.lazerycode.jmeter.analyzer.util.FileUtil;
@@ -51,7 +52,8 @@ public class ResultAnalyzer {
     Properties remoteResources = ENVIRONMENT.getRemoteResources();
     if (remoteResources != null) {
       FileUtil.readResources(remoteResources, ENVIRONMENT.getTargetDirectory(),
-              resultDataFileRelativePath, testResults.values());
+              resultDataFileRelativePath, testResults.values(),
+              ENVIRONMENT.getRemoteResourcesFromUntilDateFormat());
     }
   }
 
