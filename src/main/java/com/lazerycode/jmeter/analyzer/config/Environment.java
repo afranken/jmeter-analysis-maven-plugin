@@ -38,6 +38,9 @@ public enum Environment {
 
   public static final String ISO8601_FORMAT = "yyyyMMdd'T'HHmmssZ";
 
+  
+  
+
   /**
    * true, if charts should be generated
    */
@@ -53,6 +56,7 @@ public enum Environment {
    */
   private File templateDirectory;
   private Properties remoteResources;
+  private String remoteResourcesFromUntilDateFormat;
   private Set<String> sampleNames;
   private List<RequestGroup> requestGroups;
   private int maxSamples = DEFAULT_MAXSAMPLES;
@@ -76,6 +80,7 @@ public enum Environment {
     this.maxSamples = 0;
     this.configuration = null;
     this.targetDirectory = null;
+    this.remoteResourcesFromUntilDateFormat = ISO8601_FORMAT;
   }
 
   public File getTargetDirectory() {
@@ -190,4 +195,15 @@ public enum Environment {
   public void setWriters(List<Writer> writers) {
     this.writers = writers;
   }
+
+public String getRemoteResourcesFromUntilDateFormat() {
+	return remoteResourcesFromUntilDateFormat;
+}
+
+public void setRemoteResourcesFromUntilDateFormat(
+		String remoteResourcesFromUntilDateFormat) {
+	this.remoteResourcesFromUntilDateFormat = remoteResourcesFromUntilDateFormat;
+}
+  
+  
 }
