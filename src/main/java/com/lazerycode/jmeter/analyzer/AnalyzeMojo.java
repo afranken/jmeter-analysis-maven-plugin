@@ -114,6 +114,14 @@ public class AnalyzeMojo extends AbstractMojo {
   private Properties remoteResources;
 
   /**
+   * Parametrized format of from until date format e.g. Graphite renderer does not support
+   * ISO8601_FORMAT out of the box
+   */
+  @Parameter(required = true, defaultValue = Environment.ISO8601_FORMAT)
+  private String remoteResourcesFromUntilDateFormat;
+  
+  
+  /**
    * Template directory where custom freemarker templates are stored.
    * Freemarker templates are used for all generated output. (CSV files, HTML files, console output)
    *
@@ -227,6 +235,7 @@ public class AnalyzeMojo extends AbstractMojo {
 
     ENVIRONMENT.setMaxSamples(maxSamples);
     ENVIRONMENT.setRemoteResources(remoteResources);
+    ENVIRONMENT.setRemoteResourcesFromUntilDateFormat(remoteResourcesFromUntilDateFormat);
     ENVIRONMENT.setRequestGroups(requestGroups);
     ENVIRONMENT.setTemplateDirectory(templateDirectory);
     ENVIRONMENT.setTargetDirectory(targetDirectory);
@@ -234,6 +243,7 @@ public class AnalyzeMojo extends AbstractMojo {
     ENVIRONMENT.setPreserveDirectories(preserveDirectories);
     ENVIRONMENT.setLog(getLog());
     ENVIRONMENT.setSampleNames(sampleNames);
+    
   }
 
   /**

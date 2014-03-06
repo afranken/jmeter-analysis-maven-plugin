@@ -158,6 +158,13 @@ Usage Example
               </property>
             </remoteResources>
 
+			<!--
+			Specify custom date format for resources not supporting ISO8601.
+			
+			Default IOS8601
+			-->
+			<remoteResourcesFromUntilDateFormat>HH:mm_yyyyMMdd</remoteResourcesFromUntilDateFormat>
+			
             <!--
             List of writers that handle all output of the plugin.
            Defaults to:
