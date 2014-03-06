@@ -1,4 +1,5 @@
 <#ftl/>
+<#setting locale="en_US">
 <#-- @ftlvariable name="key" type="java.lang.String" -->
 <#-- @ftlvariable name="aggregatedResponses" type="com.lazerycode.jmeter.analyzer.parser.AggregatedResponses" -->
 <#-- @ftlvariable name="bytes" type="com.lazerycode.jmeter.analyzer.statistics.Samples" -->

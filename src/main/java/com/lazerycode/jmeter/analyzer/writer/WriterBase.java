@@ -17,8 +17,10 @@ public abstract class WriterBase implements Writer {
   protected static final String PNG_EXT = ".png";
   protected static final String JSON_EXT = ".json";
   protected static final String HTML_EXT = ".html";
+  protected static final String THROUGHPUT = "-throughput-";
   protected static final String DURATIONS = "-durations-";
   protected static final String SIZES = "-sizes-";
+  protected static final String AVERAGE = "Average";
   protected String fileName = "summary";
 
   private String resultDataFileRelativePath;

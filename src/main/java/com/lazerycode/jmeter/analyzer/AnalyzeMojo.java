@@ -50,6 +50,21 @@ public class AnalyzeMojo extends AbstractMojo {
   private int maxSamples = Environment.DEFAULT_MAXSAMPLES;
 
   /**
+   * Width use to generate a chart. 
+   * defaultValue = "800"
+   */
+  @Parameter(defaultValue = "800")
+  private int chartWidth;
+
+
+  /**
+   * Height use to generate a chart. 
+   * defaultValue = "600"
+   */
+  @Parameter(defaultValue = "600")
+  private int chartHeight;
+
+  /**
    * True if all files found by pattern used in ${source} should be processed
    * defaultValue = "false" for following reasons:
    * - Previously we only processed the first file so default functionality is consistent with previous versions
@@ -200,13 +215,13 @@ public class AnalyzeMojo extends AbstractMojo {
       writers.add(new HtmlWriter());
       writers.add(new DetailsToCsvWriter());
       writers.add(new DetailsToHtmlWriter());
-      writers.add(new ChartWriter());
+      writers.add(new ChartWriter(chartWidth, chartHeight));
     }
 
     ENVIRONMENT.setWriters(writers);
 
     //MUST be called after initialization of writers List !!!
-    ENVIRONMENT.setGenerateCharts(writers.contains(new ChartWriter()));
+    ENVIRONMENT.setGenerateCharts(writers.contains(new ChartWriter(chartWidth, chartHeight)));
     ENVIRONMENT.setGenerateDetails(writers.contains(new DetailsToHtmlWriter()));
 
 

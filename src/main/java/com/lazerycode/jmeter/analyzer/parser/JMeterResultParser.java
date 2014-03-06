@@ -143,35 +143,23 @@ public class JMeterResultParser {
 
 
         // --- parse bytes
-        long bytes = -1;
-        String byteString = attributes.getValue("by");
-        try {
-          bytes = Long.parseLong(byteString);
-        }
-        catch (Exception e) {
-          getLog().warn("Error parsing bytes: '"+byteString+"'");
-        }
-
+        long bytes = parseLong(attributes, "by");
 
         // --- parse duration
-        long duration = -1;
-        String durationString = attributes.getValue("t");
-        try {
-          duration = Long.parseLong(durationString);
-        }
-        catch (Exception e) {
-          getLog().warn("Error parsing duration '"+durationString+"'");
-        }
+        long duration = parseLong(attributes, "t");
+
+        // --- parse active thread for all groups
+        long activeThreads = parseLong(attributes, "na");
 
         // --- parse responseCode
         int responseCode = getResponseCode(attributes);
 
         // ==== add data to the resultContainer
-        addData(resultContainer, uri, timestamp, bytes, duration, responseCode, success);
+        addData(resultContainer, uri, timestamp, bytes, duration, activeThreads, responseCode, success);
 
 
         parsedCount++;
-        
+
         // write a log message every 10000 entries
         if( parsedCount % LOGMESSAGE_ITEMS == 0 ) {
           getLog().info("Parsed "+parsedCount+" entries ...");
@@ -205,11 +193,14 @@ public class JMeterResultParser {
      * @param success httpSample success
      */
     private void addData(AggregatedResponses resultContainer, String uri,
-                         long timestamp, long bytes, long duration, int responseCode, boolean success) {
+                         long timestamp, long bytes, long duration, long activeThreads, int responseCode, boolean success) {
 
 
       StatusCodes statusCodes = resultContainer.getStatusCodes();
       statusCodes.increment(responseCode);
+
+      Samples activeThreadResult = resultContainer.getActiveThreads();
+      activeThreadResult.addSample(timestamp + duration, activeThreads);
 
       // -- register data
       if( !success || bytes == -1 || duration == -1 ||
@@ -259,6 +250,7 @@ public class JMeterResultParser {
 
         //initialize new AggregatedResponses
         resultContainer = new AggregatedResponses();
+        resultContainer.setActiveThreads(new Samples(maxSamples, true));
         resultContainer.setDuration(new Samples(maxSamples, true));
         resultContainer.setSize(new Samples(maxSamples, false));
         resultContainer.setStatusCodes(new StatusCodes());
@@ -366,6 +358,19 @@ public class JMeterResultParser {
 
         samples.addSample(timestamp, value);
       }
+    }
+
+    private long parseLong(Attributes attributes, String qName) {
+      long result = -1;
+      String valueString = attributes.getValue(qName);
+      if (null != valueString) {
+        try {
+          result = Long.parseLong(valueString);
+        } catch (Exception e) {
+          getLog().warn("Error parsing bytes: '" + valueString + "'");
+        }
+      }
+      return result;
     }
 
   }
