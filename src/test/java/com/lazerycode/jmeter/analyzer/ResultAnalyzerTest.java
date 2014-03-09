@@ -43,7 +43,7 @@ public class ResultAnalyzerTest extends TestCase {
   private final boolean cleanup = false; // set this to false if you want to test the results manually
   private static final SimpleDateFormat LOCAL_DATE_FORMAT = new SimpleDateFormat("yyyyMMdd'T'HHmmssZ", Locale.getDefault());
   private static final String PACKAGE_PATH = "/com/lazerycode/jmeter/analyzer/resultanalyzer/";
-  
+
   @Override
   protected void setUp() throws Exception {
 
@@ -112,7 +112,7 @@ public class ResultAnalyzerTest extends TestCase {
 
     final String start = "20111216T145509+0100";
     final String end = "20111216T145539+0100";
-    
+
     // create a file to be downloaded
     // contains urlencoded timestamps which are formatted as if retrieved from jmeter.xml
     File downloadableFile = initializeFile(workDir, String.format("%s.%s.tmp", toLocal(start), toLocal(end)));
@@ -162,7 +162,7 @@ public class ResultAnalyzerTest extends TestCase {
       writers.add(new DetailsToHtmlWriter());
     }
     if(ENVIRONMENT.isGenerateCharts()) {
-      writers.add(new ChartWriter());
+      writers.add(new ChartWriter(800, 600));
     }
     ENVIRONMENT.setWriters(writers);
 

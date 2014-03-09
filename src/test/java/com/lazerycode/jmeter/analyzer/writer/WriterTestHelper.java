@@ -72,6 +72,20 @@ public final class WriterTestHelper {
     when(size.getMax()).thenReturn(53890L);
     when(size.getStandardDeviation()).thenReturn(3308L);
 
+
+    //duration
+    Samples activeThreads = mock(Samples.class);
+    when(activeThreads.getDuration()).thenReturn(30L);
+    when(activeThreads.getSuccessCount()).thenReturn(36049L);
+    when(activeThreads.getSuccessPerSecond()).thenReturn(1201L);
+
+    when(activeThreads.getMin()).thenReturn(0L);
+    when(activeThreads.getAverage()).thenReturn(0L);
+    when(activeThreads.getMax()).thenReturn(1352L);
+    when(activeThreads.getStandardDeviation()).thenReturn(7L);
+
+    when(activeThreads.getQuantiles(1000)).thenReturn(quantile);
+
     //aggregatedResponse
     AggregatedResponses value = mock(AggregatedResponses.class);
     when(value.getStartDate()).thenReturn(new Date(1324043709785L));
@@ -81,6 +95,7 @@ public final class WriterTestHelper {
     when(value.getSize()).thenReturn(size);
     when(value.getSizeByUri()).thenReturn(ImmutableMap.of(key, size));
     when(value.getDuration()).thenReturn(duration);
+    when(value.getActiveThreads()).thenReturn(activeThreads);
     when(value.getDurationByUri()).thenReturn(ImmutableMap.of(key, duration));
 
     //--- add aggregatedResults as testresult

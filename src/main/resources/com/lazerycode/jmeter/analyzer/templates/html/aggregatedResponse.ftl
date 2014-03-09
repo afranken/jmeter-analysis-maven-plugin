@@ -1,4 +1,5 @@
 <#ftl/>
+<#setting locale="en_US">
 <#-- @ftlvariable name="key" type="java.lang.String" -->
 <#-- @ftlvariable name="aggregatedResponses" type="com.lazerycode.jmeter.analyzer.parser.AggregatedResponses" -->
 <#-- @ftlvariable name="bytes" type="com.lazerycode.jmeter.analyzer.statistics.Samples" -->
@@ -105,6 +106,10 @@
     </div>
 
     <#if CHARTS >
+    <div class="images">
+      <h3>Throughput</h3>
+      <img src="${key}-throughput-${SUMMARY_FILE_NAME}.png" tooltip="Throughput"/>
+    </div>
     <div class="images">
       <h3>Response duration</h3>
       <img src="${key}-durations-${SUMMARY_FILE_NAME}.png" tooltip="Durations"/>

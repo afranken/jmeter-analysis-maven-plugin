@@ -38,6 +38,11 @@ public class AggregatedResponses {
   private Samples duration;
 
   /**
+   * Number of thread
+   */
+  private Samples activeThreads;
+
+  /**
    * duration of the responses splitted by uri
    */
   private Map<String, Samples> durationByUri;
@@ -108,6 +113,20 @@ public class AggregatedResponses {
   }
 
   /**
+   * @return
+   */
+  public Samples getActiveThreads() {
+    return activeThreads;
+  }
+
+  /**
+   * @param activeThreads
+   */
+  protected void setActiveThreads(Samples activeThreads) {
+    this.activeThreads = activeThreads;
+  }
+
+  /**
    * @return aggregated status codes of responses
    */
   public StatusCodes getStatusCodes() {
@@ -153,7 +172,9 @@ public class AggregatedResponses {
     if( duration != null ) {
       duration.finish();
     }
-
+    if ( activeThreads != null ) {
+        activeThreads.finish();
+    }
     if( sizeByUri != null ) {
       for( Samples s : sizeByUri.values() ) {
         s.finish();

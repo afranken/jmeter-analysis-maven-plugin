@@ -1,3 +1,9 @@
 .idea/
 *.iml
 target/
+
+# Other IDE's#
+##############
+\.classpath
+\.project
+\.settings

@@ -31,6 +31,7 @@ public class ChartWriterTest {
 
   private final Map<String,ByteArrayOutputStream> streamMap  =
              ImmutableMap.of(
+                     "warmup-throughput-test.png", new ByteArrayOutputStream(),
                      "warmup-durations-test.png", new ByteArrayOutputStream(),
                      "warmup-sizes-test.png", new ByteArrayOutputStream());
 
@@ -38,7 +39,7 @@ public class ChartWriterTest {
 
   @Before
   public void setUp() throws Exception {
-    testling = new LocalChartWriter();
+    testling = new LocalChartWriter(800, 600);
     testling.setFileName("test");
   }
 
@@ -115,6 +116,14 @@ public class ChartWriterTest {
   //====================================================================================================================
 
   private class LocalChartWriter extends ChartWriter {
+
+    /**
+     * @param pImageWidth
+     * @param pImageHeight
+     */
+    public LocalChartWriter(int pImageWidth, int pImageHeight) {
+        super(pImageWidth, pImageHeight);
+    }
 
     protected OutputStream getOut(File file) throws FileNotFoundException {
       return streamMap.get(file.getName());
