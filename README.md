@@ -110,12 +110,12 @@ Usage Example
               <height>500</height>
             </configurationCharts>
 
-	    <!--
+            <!--
             Maximum number of samples to keep (in main memory) before compressing. -1 disabling compression.
 
             Default: 50000
             -->
-	    <maxSamples>50000</maxSamples>
+            <maxSamples>50000</maxSamples>
 
             <!--
             If set to true, the directory structure relative to source will be preserved during output.
