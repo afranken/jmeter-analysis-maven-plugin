@@ -106,13 +106,16 @@
     </div>
 
     <#if CHARTS >
-    <div class="images">
-      <h3>Throughput</h3>
-      <img src="${key}-throughput-${SUMMARY_FILE_NAME}.png" tooltip="Throughput"/>
-    </div>
-    <div class="images">
-      <h3>Response duration</h3>
-      <img src="${key}-durations-${SUMMARY_FILE_NAME}.png" tooltip="Durations"/>
+    <div class="center">
+      <div class="images">
+        <img src="${key}-throughput-${SUMMARY_FILE_NAME}.png" tooltip="Throughput and threads count"/>
+      </div>
+      <div class="images">
+        <img src="${key}-durations-${SUMMARY_FILE_NAME}.png" tooltip="Durations"/>
+      </div>
+      <div class="images">
+        <img src="${key}-response_times-${SUMMARY_FILE_NAME}.png" tooltip="Response times distribution and percentiles"/>
+      </div>
     </div>
     </#if>
     <#if DETAILS>

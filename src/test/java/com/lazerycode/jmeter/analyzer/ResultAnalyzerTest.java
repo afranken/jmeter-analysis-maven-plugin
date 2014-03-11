@@ -7,7 +7,9 @@ import com.lazerycode.jmeter.analyzer.writer.DetailsToHtmlWriter;
 import com.lazerycode.jmeter.analyzer.writer.HtmlWriter;
 import com.lazerycode.jmeter.analyzer.writer.SummaryTextToFileWriter;
 import com.lazerycode.jmeter.analyzer.writer.Writer;
+
 import junit.framework.TestCase;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.logging.SystemStreamLog;
 
@@ -162,7 +164,7 @@ public class ResultAnalyzerTest extends TestCase {
       writers.add(new DetailsToHtmlWriter());
     }
     if(ENVIRONMENT.isGenerateCharts()) {
-      writers.add(new ChartWriter(800, 600));
+      writers.add(new ChartWriter());
     }
     ENVIRONMENT.setWriters(writers);
 

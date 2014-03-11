@@ -20,6 +20,7 @@ public abstract class WriterBase implements Writer {
   protected static final String THROUGHPUT = "-throughput-";
   protected static final String DURATIONS = "-durations-";
   protected static final String SIZES = "-sizes-";
+  protected static final String RESPONSE_TIMES = "-response_times-";
   protected static final String AVERAGE = "Average";
   protected String fileName = "summary";
 

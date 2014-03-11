@@ -101,6 +101,23 @@ Usage Example
             <generateCharts>true</generateCharts>
 
             <!--
+            Change default value for generating charts.
+
+            Default: width=950, height=500
+            -->
+            <configurationCharts>
+              <width>950</width>
+              <height>500</height>
+            </configurationCharts>
+
+	    <!--
+            Maximum number of samples to keep (in main memory) before compressing. -1 disabling compression.
+
+            Default: 50000
+            -->
+	    <maxSamples>50000</maxSamples>
+
+            <!--
             If set to true, the directory structure relative to source will be preserved during output.
 
             Default: false

@@ -1,6 +1,8 @@
 package com.lazerycode.jmeter.analyzer.writer;
 
 import com.google.common.collect.ImmutableMap;
+import com.lazerycode.jmeter.analyzer.ConfigurationCharts;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -8,6 +10,7 @@ import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.MemoryCacheImageInputStream;
+
 import java.awt.image.RenderedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -32,6 +35,7 @@ public class ChartWriterTest {
   private final Map<String,ByteArrayOutputStream> streamMap  =
              ImmutableMap.of(
                      "warmup-throughput-test.png", new ByteArrayOutputStream(),
+                     "warmup-response_times-test.png", new ByteArrayOutputStream(),
                      "warmup-durations-test.png", new ByteArrayOutputStream(),
                      "warmup-sizes-test.png", new ByteArrayOutputStream());
 
@@ -122,7 +126,7 @@ public class ChartWriterTest {
      * @param pImageHeight
      */
     public LocalChartWriter(int pImageWidth, int pImageHeight) {
-        super(pImageWidth, pImageHeight);
+        super();
     }
 
     protected OutputStream getOut(File file) throws FileNotFoundException {

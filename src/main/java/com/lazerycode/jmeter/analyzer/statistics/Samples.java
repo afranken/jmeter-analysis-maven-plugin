@@ -340,12 +340,15 @@ public class Samples {
       return;
     }
 
-    // check whether the maximum of samples is reached and reduce number of samples if necessary
-    if( samples.size() >= maxSamplesCount ) {
+    // Disabling the compression if maxSamplesCount < 0
+    if (maxSamplesCount > 0) {
+      // check whether the maximum of samples is reached and reduce number of samples if necessary
+      if( samples.size() >= maxSamplesCount ) {
 
-      // compress
-      halve();
-      compression *= 2;
+        // compress
+        halve();
+        compression *= 2;
+      }
     }
 
     // add current sample
