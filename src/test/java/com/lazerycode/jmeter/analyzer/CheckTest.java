@@ -40,20 +40,20 @@ public class CheckTest {
         Assert.assertFalse(check.valid(1999));
         Assert.assertFalse(check.valid(1900));
         Assert.assertFalse(check.valid(1899));
-        Assert.assertFalse(check.valid(-Double.MAX_VALUE));
+        Assert.assertFalse(check.valid(0));
     }
 
     @Test
     public void testCheckLower() {
         check.setThreshold(2000);
         check.setToleranceDirection(Check.ToleranceDirection.LOWER.toString());
-        Assert.assertEquals(-Double.MAX_VALUE, check.getMinValue(), 0);
+        Assert.assertEquals(0, check.getMinValue(), 0);
         Assert.assertEquals(2000, check.getMaxValue(), 0);
         Assert.assertTrue(check.valid(2000));
         Assert.assertTrue(check.valid(1999));
         Assert.assertTrue(check.valid(1900));
         Assert.assertTrue(check.valid(1899));
-        Assert.assertTrue(check.valid(-Double.MAX_VALUE));
+        Assert.assertTrue(check.valid(0));
         Assert.assertFalse(check.valid(2001));
         Assert.assertFalse(check.valid(2100));
         Assert.assertFalse(check.valid(2101));
@@ -74,7 +74,7 @@ public class CheckTest {
         Assert.assertFalse(check.valid(1999));
         Assert.assertFalse(check.valid(1900));
         Assert.assertFalse(check.valid(1899));
-        Assert.assertFalse(check.valid(-Double.MAX_VALUE));
+        Assert.assertFalse(check.valid(0));
     }
 
     @Test
@@ -91,7 +91,7 @@ public class CheckTest {
         Assert.assertFalse(check.valid(2101));
         Assert.assertFalse(check.valid(Double.MAX_VALUE));
         Assert.assertFalse(check.valid(1899));
-        Assert.assertFalse(check.valid(-Double.MAX_VALUE));
+        Assert.assertFalse(check.valid(0));
     }
 
     @Test
@@ -108,7 +108,7 @@ public class CheckTest {
         Assert.assertFalse(check.valid(2101));
         Assert.assertFalse(check.valid(Double.MAX_VALUE));
         Assert.assertFalse(check.valid(1899));
-        Assert.assertFalse(check.valid(-Double.MAX_VALUE));
+        Assert.assertFalse(check.valid(0));
     }
 
     @Test
@@ -126,7 +126,7 @@ public class CheckTest {
         Assert.assertTrue(check.valid(2101));
         Assert.assertFalse(check.valid(Double.MAX_VALUE));
         Assert.assertTrue(check.valid(1899));
-        Assert.assertFalse(check.valid(-Double.MAX_VALUE));
+        Assert.assertFalse(check.valid(0));
     }
 
     @Test
@@ -143,7 +143,13 @@ public class CheckTest {
         Assert.assertFalse(check.valid(2101));
         Assert.assertFalse(check.valid(Double.MAX_VALUE));
         Assert.assertFalse(check.valid(1899));
-        Assert.assertFalse(check.valid(-Double.MAX_VALUE));
+        Assert.assertFalse(check.valid(0));
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testCheckWrongValue() {
+        check.setThreshold(2000);
+        check.valid(-1);
     }
 
 }

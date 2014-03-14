@@ -50,6 +50,9 @@ public class Check {
     }
 
     public Boolean valid(double value) {
+        if (value < 0) {
+            throw new IllegalArgumentException("Value must be positive. " + value);
+        }
         // Any verification if threshold is not greater than 0
         if (threshold >= 0) {
             if(ToleranceDirection.EQUALS.equals(toleranceDirection)) {
@@ -73,7 +76,7 @@ public class Check {
         if (ToleranceDirection.LOWER_TOLERANCE.equals(toleranceDirection) || ToleranceDirection.UPPER_LOWER_TOLERANCE.equals(toleranceDirection)) {
             minValue = threshold - (threshold * tolerance / 100);
         } else if (ToleranceDirection.LOWER.equals(toleranceDirection)) {
-            minValue = -Double.MAX_VALUE;
+            minValue = 0;
         } else {
             minValue = threshold;
         }
