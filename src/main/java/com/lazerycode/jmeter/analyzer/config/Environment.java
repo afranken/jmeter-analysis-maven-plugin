@@ -1,9 +1,13 @@
 package com.lazerycode.jmeter.analyzer.config;
 
+import com.lazerycode.jmeter.analyzer.CheckResult;
+import com.lazerycode.jmeter.analyzer.ConfigurationCharts;
 import com.lazerycode.jmeter.analyzer.RequestGroup;
 import com.lazerycode.jmeter.analyzer.writer.Writer;
+
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
+
 import org.apache.maven.plugin.logging.Log;
 
 import java.io.File;
@@ -38,8 +42,8 @@ public enum Environment {
 
   public static final String ISO8601_FORMAT = "yyyyMMdd'T'HHmmssZ";
 
-  
-  
+
+
 
   /**
    * true, if charts should be generated
@@ -64,6 +68,8 @@ public enum Environment {
   private File targetDirectory;
   private Log log;
   private List<Writer> writers;
+  private ConfigurationCharts configurationCharts = new ConfigurationCharts();
+  private CheckResult checkResult = new CheckResult();
 
   /**
    * If true, preserve the relative part of the result file's path
@@ -77,10 +83,12 @@ public enum Environment {
     this.templateDirectory = null;
     this.remoteResources = null;
     this.requestGroups = null;
-    this.maxSamples = 0;
+    this.maxSamples = DEFAULT_MAXSAMPLES;
     this.configuration = null;
     this.targetDirectory = null;
     this.remoteResourcesFromUntilDateFormat = ISO8601_FORMAT;
+    this.configurationCharts = new ConfigurationCharts();
+    this.checkResult = new CheckResult();
   }
 
   public File getTargetDirectory() {
@@ -150,7 +158,7 @@ public enum Environment {
   public void setPreserveDirectories(boolean preserveDirectories) {
     this.preserveDirectories = preserveDirectories;
   }
-  
+
   public Log getLog() {
     return log;
   }
@@ -196,14 +204,35 @@ public enum Environment {
     this.writers = writers;
   }
 
-public String getRemoteResourcesFromUntilDateFormat() {
-	return remoteResourcesFromUntilDateFormat;
-}
+  public ConfigurationCharts getConfigurationCharts() {
+    return configurationCharts;
+  }
 
-public void setRemoteResourcesFromUntilDateFormat(
+  public void setConfigurationCharts(ConfigurationCharts configurationCharts) {
+    if (null == configurationCharts) {
+      configurationCharts = new ConfigurationCharts();
+    }
+    this.configurationCharts = configurationCharts;
+  }
+
+  public CheckResult getCheckResult() {
+    return checkResult;
+  }
+
+  public void setCheckResult(CheckResult checkResult) {
+      if (null == checkResult) {
+          checkResult = new CheckResult();
+      }
+      this.checkResult = checkResult;
+  }
+
+  public String getRemoteResourcesFromUntilDateFormat() {
+	return remoteResourcesFromUntilDateFormat;
+  }
+
+  public void setRemoteResourcesFromUntilDateFormat(
 		String remoteResourcesFromUntilDateFormat) {
 	this.remoteResourcesFromUntilDateFormat = remoteResourcesFromUntilDateFormat;
-}
-  
-  
+  }
+
 }

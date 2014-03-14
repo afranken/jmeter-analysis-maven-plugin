@@ -1,5 +1,6 @@
 package com.lazerycode.jmeter.analyzer.writer;
 
+import static com.lazerycode.jmeter.analyzer.config.Environment.*;
 import static com.lazerycode.jmeter.analyzer.util.FileUtil.urlEncode;
 import static org.jfree.chart.ChartUtilities.writeChartAsPNG;
 
@@ -39,19 +40,6 @@ public class ChartWriter extends WriterBase {
   private static final int Q = 1000;
   // Must be > 0
   private final static long SECONDS_ROUND = 10L;
-
-  private ConfigurationCharts configurationCharts;
-
-  public ChartWriter() {
-      this(null);
-  }
-
-  public ChartWriter(ConfigurationCharts configurationCharts) {
-      if (null == configurationCharts) {
-          configurationCharts = new ConfigurationCharts();
-      }
-      this.configurationCharts = configurationCharts;
-  }
 
   /**
    * Needed to check if an Instance of ChartWriter is already in the {@link com.lazerycode.jmeter.analyzer.AnalyzeMojo#writers}
@@ -256,6 +244,7 @@ public class ChartWriter extends WriterBase {
   private void renderChart(String name, XYPlot plot, File target) throws IOException {
     OutputStream out = getOut(target);
     try {
+      ConfigurationCharts configurationCharts = ENVIRONMENT.getConfigurationCharts();
       writeChartAsPNG(out, ChartUtil.createJFreeChart(name, plot, configurationCharts.getHeight()),
               configurationCharts.getWidth(), configurationCharts.getHeight(), null);
     } finally {
