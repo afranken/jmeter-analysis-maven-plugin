@@ -238,3 +238,6 @@ Part of the development of this plugin is sponsored by [CoreMedia][3]
 [3]:    http://www.coremedia.com                                    "CoreMedia AG"
 [4]:    http://freemarker.sourceforge.net/                          "Freemarker"
 [5]:    https://github.com/afranken/jmeter-analysis-maven-plugin/wiki/Release-Notes                          "Release Notes"
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/afranken/jmeter-analysis-maven-plugin/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
