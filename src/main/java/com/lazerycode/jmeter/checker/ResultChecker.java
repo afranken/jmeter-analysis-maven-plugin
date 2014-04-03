@@ -32,8 +32,8 @@ public class ResultChecker {
                     key, "throughput");
 
             // Check errors
-            double percentErrors = ((double) aggregatedResponses.getDuration().getErrorsCount()) /
-                    (aggregatedResponses.getDuration().getErrorsCount() + aggregatedResponses.getDuration().getSuccessCount());
+            double percentErrors = (((double) aggregatedResponses.getDuration().getErrorsCount()) /
+                    (aggregatedResponses.getDuration().getErrorsCount() + aggregatedResponses.getDuration().getSuccessCount())) * 100;
             check &= checkValue(checkResult.getErrors(), percentErrors,
                     key, "errors");
         }
