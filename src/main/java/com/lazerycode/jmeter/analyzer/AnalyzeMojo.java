@@ -1,12 +1,23 @@
 package com.lazerycode.jmeter.analyzer;
 
-import com.lazerycode.jmeter.analyzer.config.Environment;
-import com.lazerycode.jmeter.analyzer.parser.AggregatedResponses;
-import com.lazerycode.jmeter.analyzer.writer.*;
-import com.lazerycode.jmeter.analyzer.writer.Writer;
-import com.lazerycode.jmeter.checker.ResultChecker;
+import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
+import static com.lazerycode.jmeter.analyzer.config.Environment.HTTPSAMPLE_ELEMENT_NAME;
+import static com.lazerycode.jmeter.analyzer.config.Environment.SAMPLE_ELEMENT_NAME;
 
-import freemarker.template.TemplateException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.zip.GZIPInputStream;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -17,11 +28,20 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.xml.sax.SAXException;
 
-import java.io.*;
-import java.util.*;
-import java.util.zip.GZIPInputStream;
+import com.lazerycode.jmeter.analyzer.config.Environment;
+import com.lazerycode.jmeter.analyzer.parser.AggregatedResponses;
+import com.lazerycode.jmeter.analyzer.writer.ChartWriter;
+import com.lazerycode.jmeter.analyzer.writer.DetailsToCsvWriter;
+import com.lazerycode.jmeter.analyzer.writer.DetailsToHtmlWriter;
+import com.lazerycode.jmeter.analyzer.writer.HtmlIndexWriter;
+import com.lazerycode.jmeter.analyzer.writer.HtmlWriter;
+import com.lazerycode.jmeter.analyzer.writer.SummaryJsonFileWriter;
+import com.lazerycode.jmeter.analyzer.writer.SummaryTextToFileWriter;
+import com.lazerycode.jmeter.analyzer.writer.SummaryTextToStdOutWriter;
+import com.lazerycode.jmeter.analyzer.writer.Writer;
+import com.lazerycode.jmeter.checker.ResultChecker;
 
-import static com.lazerycode.jmeter.analyzer.config.Environment.*;
+import freemarker.template.TemplateException;
 
 /**
  * Analyzes JMeter XML test report file and generates a report
@@ -166,7 +186,6 @@ public class AnalyzeMojo extends AbstractMojo {
     getLog().info(" ");
 
     initializeEnvironment();
-
     try {
 
       CustomPathMatchingResourcePatternResolver resolver = new CustomPathMatchingResourcePatternResolver();
@@ -181,6 +200,10 @@ public class AnalyzeMojo extends AbstractMojo {
           getLog().info("No JMeter Result XML file found matching '" + source + "'...");
         }
       } else {
+        getLog().info("Start index.");
+        new HtmlIndexWriter().write(resultDataFiles);
+        getLog().info("End index.");
+
         for (int dataFileIdentifier = 0; dataFileIdentifier < resultDataFiles.length; dataFileIdentifier++) {
 
           //Drop out of the loop after processing first file if we only want to process the first file found.
