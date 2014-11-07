@@ -5,7 +5,13 @@
       "min": 0,
       "max": 1352,
       "quantile90": 1,
-      "average": 0
+      "average": 0,
+      "total": 36049,
+      "statusCodes":{
+                      "200": 36049,
+                      "403": 9,
+                      "404": 10
+                    }
     }
   ]
 }
