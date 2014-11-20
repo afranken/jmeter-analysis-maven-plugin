@@ -1,6 +1,5 @@
 package com.lazerycode.jmeter.analyzer;
 
-import com.lazerycode.jmeter.analyzer.config.Environment;
 import com.lazerycode.jmeter.analyzer.parser.AggregatedResponses;
 import com.lazerycode.jmeter.analyzer.parser.JMeterResultParser;
 import com.lazerycode.jmeter.analyzer.util.FileUtil;
@@ -38,7 +37,7 @@ public class ResultAnalyzer {
    *
    * @param jmeterResult The jmeter XML result file
    */
-  public void analyze(Reader jmeterResult) throws IOException, TemplateException, SAXException {
+  public Map<String, AggregatedResponses> analyze(Reader jmeterResult) throws IOException, TemplateException, SAXException {
 
     Map<String, AggregatedResponses> testResults = new JMeterResultParser().aggregate(jmeterResult);
 
@@ -55,6 +54,8 @@ public class ResultAnalyzer {
               resultDataFileRelativePath, testResults.values(),
               ENVIRONMENT.getRemoteResourcesFromUntilDateFormat());
     }
+
+    return testResults;
   }
 
 }

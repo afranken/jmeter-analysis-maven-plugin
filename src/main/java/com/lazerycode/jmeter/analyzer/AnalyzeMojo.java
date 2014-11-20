@@ -1,9 +1,24 @@
 package com.lazerycode.jmeter.analyzer;
 
-import com.lazerycode.jmeter.analyzer.config.Environment;
-import com.lazerycode.jmeter.analyzer.writer.*;
-import com.lazerycode.jmeter.analyzer.writer.Writer;
-import freemarker.template.TemplateException;
+import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
+import static com.lazerycode.jmeter.analyzer.config.Environment.HTTPSAMPLE_ELEMENT_NAME;
+import static com.lazerycode.jmeter.analyzer.config.Environment.SAMPLE_ELEMENT_NAME;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.zip.GZIPInputStream;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -13,11 +28,20 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.xml.sax.SAXException;
 
-import java.io.*;
-import java.util.*;
-import java.util.zip.GZIPInputStream;
+import com.lazerycode.jmeter.analyzer.config.Environment;
+import com.lazerycode.jmeter.analyzer.parser.AggregatedResponses;
+import com.lazerycode.jmeter.analyzer.writer.ChartWriter;
+import com.lazerycode.jmeter.analyzer.writer.DetailsToCsvWriter;
+import com.lazerycode.jmeter.analyzer.writer.DetailsToHtmlWriter;
+import com.lazerycode.jmeter.analyzer.writer.HtmlIndexWriter;
+import com.lazerycode.jmeter.analyzer.writer.HtmlWriter;
+import com.lazerycode.jmeter.analyzer.writer.SummaryJsonFileWriter;
+import com.lazerycode.jmeter.analyzer.writer.SummaryTextToFileWriter;
+import com.lazerycode.jmeter.analyzer.writer.SummaryTextToStdOutWriter;
+import com.lazerycode.jmeter.analyzer.writer.Writer;
+import com.lazerycode.jmeter.checker.ResultChecker;
 
-import static com.lazerycode.jmeter.analyzer.config.Environment.*;
+import freemarker.template.TemplateException;
 
 /**
  * Analyzes JMeter XML test report file and generates a report
@@ -144,6 +168,15 @@ public class AnalyzeMojo extends AbstractMojo {
   @Parameter
   private List<Writer> writers;
 
+  /**
+   * Build failed if source directory is not found.
+   */
+  @Parameter(defaultValue = "true")
+  protected boolean sourceDirFailed;
+
+  @Parameter
+  private CheckResult checkResult;
+
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     getLog().info(" ");
@@ -153,7 +186,6 @@ public class AnalyzeMojo extends AbstractMojo {
     getLog().info(" ");
 
     initializeEnvironment();
-
     try {
 
       CustomPathMatchingResourcePatternResolver resolver = new CustomPathMatchingResourcePatternResolver();
@@ -162,29 +194,44 @@ public class AnalyzeMojo extends AbstractMojo {
 
       //No JMeter result file found, makes no sense to go on
       if (resultDataFiles.length == 0) {
-        throw new MojoExecutionException("Property source not set correctly, no JMeter Result XML file found matching " + source);
-      }
-
-      for (int dataFileIdentifier = 0; dataFileIdentifier < resultDataFiles.length; dataFileIdentifier++) {
-
-        //Drop out of the loop after processing first file if we only want to process the first file found.
-        if (dataFileIdentifier == 1 && !processAllFilesFound) {
-          break;
+        if (sourceDirFailed) {
+          throw new MojoExecutionException("Property source not set correctly, no JMeter Result XML file found matching " + source);
+        } else {
+          getLog().info("No JMeter Result XML file found matching '" + source + "'...");
         }
+      } else {
+        getLog().info("Start index.");
+        new HtmlIndexWriter().write(resultDataFiles);
+        getLog().info("End index.");
 
-        File resultDataFile = resultDataFiles[dataFileIdentifier].getFile();
-        getLog().info("Analysing '" + resultDataFile.getName() + "'...");
+        for (int dataFileIdentifier = 0; dataFileIdentifier < resultDataFiles.length; dataFileIdentifier++) {
 
-        analyze(resultDataFile, rootPath);
+          //Drop out of the loop after processing first file if we only want to process the first file found.
+          if (dataFileIdentifier == 1 && !processAllFilesFound) {
+            break;
+          }
 
-        getLog().info("Results Generated for '" + resultDataFile.getName() + "'.");
-        getLog().info(" ");
+          File resultDataFile = resultDataFiles[dataFileIdentifier].getFile();
+          getLog().info("Analysing '" + resultDataFile.getName() + "'...");
+
+          Map<String, AggregatedResponses> jmeterResults = analyze(resultDataFile, rootPath);
+
+          getLog().info("Results Generated for '" + resultDataFile.getName() + "'.");
+          getLog().info(" ");
+
+          getLog().info("Checking '" + resultDataFile.getName() + "'...");
+
+          check(jmeterResults);
+
+          getLog().info("Results Checked for '" + resultDataFile.getName() + "'.");
+          getLog().info(" ");
+        }
       }
-    }
-    catch (Exception e) {
+    } catch (MojoFailureException mfe) {
+      throw mfe;
+    } catch (Exception e) {
       throw new MojoExecutionException("Error analysing", e);
     }
-
   }
 
   //====================================================================================================================
@@ -214,15 +261,14 @@ public class AnalyzeMojo extends AbstractMojo {
       writers.add(new HtmlWriter());
       writers.add(new DetailsToCsvWriter());
       writers.add(new DetailsToHtmlWriter());
-      writers.add(new ChartWriter(configurationCharts));
+      writers.add(new ChartWriter());
     }
 
     ENVIRONMENT.setWriters(writers);
 
     //MUST be called after initialization of writers List !!!
-    ENVIRONMENT.setGenerateCharts(writers.contains(new ChartWriter(configurationCharts)));
+    ENVIRONMENT.setGenerateCharts(writers.contains(new ChartWriter()));
     ENVIRONMENT.setGenerateDetails(writers.contains(new DetailsToHtmlWriter()));
-
 
     ENVIRONMENT.setMaxSamples(maxSamples);
     ENVIRONMENT.setRemoteResources(remoteResources);
@@ -234,7 +280,8 @@ public class AnalyzeMojo extends AbstractMojo {
     ENVIRONMENT.setPreserveDirectories(preserveDirectories);
     ENVIRONMENT.setLog(getLog());
     ENVIRONMENT.setSampleNames(sampleNames);
-
+    ENVIRONMENT.setConfigurationCharts(configurationCharts);
+    ENVIRONMENT.setCheckResult(checkResult);
   }
 
   /**
@@ -243,7 +290,7 @@ public class AnalyzeMojo extends AbstractMojo {
    * @param resultDataFile the file to analyze
    * @param rootPath the root path of the resultDataFile
    */
-  private void analyze(File resultDataFile, String rootPath) throws IOException, SAXException, TemplateException {
+  private Map<String, AggregatedResponses> analyze(File resultDataFile, String rootPath) throws IOException, SAXException, TemplateException {
 
     Reader resultData;
     if (resultDataFile.getName().endsWith(".gz")) {
@@ -268,12 +315,15 @@ public class AnalyzeMojo extends AbstractMojo {
 
       ResultAnalyzer reportAnalyser = new ResultAnalyzer(relativePath, resultDataFileName);
 
-      reportAnalyser.analyze(resultData);
+      return reportAnalyser.analyze(resultData);
     }
     finally {
       resultData.close();
     }
+  }
 
+  private void check(Map<String, AggregatedResponses> jmeterResults) throws MojoFailureException {
+      new ResultChecker().check(jmeterResults);
   }
 
   //--------------------------------------------------------------------------------------------------------------------

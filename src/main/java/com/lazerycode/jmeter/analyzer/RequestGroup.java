@@ -7,6 +7,7 @@ public class RequestGroup {
 
   private String name;
   private String pattern;
+  private CheckResult checkResult;
 
   public String getName() {
     return name;
@@ -23,4 +24,13 @@ public class RequestGroup {
   public void setPattern(String pattern) {
     this.pattern = pattern;
   }
+
+  public CheckResult getCheckResult() {
+    return checkResult;
+  }
+
+  public void setCheckResult(CheckResult pCheckResult) {
+    checkResult = pCheckResult;
+  }
+
 }

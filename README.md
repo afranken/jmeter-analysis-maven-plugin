@@ -59,6 +59,51 @@ Usage Example
             <targetDirectory>${project.build.directory}/results</targetDirectory>
 
             <!--
+            Build failed if source directory is not found.
+
+            Default: true
+            -->
+            <sourceDirFailed>true</sourceDirFailed>
+
+            <!--
+            Check analysis result files. If threshold is not correct, maven build failed.
+
+            Default: not set.
+            -->
+            <checkResult>
+              <!-- Optional : check throughput. -->
+              <throughput>
+                <!-- Default: -1 (disabling) -->
+                <threshold>-1</threshold>
+
+                <!-- Default: UPPER_LOWER_TOLERANCE
+                Values could be : 
+                * UPPER :                 minValue = threshold, maxValue = Double.MAX_VALUE
+                * LOWER :                 minValue = 0, maxValue = threshold
+                * UPPER_TOLERANCE :       minValue = threshold, maxValue = (threshold + (threshold * tolerance / 100))
+                * LOWER_TOLERANCE :       minValue = (threshold - (threshold * tolerance / 100)), maxValue = threshold
+                * UPPER_LOWER_TOLERANCE : minValue = (threshold - (threshold * tolerance / 100)), maxValue = (threshold + (threshold * tolerance / 100))
+                * EQUALS :                minValue = maxValue = threshold
+
+                If throughput result test is between minValue and maxValue, maven build is OK otherwise, build failed.
+                -->
+                <toleranceDirection>UPPER_LOWER_TOLERANCE</tolerance>
+
+                <!-- Default: 5 (percent)
+                Used for calculate min et max values.
+                -->
+                <tolerance>5</tolerance>
+              </throughput>
+              <!-- Optional : check percent errors. -->
+              <errors>
+                <!-- As above -->
+                <threshold>-1</threshold>
+                <toleranceDirection>UPPER_LOWER_TOLERANCE</tolerance>
+                <tolerance>5</tolerance>
+              </errors>
+            </checkResult>
+
+            <!--
             Request groups as a mapping from "group name" to "ant pattern".
             A request uri that matches an ant pattern will be associated with the group name.
             Request details, charts and CSV files are generated per requestGroup.
@@ -73,15 +118,27 @@ Usage Example
             <requestGroups>
               <pages>/page/**</pages>
               <binaries>/binary/**</binaries>
+              <!-- Optional -->
+              <checkResult>
+                <!-- As above -->
+              </checkResult>
             </requestGroups>
             <requestGroups>
               <requestGroup>
                 <name>pages</name>
                 <pattern>/page/**</pattern>
+                <!-- Optional -->
+                <checkResult>
+                  <!-- As above -->
+                </checkResult>
               </requestGroup>
               <requestGroup>
                 <name>binaries</name>
                 <pattern>/binary/**</pattern>
+                <!-- Optional -->
+                <checkResult>
+                  <!-- As above -->
+                </checkResult>
               </requestGroup>
             </requestGroups>
 
@@ -175,12 +232,12 @@ Usage Example
               </property>
             </remoteResources>
 
-			<!--
-			Specify custom date format for resources not supporting ISO8601.
+            <!--
+            Specify custom date format for resources not supporting ISO8601.
 			
-			Default IOS8601
-			-->
-			<remoteResourcesFromUntilDateFormat>HH:mm_yyyyMMdd</remoteResourcesFromUntilDateFormat>
+            Default IOS8601
+            -->
+            <remoteResourcesFromUntilDateFormat>HH:mm_yyyyMMdd</remoteResourcesFromUntilDateFormat>
 			
             <!--
             List of writers that handle all output of the plugin.

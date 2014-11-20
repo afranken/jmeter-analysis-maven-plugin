@@ -1,5 +1,6 @@
 <#ftl/>
 <#setting locale="en_US">
+<#setting url_escaping_charset='UTF-8'>
 <#-- @ftlvariable name="key" type="java.lang.String" -->
 <#-- @ftlvariable name="aggregatedResponses" type="com.lazerycode.jmeter.analyzer.parser.AggregatedResponses" -->
 <#-- @ftlvariable name="bytes" type="com.lazerycode.jmeter.analyzer.statistics.Samples" -->
@@ -108,13 +109,13 @@
     <#if CHARTS >
     <div class="center">
       <div class="images">
-        <img src="${key}-throughput-${SUMMARY_FILE_NAME}.png" tooltip="Throughput and threads count"/>
+        <img src="${key?url?url}-throughput-${SUMMARY_FILE_NAME?url}.png" tooltip="Throughput and threads count"/>
       </div>
       <div class="images">
-        <img src="${key}-durations-${SUMMARY_FILE_NAME}.png" tooltip="Durations"/>
+        <img src="${key?url?url}-durations-${SUMMARY_FILE_NAME?url}.png" tooltip="Durations"/>
       </div>
       <div class="images">
-        <img src="${key}-response_times-${SUMMARY_FILE_NAME}.png" tooltip="Response times distribution and percentiles"/>
+        <img src="${key?url?url}-response_times-${SUMMARY_FILE_NAME?url}.png" tooltip="Response times distribution and percentiles"/>
       </div>
     </div>
     </#if>
@@ -122,8 +123,8 @@
     <div class="details">
       <h3>Detailed response information</h3>
       <ul>
-        <li><a href="${key}-durations-${SUMMARY_FILE_NAME}.html">Response durations per URL (HTML)</a></li>
-        <li><a href="${key}-sizes-${SUMMARY_FILE_NAME}.html">Response sizes per URL (HTML)</a></li>
+        <li><a href="${key?url?url}-durations-${SUMMARY_FILE_NAME?url}.html">Response durations per URL (HTML)</a></li>
+        <li><a href="${key?url?url}-sizes-${SUMMARY_FILE_NAME?url}.html">Response sizes per URL (HTML)</a></li>
       </ul>
     </div>
     </#if>
