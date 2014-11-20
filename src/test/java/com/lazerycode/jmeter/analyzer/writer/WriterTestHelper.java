@@ -5,13 +5,16 @@ import com.lazerycode.jmeter.analyzer.parser.AggregatedResponses;
 import com.lazerycode.jmeter.analyzer.parser.StatusCodes;
 import com.lazerycode.jmeter.analyzer.statistics.Quantile;
 import com.lazerycode.jmeter.analyzer.statistics.Samples;
+
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -63,6 +66,22 @@ public final class WriterTestHelper {
     when(duration.getStandardDeviation()).thenReturn(7L);
 
     when(duration.getQuantiles(1000)).thenReturn(quantile);
+
+    List<Long> samples = new ArrayList<Long>();
+    samples.add(12L);
+    samples.add(15L);
+    samples.add(231L);
+    samples.add(231L);
+    samples.add(2312L);
+    when(duration.getSamples()).thenReturn(samples);
+
+    List<Long> timestamps = new ArrayList<Long>();
+    timestamps.add(1324043709785L);
+    timestamps.add(1324043709786L);
+    timestamps.add(1324043709787L);
+    timestamps.add(1324043709788L);
+    timestamps.add(1324043709789L);
+    when(duration.getTimestamps()).thenReturn(timestamps);
 
     //size
     Samples size = mock(Samples.class);

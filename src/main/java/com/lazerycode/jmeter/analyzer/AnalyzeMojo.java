@@ -43,26 +43,17 @@ public class AnalyzeMojo extends AbstractMojo {
   private File targetDirectory;
 
   /**
-   * Maximum number of samples to keep (in main memory) before compressing.
+   * Maximum number of samples to keep (in main memory) before compressing. -1 disabling compression.
    * defaultValue = "50000"
    */
   @Parameter(defaultValue = "50000")
   private int maxSamples = Environment.DEFAULT_MAXSAMPLES;
 
   /**
-   * Width use to generate a chart. 
-   * defaultValue = "800"
+   * Modify configuration of chart (height, width...).
    */
-  @Parameter(defaultValue = "800")
-  private int chartWidth;
-
-
-  /**
-   * Height use to generate a chart. 
-   * defaultValue = "600"
-   */
-  @Parameter(defaultValue = "600")
-  private int chartHeight;
+  @Parameter
+  private ConfigurationCharts configurationCharts;
 
   /**
    * True if all files found by pattern used in ${source} should be processed
@@ -119,8 +110,8 @@ public class AnalyzeMojo extends AbstractMojo {
    */
   @Parameter(required = true, defaultValue = Environment.ISO8601_FORMAT)
   private String remoteResourcesFromUntilDateFormat;
-  
-  
+
+
   /**
    * Template directory where custom freemarker templates are stored.
    * Freemarker templates are used for all generated output. (CSV files, HTML files, console output)
@@ -223,13 +214,13 @@ public class AnalyzeMojo extends AbstractMojo {
       writers.add(new HtmlWriter());
       writers.add(new DetailsToCsvWriter());
       writers.add(new DetailsToHtmlWriter());
-      writers.add(new ChartWriter(chartWidth, chartHeight));
+      writers.add(new ChartWriter(configurationCharts));
     }
 
     ENVIRONMENT.setWriters(writers);
 
     //MUST be called after initialization of writers List !!!
-    ENVIRONMENT.setGenerateCharts(writers.contains(new ChartWriter(chartWidth, chartHeight)));
+    ENVIRONMENT.setGenerateCharts(writers.contains(new ChartWriter(configurationCharts)));
     ENVIRONMENT.setGenerateDetails(writers.contains(new DetailsToHtmlWriter()));
 
 
@@ -243,7 +234,7 @@ public class AnalyzeMojo extends AbstractMojo {
     ENVIRONMENT.setPreserveDirectories(preserveDirectories);
     ENVIRONMENT.setLog(getLog());
     ENVIRONMENT.setSampleNames(sampleNames);
-    
+
   }
 
   /**
