@@ -34,7 +34,7 @@ public class FileUtil {
    * @see java.net.URLEncoder#encode(String, String)
    */
   public static String urlEncode(String name) throws UnsupportedEncodingException {
-    return URLEncoder.encode(name, "ISO-8859-1");
+    return URLEncoder.encode(name, "UTF-8");
   }
 
   /**
