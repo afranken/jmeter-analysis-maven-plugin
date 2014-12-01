@@ -66,7 +66,7 @@
   <p>Results file is empty.</p>
 <#else>
   <#list self("tests") as test>
-    <a href="${test?url}.html">${test}</a><br/>
+    <a href="${test?url?url}.html">${test}</a><br/>
   </#list>
 </#if>
 </body>
