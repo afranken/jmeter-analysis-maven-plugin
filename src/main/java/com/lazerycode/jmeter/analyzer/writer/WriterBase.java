@@ -2,9 +2,11 @@ package com.lazerycode.jmeter.analyzer.writer;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
 import static com.lazerycode.jmeter.analyzer.util.FileUtil.initializeFile;
+import static com.lazerycode.jmeter.analyzer.util.FileUtil.urlEncode;
 
 /**
  * Abstract implementation of a writer providing convenience methods.
@@ -28,7 +30,12 @@ public abstract class WriterBase implements Writer {
 
   @Override
   public String getFileName() {
-    return fileName;
+    try {
+      return urlEncode(fileName);
+    } catch (UnsupportedEncodingException e) {
+      //return unencoded filename.
+      return fileName;
+    }
   }
 
   @Override
