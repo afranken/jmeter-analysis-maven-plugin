@@ -253,7 +253,7 @@ public class ChartWriter extends WriterBase {
   }
 
   private String chartFileName(String name, String type) throws UnsupportedEncodingException {
-      return new StringBuilder(urlEncode(name)).append(type).append(super.getFileName()).append(PNG_EXT).toString();
+      return new StringBuilder(name).append(type).append(super.getFileName()).append(PNG_EXT).toString();
   }
 
   private long convert(long timestamp) {

@@ -47,11 +47,11 @@ public abstract class DetailsWriterBase extends TextWriterBase {
     Map<String, Samples> data;
 
 
-    durationsFilename = urlEncode(name) + getDurationsSuffix();
+    durationsFilename = name + getDurationsSuffix();
     data = aggregatedResponses.getDurationByUri();
     write(durationsFilename, data);
 
-    durationsFilename = urlEncode(name) + getSizesSuffix();
+    durationsFilename = name + getSizesSuffix();
     data = aggregatedResponses.getSizeByUri();
     write(durationsFilename, data);
 
