@@ -25,7 +25,7 @@ public class FileUtil {
   private static final int READ_BUFFER = 1024;
 
   /**
-   * URLEncode given String
+   * URLEncode given String with UTF-8
    *
    * @param name string to encode
    * @return encoded String
