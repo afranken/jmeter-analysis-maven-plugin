@@ -32,7 +32,6 @@ public class HtmlIndexWriter {
     /**
      * Render results as text to a file
      *
-     * @param testResults Map to generate output from
      * @throws java.io.IOException
      * @throws freemarker.template.TemplateException
      *
@@ -40,7 +39,9 @@ public class HtmlIndexWriter {
     public void write(Resource[] resultDataFiles) throws IOException, TemplateException {
         List<String> tests = new ArrayList<String>(resultDataFiles.length);
         for (Resource resource : resultDataFiles) {
-            tests.add(resource.getFilename().substring(0, resource.getFilename().lastIndexOf('.')));
+            if(!resource.getFilename().isEmpty() && resource.getFilename().lastIndexOf('.') > -1) {
+                tests.add(resource.getFilename().substring(0, resource.getFilename().lastIndexOf('.')));
+            }
         }
         Map<String, Object> self = new HashMap<String, Object>();
         self.put("tests", tests);
@@ -76,7 +77,6 @@ public class HtmlIndexWriter {
     /**
      * Render given {@link com.lazerycode.jmeter.analyzer.parser.AggregatedResponses testResults} as text
      *
-     * @param testResults results to render
      * @param rootTemplate the template that Freemarker starts rendering with
      * @param out         output to write to
      * @throws java.io.IOException
