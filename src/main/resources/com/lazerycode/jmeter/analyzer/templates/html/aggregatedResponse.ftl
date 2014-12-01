@@ -109,13 +109,13 @@
     <#if CHARTS >
     <div class="center">
       <div class="images">
-        <img src="${key?url}-throughput-${SUMMARY_FILE_NAME?url}.png" tooltip="Throughput and threads count"/>
+        <img src="${key?url?url}-throughput-${SUMMARY_FILE_NAME?url}.png" tooltip="Throughput and threads count"/>
       </div>
       <div class="images">
-        <img src="${key?url}-durations-${SUMMARY_FILE_NAME?url}.png" tooltip="Durations"/>
+        <img src="${key?url?url}-durations-${SUMMARY_FILE_NAME?url}.png" tooltip="Durations"/>
       </div>
       <div class="images">
-        <img src="${key?url}-response_times-${SUMMARY_FILE_NAME?url}.png" tooltip="Response times distribution and percentiles"/>
+        <img src="${key?url?url}-response_times-${SUMMARY_FILE_NAME?url}.png" tooltip="Response times distribution and percentiles"/>
       </div>
     </div>
     </#if>
@@ -123,8 +123,8 @@
     <div class="details">
       <h3>Detailed response information</h3>
       <ul>
-        <li><a href="${key?url}-durations-${SUMMARY_FILE_NAME?url}.html">Response durations per URL (HTML)</a></li>
-        <li><a href="${key?url}-sizes-${SUMMARY_FILE_NAME?url}.html">Response sizes per URL (HTML)</a></li>
+        <li><a href="${key?url?url}-durations-${SUMMARY_FILE_NAME?url}.html">Response durations per URL (HTML)</a></li>
+        <li><a href="${key?url?url}-sizes-${SUMMARY_FILE_NAME?url}.html">Response sizes per URL (HTML)</a></li>
       </ul>
     </div>
     </#if>
