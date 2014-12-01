@@ -1,9 +1,11 @@
 <#ftl/>
 <#-- @ftlvariable name="self" type="java.util.Map<java.lang.String, java.util.List<java.lang.String>>" -->
 <#setting url_escaping_charset='UTF-8'>
+<!DOCTYPE html>
 <html>
 <head>
   <title>JMeter Test Results</title>
+  <meta charset="utf-8">
   <style type="text/css">
     body {
       font: normal verdana, arial, helvetica;
