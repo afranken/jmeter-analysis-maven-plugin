@@ -58,10 +58,6 @@
     div.details ul li {
       list-style: none;
     }
-
-    .center {
-        text-align: center;
-    }
   </style>
 </head>
 <body>
