@@ -2,9 +2,11 @@
 <#-- @ftlvariable name="self" type="java.util.Map<java.lang.String, com.lazerycode.jmeter.analyzer.parser.AggregatedResponses>" -->
 <#-- @ftlvariable name="bytes" type="com.lazerycode.jmeter.analyzer.statistics.Samples" -->
 <#-- @ftlvariable name="requests" type="com.lazerycode.jmeter.analyzer.statistics.Samples" -->
+<!DOCTYPE html>
 <html>
 <head>
   <title>JMeter Test Results</title>
+  <meta charset="utf-8">
   <style type="text/css">
     body {
       font: normal verdana, arial, helvetica;
