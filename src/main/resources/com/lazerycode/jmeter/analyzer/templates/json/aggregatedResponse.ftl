@@ -9,6 +9,7 @@
 <#-- @ftlvariable name="PERCENT_100" type="java.lang.Integer" -->
 <#assign quantiles=requests.getQuantiles(Q_QUANTILES)/>
 <#assign statusCodes=aggregatedResponses.statusCodes.codes/>
+<#assign uribyStatusCode=aggregatedResponses.uriByStatusCode/>
 <#assign total=requests.successCount + requests.errorsCount/>
     {
       "min": ${requests.min},
@@ -21,5 +22,15 @@
                     <#assign statusCodeCount=statusCodes(statusCode)/>
                       "${statusCode?string}": ${statusCodeCount}<#if statusCode_has_next>,</#if>
                   </#list>
-                    }
+                    },
+      "uriByStatusCode":{
+                       <#list uribyStatusCode?keys as statusCode>
+                         <#assign uriSet=uribyStatusCode(statusCode)/>
+                          "${statusCode?string}": [
+                            <#list uriSet as uri>
+                                  "${uri}"<#if uri_has_next>,</#if>
+                            </#list>
+                                 ]<#if statusCode_has_next>,</#if>
+                       </#list>
+                        }
     }

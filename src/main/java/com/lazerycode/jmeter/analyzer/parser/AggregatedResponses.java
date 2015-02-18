@@ -4,6 +4,7 @@ import com.lazerycode.jmeter.analyzer.statistics.Samples;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Holds aggregated data for several http responses.
@@ -51,6 +52,11 @@ public class AggregatedResponses {
    * aggregated status codes of responses
    */
   private StatusCodes statusCodes;
+
+  /**
+   * uri of the response splitted by http status code
+   */
+  private Map<Integer, Set<String>> uriByStatusCode;
 
 
 
@@ -157,6 +163,18 @@ public class AggregatedResponses {
 
   protected void setDurationByUri(Map<String, Samples> durationByUri) {
     this.durationByUri = durationByUri;
+  }
+
+  /**
+   *
+   * @return a mapping from status code to uri
+   */
+  public Map<Integer, Set<String>> getUriByStatusCode() {
+    return uriByStatusCode;
+  }
+
+  protected void setUriByStatusCode(Map<Integer, Set<String>> uriByStatusCode) {
+    this.uriByStatusCode = uriByStatusCode;
   }
 
   //--------------------------------------------------------------------------------------------------------------------

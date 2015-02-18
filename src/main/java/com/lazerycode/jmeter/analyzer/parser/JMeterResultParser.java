@@ -199,6 +199,9 @@ public class JMeterResultParser {
       StatusCodes statusCodes = resultContainer.getStatusCodes();
       statusCodes.increment(responseCode);
 
+      Map<Integer, Set<String>> uriByStatusCodeMapping = resultContainer.getUriByStatusCode();
+      add(uriByStatusCodeMapping, responseCode, uri);
+
       Samples activeThreadResult = resultContainer.getActiveThreads();
       activeThreadResult.addSample(timestamp + duration, activeThreads);
 
@@ -254,6 +257,7 @@ public class JMeterResultParser {
         resultContainer.setDuration(new Samples(maxSamples, true));
         resultContainer.setSize(new Samples(maxSamples, false));
         resultContainer.setStatusCodes(new StatusCodes());
+        resultContainer.setUriByStatusCode(new HashMap<Integer, Set<String>>());
         if( sizeByUris ) {
           resultContainer.setSizeByUri(new HashMap<String, Samples>());
         }
@@ -357,6 +361,20 @@ public class JMeterResultParser {
         }
 
         samples.addSample(timestamp, value);
+      }
+    }
+
+    private void  add(Map<Integer, Set<String>> uriByStatusCode, Integer code, String uri){
+      if(uriByStatusCode != null){
+
+        Set<String> uriSet = uriByStatusCode.get(code);
+
+        if(uriSet == null){
+          uriSet = new HashSet<String>();
+          uriByStatusCode.put(code, uriSet);
+        }
+
+        uriSet.add(uri);
       }
     }
 
