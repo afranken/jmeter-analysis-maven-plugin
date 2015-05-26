@@ -1,4 +1,4 @@
-warmup
+Group: warmup
   time: 20111216T145511+0100 - 20111216T145511+0100
   total duration:       0
   requests:             1
