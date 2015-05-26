@@ -1,6 +1,7 @@
 package com.lazerycode.jmeter.analyzer.writer;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.lazerycode.jmeter.analyzer.parser.AggregatedResponses;
 import com.lazerycode.jmeter.analyzer.parser.StatusCodes;
 import com.lazerycode.jmeter.analyzer.statistics.Quantile;
@@ -17,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -116,6 +118,7 @@ public final class WriterTestHelper {
     when(value.getDuration()).thenReturn(duration);
     when(value.getActiveThreads()).thenReturn(activeThreads);
     when(value.getDurationByUri()).thenReturn(ImmutableMap.of(key, duration));
+    when(value.getUriByStatusCode()).thenReturn(ImmutableMap.<Integer, Set<String>>of(200, ImmutableSet.of("http://success.com", "http://anotherSuccess.com"), 403, ImmutableSet.<String>of("http://forbidden.com"), 404, ImmutableSet.<String>of("http://notFound.com","http://againNotFound.com")));
 
     //--- add aggregatedResults as testresult
     return ImmutableMap.of(key, value);
