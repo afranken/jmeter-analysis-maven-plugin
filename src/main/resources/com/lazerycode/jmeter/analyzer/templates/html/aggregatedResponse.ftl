@@ -12,7 +12,7 @@
 <#-- @ftlvariable name="CHARTS" type="java.lang.Boolean" -->
 <#-- @ftlvariable name="DETAILS" type="java.lang.Boolean" -->
 <#-- @ftlvariable name="SUMMARY_FILE_NAME" type="java.lang.String" -->
-    <h2>Group ${key}</h2>
+    <h2>Group: ${key}</h2>
     <div class="aggregation">
       <h3>Summary</h3>
       <table>

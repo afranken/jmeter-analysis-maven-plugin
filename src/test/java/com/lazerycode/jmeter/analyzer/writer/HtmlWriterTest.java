@@ -2,16 +2,15 @@ package com.lazerycode.jmeter.analyzer.writer;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.*;
-
+import java.io.File;
+import java.io.IOException;
+import java.io.StringWriter;
 import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
 import static com.lazerycode.jmeter.analyzer.writer.WriterTestHelper.getMockedTestResults;
 import static com.lazerycode.jmeter.analyzer.writer.WriterTestHelper.normalizeFileContents;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
-
 
 /**
  * Tests for {@link HtmlWriter}

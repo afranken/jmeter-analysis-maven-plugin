@@ -8,7 +8,7 @@
 <#-- @ftlvariable name="K_99_PERCENT" type="java.lang.Integer" -->
 <#-- @ftlvariable name="K_99_PONT_9_PERCENT" type="java.lang.Integer" -->
 <#-- @ftlvariable name="PERCENT_100" type="java.lang.Integer" -->
-${key}
+Group: ${key}
   time: ${aggregatedResponses.startDate?date?string} - ${aggregatedResponses.endDate?date?string}
   total duration:       ${requests.duration}
   requests:             ${requests.successCount}
