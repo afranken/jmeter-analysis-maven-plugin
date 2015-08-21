@@ -87,7 +87,7 @@ Usage Example
 
                 If throughput result test is between minValue and maxValue, maven build is OK otherwise, build failed.
                 -->
-                <toleranceDirection>UPPER_LOWER_TOLERANCE</tolerance>
+                <toleranceDirection>UPPER_LOWER_TOLERANCE</toleranceDirection>
 
                 <!-- Default: 5 (percent)
                 Used for calculate min et max values.
@@ -98,7 +98,7 @@ Usage Example
               <errors>
                 <!-- As above -->
                 <threshold>-1</threshold>
-                <toleranceDirection>UPPER_LOWER_TOLERANCE</tolerance>
+                <toleranceDirection>UPPER_LOWER_TOLERANCE</toleranceDirection>
                 <tolerance>5</tolerance>
               </errors>
             </checkResult>
