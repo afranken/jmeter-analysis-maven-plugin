@@ -135,21 +135,6 @@ Usage Example
             </requestGroups>
 
             <!--
-            If set to true, additional files "<category>-sizes.csv" and "<category>-durations.csv" will be stored.
-            These files contain detailed information for response size and response durations for every URI.
-
-            Default: true
-            -->
-            <generateCSVs>true</generateCSVs>
-
-            <!--
-            If set to true, additional chart files "<category>-durations.png" will be created.
-
-            Default: true
-            -->
-            <generateCharts>true</generateCharts>
-
-            <!--
             Change default value for generating charts.
 
             Default: width=950, height=500
