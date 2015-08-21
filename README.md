@@ -116,14 +116,6 @@ Usage Example
             Default: not set.
             -->
             <requestGroups>
-              <pages>/page/**</pages>
-              <binaries>/binary/**</binaries>
-              <!-- Optional -->
-              <checkResult>
-                <!-- As above -->
-              </checkResult>
-            </requestGroups>
-            <requestGroups>
               <requestGroup>
                 <name>pages</name>
                 <pattern>/page/**</pattern>
