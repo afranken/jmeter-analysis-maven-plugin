@@ -87,7 +87,7 @@ Usage Example
 
                 If throughput result test is between minValue and maxValue, maven build is OK otherwise, build failed.
                 -->
-                <toleranceDirection>UPPER_LOWER_TOLERANCE</tolerance>
+                <toleranceDirection>UPPER_LOWER_TOLERANCE</toleranceDirection>
 
                 <!-- Default: 5 (percent)
                 Used for calculate min et max values.
@@ -98,7 +98,7 @@ Usage Example
               <errors>
                 <!-- As above -->
                 <threshold>-1</threshold>
-                <toleranceDirection>UPPER_LOWER_TOLERANCE</tolerance>
+                <toleranceDirection>UPPER_LOWER_TOLERANCE</toleranceDirection>
                 <tolerance>5</tolerance>
               </errors>
             </checkResult>
@@ -115,14 +115,6 @@ Usage Example
 
             Default: not set.
             -->
-            <requestGroups>
-              <pages>/page/**</pages>
-              <binaries>/binary/**</binaries>
-              <!-- Optional -->
-              <checkResult>
-                <!-- As above -->
-              </checkResult>
-            </requestGroups>
             <requestGroups>
               <requestGroup>
                 <name>pages</name>
@@ -141,21 +133,6 @@ Usage Example
                 </checkResult>
               </requestGroup>
             </requestGroups>
-
-            <!--
-            If set to true, additional files "<category>-sizes.csv" and "<category>-durations.csv" will be stored.
-            These files contain detailed information for response size and response durations for every URI.
-
-            Default: true
-            -->
-            <generateCSVs>true</generateCSVs>
-
-            <!--
-            If set to true, additional chart files "<category>-durations.png" will be created.
-
-            Default: true
-            -->
-            <generateCharts>true</generateCharts>
 
             <!--
             Change default value for generating charts.
