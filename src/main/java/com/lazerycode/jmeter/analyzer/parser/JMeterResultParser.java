@@ -2,6 +2,7 @@ package com.lazerycode.jmeter.analyzer.parser;
 
 import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
 import static com.lazerycode.jmeter.analyzer.parser.StatusCodes.HTTPCODE_CONNECTIONERROR;
+import static com.lazerycode.jmeter.analyzer.parser.StatusCodes.HTTPCODE_ERROR;
 
 import java.io.IOException;
 import java.io.Reader;
