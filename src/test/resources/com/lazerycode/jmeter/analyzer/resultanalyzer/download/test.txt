@@ -3,6 +3,7 @@ Group: warmup
   total duration:       30
   requests:             10
   requests per second:  0
+  failed requests:      0
   response duration (ms)
     min:                0
     average:            137

@@ -17,6 +17,7 @@
       "quantile90": ${quantiles.getQuantile(900)},
       "average": ${requests.average},
       "total": ${total},
+      "failed": ${requests.errorsCount},
       "statusCodes":{
                   <#list statusCodes?keys as statusCode>
                     <#assign statusCodeCount=statusCodes(statusCode)/>

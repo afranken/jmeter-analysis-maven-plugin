@@ -7,6 +7,7 @@
       "quantile90": 1,
       "average": 0,
       "total": 36049,
+      "failed": 0,
       "statusCodes":{
                       "200": 36049,
                       "403": 9,
