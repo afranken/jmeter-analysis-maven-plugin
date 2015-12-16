@@ -17,8 +17,8 @@ Features
 
 Build status
 ------------
-Buildhive CI:
-[![Build Status](https://buildhive.cloudbees.com/job/afranken/job/jmeter-analysis-maven-plugin/badge/icon)](https://buildhive.cloudbees.com/job/afranken/job/jmeter-analysis-maven-plugin/)
+Travis CI:
+[![Build Status](https://travis-ci.org/afranken/jmeter-analysis-maven-plugin.svg?branch=master)](https://travis-ci.org/afranken/jmeter-analysis-maven-plugin)
 
 Help
 ----
