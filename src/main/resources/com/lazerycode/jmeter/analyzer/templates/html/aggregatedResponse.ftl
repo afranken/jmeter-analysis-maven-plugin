@@ -29,11 +29,15 @@
         </tr>
         <tr>
           <td>Number of requests</td>
-          <td>${requests.successCount}</td>
+          <td>${requests.successCount + requests.errorsCount}</td>
         </tr>
         <tr>
           <td>Requests per second</td>
           <td>${requests.successPerSecond}</td>
+        </tr>
+        <tr>
+          <td>Failed requests</td>
+          <td>${requests.errorsCount}</td>
         </tr>
 
         <#if (requests.successCount > 0) >

@@ -11,8 +11,9 @@
 Group: ${key}
   time: ${aggregatedResponses.startDate?date?string} - ${aggregatedResponses.endDate?date?string}
   total duration:       ${requests.duration}
-  requests:             ${requests.successCount}
+  requests:             ${requests.successCount + requests.errorsCount}
   requests per second:  ${requests.successPerSecond}
+  failed requests:      ${requests.errorsCount}
   <#if (requests.successCount > 0) >
   response duration (ms)
     min:                ${requests.min}

@@ -1,7 +1,22 @@
 package com.lazerycode.jmeter.analyzer.parser;
 
-import com.lazerycode.jmeter.analyzer.RequestGroup;
-import com.lazerycode.jmeter.analyzer.statistics.Samples;
+import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
+import static com.lazerycode.jmeter.analyzer.parser.StatusCodes.HTTPCODE_CONNECTIONERROR;
+import static com.lazerycode.jmeter.analyzer.parser.StatusCodes.HTTPCODE_ERROR;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.apache.maven.plugin.logging.Log;
 import org.springframework.util.AntPathMatcher;
 import org.xml.sax.Attributes;
@@ -9,16 +24,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.*;
-
-import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
-import static com.lazerycode.jmeter.analyzer.parser.StatusCodes.HTTPCODE_CONNECTIONERROR;
-import static com.lazerycode.jmeter.analyzer.parser.StatusCodes.HTTPCODE_ERROR;
+import com.lazerycode.jmeter.analyzer.RequestGroup;
+import com.lazerycode.jmeter.analyzer.statistics.Samples;
 
 /**
  * Parses a JMeter xml result and provides {@link AggregatedResponses aggregated results}
@@ -204,32 +211,32 @@ public class JMeterResultParser {
 
       Samples activeThreadResult = resultContainer.getActiveThreads();
       activeThreadResult.addSample(timestamp + duration, activeThreads);
-
+      
       // -- register data
-      if( !success || bytes == -1 || duration == -1 ||
-              responseCode >= HTTPCODE_ERROR || responseCode == HTTPCODE_CONNECTIONERROR ) {
-
+      Samples requestResult = resultContainer.getDuration();
+      Samples bytesResult = resultContainer.getSize();
+      if( !success ) {
+        // || bytes == -1 || duration == -1 || responseCode >= HTTPCODE_ERROR || responseCode == HTTPCODE_CONNECTIONERROR ) {
         // httpSample is not okay
         // 4xx (client error) or 5xx (server error)
-        Samples requestResult = resultContainer.getDuration();
+        // are ignored, because they often are wanted as test results
+        
         requestResult.addError(timestamp);
-        Samples bytesResult = resultContainer.getSize();
         bytesResult.addError(timestamp);
       }
       else {
 
         // httpSample is okay
-        Samples bytesResult = resultContainer.getSize();
-        bytesResult.addSample(timestamp, bytes);
-        Samples requestResult = resultContainer.getDuration();
         requestResult.addSample(timestamp, duration);
-
-        Map<String, Samples> sizeByUriMapping = resultContainer.getSizeByUri();
-        Map<String, Samples> durationByUriMapping = resultContainer.getDurationByUri();
-
-        add(sizeByUriMapping, uri, timestamp, bytes);
-        add(durationByUriMapping, uri, timestamp, duration);
+        bytesResult.addSample(timestamp, bytes);
       }
+      
+
+      Map<String, Samples> sizeByUriMapping = resultContainer.getSizeByUri();
+      Map<String, Samples> durationByUriMapping = resultContainer.getDurationByUri();
+
+      add(sizeByUriMapping, uri, timestamp, bytes, success);
+      add(durationByUriMapping, uri, timestamp, duration, success);
 
       //set start and end time
       if( resultContainer.getStart() == 0 ) {
@@ -346,6 +353,8 @@ public class JMeterResultParser {
      * @param uri the uri identifying the Samples object
      * @param timestamp the timestamp
      * @param value the value
+     * @deprecated This method ignores errors. Use {@link #add(Map, String, long, long, boolean)} instead
+     * @see #add(Map, String, long, long, boolean)
      */
     private void add(Map<String, Samples> uriSamples, String uri, long timestamp, long value) {
 
@@ -363,6 +372,38 @@ public class JMeterResultParser {
         samples.addSample(timestamp, value);
       }
     }
+    
+    /**
+     * Add #timestamp and matching #value to (new) Samples object matching the given #uri to given Map #uriSamples.
+     * If #success is false, only an error is added to the Sample.
+     *
+     * @param uriSamples map to add the Samples to
+     * @param uri the uri identifying the Samples object
+     * @param timestamp the timestamp
+     * @param value the value
+     * @param success indicates whether the sample was successful of failed
+     */
+    private void add(Map<String, Samples> uriSamples, String uri, long timestamp, long value, boolean success) {
+
+        if( uriSamples != null ) {
+
+          Samples samples = uriSamples.get(uri);
+
+          if( samples == null ) {
+            // no Sample was previously stored for the uri.
+            samples = new Samples(0, false); // 0 = don't collect samples. This is important, otherwise a OOM may occur if the result set is big
+
+            uriSamples.put(uri, samples);
+          }
+          
+          if(success) {
+            samples.addSample(timestamp, value);
+          }
+          else {
+            samples.addError(timestamp);
+          }
+        }
+      }
 
     private void  add(Map<Integer, Set<String>> uriByStatusCode, Integer code, String uri){
       if(uriByStatusCode != null){

@@ -68,6 +68,7 @@
       <th>max</th>
       <th>standarddeviation</th>
       <th>persecond</th>
+      <th>success</th>
       <th>errors</th>
     </tr>
     <#list self?keys as key>
