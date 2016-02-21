@@ -2,7 +2,6 @@ package com.lazerycode.jmeter.analyzer.parser;
 
 import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
 import static com.lazerycode.jmeter.analyzer.parser.StatusCodes.HTTPCODE_CONNECTIONERROR;
-import static com.lazerycode.jmeter.analyzer.parser.StatusCodes.HTTPCODE_ERROR;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -333,14 +332,9 @@ public class JMeterResultParser {
       else {
 
         // use threadgroup name as a key
-        key = attributes.getValue("tn");
-
-        //key is now "threadgroupname int-int"
-        int threadGroupSeparator = key.indexOf(' ');
-        if( threadGroupSeparator > -1) {
-          // cut off trailing threadno
-          key = key.substring(0, threadGroupSeparator);
-        }
+        key = attributes.getValue("tn").trim();
+        key = key.replaceAll("\\s+", "_");
+        //key is now "threadgroupname_int-int"
       }
 
       return key;

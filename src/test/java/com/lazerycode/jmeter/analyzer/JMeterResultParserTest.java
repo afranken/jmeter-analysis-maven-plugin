@@ -1,12 +1,6 @@
 package com.lazerycode.jmeter.analyzer;
 
-import com.lazerycode.jmeter.analyzer.config.Environment;
-import com.lazerycode.jmeter.analyzer.parser.AggregatedResponses;
-import com.lazerycode.jmeter.analyzer.parser.JMeterResultParser;
-
-import junit.framework.TestCase;
-
-import org.apache.maven.plugin.logging.SystemStreamLog;
+import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
 
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -15,7 +9,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import static com.lazerycode.jmeter.analyzer.config.Environment.ENVIRONMENT;
+import org.apache.maven.plugin.logging.SystemStreamLog;
+
+import com.lazerycode.jmeter.analyzer.config.Environment;
+import com.lazerycode.jmeter.analyzer.parser.AggregatedResponses;
+import com.lazerycode.jmeter.analyzer.parser.JMeterResultParser;
+import junit.framework.TestCase;
 
 /**
  * Tests {@link JMeterResultParser}
@@ -35,9 +34,10 @@ public class JMeterResultParserTest extends TestCase {
 
     assertEquals("size", 1, result.size());
 
-    AggregatedResponses r = result.get("warmup");
+    AggregatedResponses r = result.get("warmup_3-1");
 
     // test requests
+    assertNotNull(r);
     assertEquals("samples", 10, r.getDuration().getStoredSamplesCount());
     assertEquals("success", 10, r.getDuration().getSuccessCount());
     assertEquals("failure", 0, r.getDuration().getErrorsCount());
@@ -51,11 +51,12 @@ public class JMeterResultParserTest extends TestCase {
     JMeterResultParser a = new JMeterResultParser();
     Map<String, AggregatedResponses> result = a.aggregate(new InputStreamReader(getClass().getResourceAsStream("JMeterResultParserTest-differentNodeNames.xml")));
 
-    assertEquals("size", 1, result.size());
+    assertEquals("size", 2, result.size());
 
-    AggregatedResponses r = result.get("warmup");
+    AggregatedResponses r = result.get("warmup_3-1");
 
     // test requests
+    assertNotNull(r);
     assertEquals("samples", 3, r.getDuration().getStoredSamplesCount());
     assertEquals("success", 3, r.getDuration().getSuccessCount());
     assertEquals("failure", 0, r.getDuration().getErrorsCount());
@@ -68,9 +69,10 @@ public class JMeterResultParserTest extends TestCase {
 
     assertEquals("size", 1, result.size());
 
-    AggregatedResponses r = result.get("warmup");
+    AggregatedResponses r = result.get("warmup_3-1");
 
     // test requests
+    assertNotNull(r);
     assertEquals("samples", 1, r.getDuration().getStoredSamplesCount());
     assertEquals("success", 1, r.getDuration().getSuccessCount());
     assertEquals("failure", 2, r.getDuration().getErrorsCount());
@@ -83,9 +85,10 @@ public class JMeterResultParserTest extends TestCase {
 
     assertEquals("size", 1, result.size());
 
-    AggregatedResponses r = result.get("warmup");
+    AggregatedResponses r = result.get("warmup_3-1");
 
     // test requests
+    assertNotNull(r);
     assertEquals("samples", 0, r.getDuration().getStoredSamplesCount());
     assertEquals("success", 0, r.getDuration().getSuccessCount());
     assertEquals("failure", 3, r.getDuration().getErrorsCount());
@@ -125,6 +128,18 @@ public class JMeterResultParserTest extends TestCase {
     assertEquals("samples", 4, r.getDuration().getStoredSamplesCount());
     assertEquals("success", 4, r.getDuration().getSuccessCount());
     assertEquals("failure", 0, r.getDuration().getErrorsCount());
+  }
+
+  public void testSpacesAreReplacedWithUnderscoresInTestName() throws Exception {
+    JMeterResultParser a = new JMeterResultParser();
+    Map<String, AggregatedResponses> result = a.aggregate(new InputStreamReader(getClass().getResourceAsStream("JMeterResultParserTest-differentNodeNames.xml")));
+
+    assertEquals("size", 2, result.size());
+
+    AggregatedResponses r = result.get("test_name_with_spaces");
+
+    // test requests
+    assertNotNull(r);
   }
 
   // TODO: more tests
