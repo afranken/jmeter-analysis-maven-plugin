@@ -1,6 +1,8 @@
 JMeter Result Analysis Plugin
 ======================
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.lazerycode.jmeter/jmeter-analysis-maven-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.lazerycode.jmeter/jmeter-analysis-maven-plugin)
+
 A Maven plugin that parses [JMeter][2] result XML files and generates detailed reports with charts
 
 Can be used in combination with the [JMeter Maven Plugin][1] that is developed by the same authors

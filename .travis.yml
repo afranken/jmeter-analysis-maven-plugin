@@ -1,2 +1,10 @@
 language: java
+jdk:
+- oraclejdk7
+env:
+  global:
+  - secure: Se4vBbo9LDtzY9m1rJrSyLGGXr9y9OzsXD92PVwpMgZ7WP4/pIMLnpr89OnZ23gkL6Kx4xEQxx7uOH7Bh1Om9Wt8frHCxCwzkpIGs2Rp7dcBPDRH3jTBbqSgnDw70Agh8I6QBFwNDQIgQm63nk8JF3kNFwHs9+WYP0+ogajJsZc=
+  - secure: fh+YCtl1i7F/OLQ2r7Vx3GabvDbqFY7Bl24z3Ah8fihPN7y8he6LGI3x6BaRe5gC0iBqN7fs+XD3rqNMzzj2c7ajwigoQar1KrTwxbhfPMs3ton0exfYSoXp3ZN0vR4mKKc58vdJSN+z94LHOwhP1sv/cUp2gi9qKjYUTVgpKNA=
 sudo: false
+script: mvn clean verify
+after_success: ./deploy_to_sonatype.sh
